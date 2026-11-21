@@ -215,6 +215,22 @@ nav button{min-width:0}
 .wquick b{display:block;font-size:15px}.wquick span{font-size:12px;opacity:.75}
 .wquick button:first-child b{font-size:18px}
 .wbig{background:linear-gradient(135deg,#5b4bd6,#8f7bff);color:#fff}.wbig span{opacity:.9}
+.wlab{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:800;margin-top:14px}
+.wsn{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);font-weight:800;margin-bottom:6px}
+.wsh{font-size:28px;letter-spacing:-.02em;margin-bottom:10px}
+.wvis{}
+.wmap{width:min(46vw,170px);margin:2px auto 10px}
+.wemo{font-size:84px;line-height:1.1;margin:6px 0 14px}
+.wcirc.sm{width:min(44vw,170px);height:min(44vw,170px);margin:4px 0 14px}
+.wcirc.sm .wcl b{font-size:15px}.wcirc.sm .wcl span{font-size:26px}
+.wline{font-size:20px;line-height:1.45;color:#dbe1ee;min-height:88px;padding:0 6px;opacity:0}
+.wline.in{animation:wfade .6s ease forwards}
+@keyframes wfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.wcirc+.wline{opacity:1;margin-top:18px;font-size:17px;color:#aeb7ca}
+.wnext{font-size:13px;color:var(--mut);margin-top:6px}
+.wgoal{font-size:16px;color:#dbe1ee;margin:2px 6px 10px;line-height:1.45}.wset{font-size:15px;color:var(--mut);margin:0 6px;line-height:1.45}
+.wbar{position:relative}.wbar u{position:absolute;top:0;bottom:0;width:2px;background:var(--bg);transform:translateX(-1px)}
+.dim .wline{color:#8d97ad}.dim .wgoal{color:#9aa4b8}
 </style></head><body>
 <div id="app"><header class="top"><b>Ground<i>work</i></b><button id="pchip" data-act="profiles">Me</button></header><main id="view"></main></div>
 <nav>
@@ -829,6 +845,30 @@ X('bear_hold','Bear Hold',{m:M(['core'],['shoulders','quads']),kind:'t',rng:[10,
   b:{hx:92,hy:115,tor:104.7,hand:[133,156],th:15,sh:-90,ft:-90,neck:100},
   cues:['Hands under shoulders, knees under hips','Lift knees one inch off the floor','Back flat, breathe, hold still']});
 
+/* ---- wellness poses (shown in Mental wellness only) ---- */
+(function(){
+const W0={m:{p:[],s:[]},warm:1,wellness:1,kind:'t',rng:[30,60],cues:[]};
+const seat=P_.bench(56,106,134);
+const SIT={hx:84,hy:124,tor:180,ank:[114,155],ft:90,neck:180};
+const LIE={...SUP,ua:95,fa:90};
+const add=(id,name,o)=>X(id,name,Object.assign({},W0,o));
+add('w_sit','Sit tall',{p:seat,a:{...SIT,hand:[104,121]},b:{...SIT,hy:123,tor:179,hand:[104,121]}});
+add('w_sit_belly','Hand on belly',{p:seat,a:{...SIT,hand:[93,104]},b:{...SIT,hy:123,tor:178,hand:[95,102]}});
+add('w_sit_chest','Hand on chest',{p:seat,a:{...SIT,hand:[92,93]},b:{...SIT,hy:123,tor:178,hand:[94,91]}});
+add('w_stand','Stand tall',{a:{...ST,ua:4,fa:4},b:{...ST,tor:179,ua:6,fa:6}});
+add('w_stand_chest','Hand on heart',{a:{...ST,hand:[125,68]},b:{...ST,tor:179,hand:[126,66]}});
+add('w_press','Palms together',{a:{...ST,hand:[134,68]},b:{...ST,hand:[138,68]}});
+add('w_reach','Reach up',{a:{...ST,ua:176,fa:176},b:{...ST,ua:168,fa:170}});
+add('w_shake','Shake it out',{a:{...ST,ua:34,fa:10,fua:-34,ffa:-10},b:{...ST,ua:-34,fa:-10,fua:34,ffa:10}});
+const NB={hx:118,hy:98,tor:180,ft:90};
+add('w_cross','Cross crawl',{a:{...NB,th:88,sh:5,fth:0,fsh:0,ua:-30,fa:-10,fua:60,ffa:95},b:{...NB,th:0,sh:0,fth:88,fsh:5,ua:60,fa:95,fua:-30,ffa:-10}});
+add('w_balance','Balance on one leg',{a:{...NB,th:70,sh:-30,fth:0,fsh:0,ua:70,fa:80,fua:60,ffa:70},b:{...NB,th:66,sh:-34,fth:0,fsh:0,ua:60,fa:72,fua:70,ffa:80}});
+add('w_fold','Forward fold',{a:{...NB,tor:135,th:0,sh:0,ua:0,fa:0,neck:135},b:{...NB,tor:55,th:0,sh:0,ua:0,fa:0,neck:55}});
+add('w_lie','Lie on your back',{floorMat:1,a:{...LIE},b:{...LIE,hy:147}});
+add('w_lie_belly','Hand on belly',{floorMat:1,a:{...LIE,hand:[96,136]},b:{...LIE,hy:147,hand:[96,132]}});
+add('w_knees','Knees to chest',{floorMat:1,a:{hx:108,hy:148,tor:-90,th:-155,sh:40,ft:90,ua:100,fa:70,neck:-92},b:{hx:108,hy:148,tor:-90,th:-150,sh:35,ft:90,ua:100,fa:70,neck:-92}});
+})();
+
 /* ---------- Mental wellness ---------- */
 const WCATS=[
  {id:'anx',name:'Anxiety relief',sub:'For anxious thoughts and spikes'},
@@ -839,201 +879,208 @@ const WCATS=[
  {id:'mine',name:'My own',sub:'Add your counselor\'s exercises'}
 ];
 const WMED={id:'med',name:'Meditation',sub:'Guided, 5 to 15 min'};
+const BR={slow:[['In',4,1],['Out',6,.45]],easy:[['In',4,1],['Out',4,.45]],box:[['In',4,1],['Hold',4,1],['Out',4,.45],['Hold',4,.45]]};
+const SIT={v:'w_sit',t:'Sit tall in a chair, feet flat on the floor, hands resting on your thighs. Close your eyes or look at one spot.'};
+const SITC={v:'w_sit_chest',t:'Sit tall in a chair, feet flat on the floor. Rest one hand on your chest.'};
+const STAND={v:'w_stand',t:'Stand with your feet hip-width apart, knees soft, shoulders loose. Clear a little space around you.'};
+const LIE={v:'w_lie',t:'Lie on your back with your knees bent and feet flat, or legs straight if that is more comfortable. Let your arms rest by your sides.'};
+const SITANY={v:'w_sit',t:'Sit or stand, whichever you are in. Feet on the floor, shoulders dropped. Look at one spot or close your eyes.'};
+/* step: [weight, title, [prompts shown one after another], visual, breathing pattern] */
 const WLIST=[
 /* ---- calm now ---- */
 {id:'cn_sigh',cat:'calm',kind:'breath',name:'Physiological sigh',tag:'Fastest reset',durs:[1,2,5],def:2,next:'cn_ground',
- desc:'Two short breaths in through the nose, then one long, slow breath out through the mouth. Often used to settle a racing body quickly.',
- pat:[['Breathe in through your nose',2,.8],['Sip a little more air in',1,1],['Slow, long breath out',6,.45]]},
+ goal:'Settles a racing heart and tense body quickly. Two short breaths in through the nose, then one long breath out through the mouth.',setup:SITANY,cue:'Two short sips in through your nose, then one long breath out through your mouth.',
+ pat:[['In',2,.8],['Sip more',1,1],['Slow out',6,.45]]},
 {id:'cn_ground',cat:'calm',kind:'guide',name:'Ground yourself (5-4-3-2-1)',tag:'Come back to the room',durs:[3,5],def:3,next:'cn_exhale',
- desc:'Use your senses to bring your attention back to the present moment, one step at a time.',
- steps:[[1,'Pause','Feel your feet on the floor and your weight in the chair. Breathe out slowly. You are here, and this will pass.'],
- [2,'Five things you can see','Look around slowly. Name five things you can see, out loud or in your head.'],
- [2,'Four things you can touch','Notice four things you can feel: your clothes, the chair, the floor, your hands.'],
- [2,'Three things you can hear','Listen for three sounds, near or far.'],
- [1,'Two things you can smell','Notice two scents, or imagine two you like.'],
- [1,'One thing you can taste','Notice one taste in your mouth. Then take one slow breath in and a longer breath out.']]},
+ goal:'Moves your attention out of your head and back into the room, one sense at a time.',setup:SIT,
+ steps:[[1,'Settle',['Feet flat on the floor. Feel the ground holding you.','Let your shoulders drop. Breathe out slowly.','You are safe right now. This feeling will pass.'],'p:w_sit','slow'],
+ [2,'5 things you can SEE',['Look slowly around the room.','Name five things you can see, out loud or in your head.','Notice colours, shapes and light.'],'e:👀'],
+ [2,'4 things you can FEEL',['Notice the chair under you, your clothes, your feet on the floor.','Press your fingertips together.','Name four things you can feel.'],'e:✋'],
+ [2,'3 things you can HEAR',['Close your eyes if you like.','Listen for three sounds. Near ones first, then far ones.'],'e:👂'],
+ [1,'2 things you can SMELL',['Notice two smells, or imagine two you like.'],'e:👃'],
+ [1,'1 thing you can TASTE',['Notice any taste in your mouth.','Take one slow breath in, and a longer breath out.'],'e:👅'],
+ [1,'Check in',['How does your body feel compared to a few minutes ago?','Take one more slow breath. You can repeat this any time.'],'p:w_sit','slow']]},
 {id:'cn_exhale',cat:'calm',kind:'breath',name:'Slow your exhale',tag:'Calm the body',durs:[3,5,10],def:3,next:'cn_press',
- desc:'Breathe in for 4 and out for 6. Making the out breath longer tells the body it can ease off.',
- pat:[['Breathe in',4,1],['Breathe out slowly',6,.45]]},
-{id:'cn_press',cat:'calm',kind:'guide',name:'Press and release',tag:'Burn off tension',durs:[2,3,5],def:3,
- desc:'Squeeze, then let go. Tensing a muscle on purpose makes it easier to feel it relax.',
- steps:[[1,'Feet and floor','Press both feet firmly into the floor for 5 seconds, then let go. Notice the difference.'],
- [1,'Hands','Squeeze your hands into fists for 5 seconds, then open them and let them rest.'],
- [1,'Palms together','Push your palms together in front of your chest for 5 seconds, then release.'],
- [1,'Shoulders','Lift your shoulders up to your ears, hold, then drop them with a sigh.'],
- [1,'Jaw and face','Scrunch your face tight for 5 seconds, then let your jaw hang loose.'],
- [1,'Breathe out','Take a slow breath in and a long breath out. Check in: is there anything softer than a minute ago?']]},
+ goal:'A longer out-breath tells your body it is safe to slow down.',setup:SITANY,cue:'In through your nose for 4. Out through softly pursed lips for 6.',
+ pat:[['In',4,1],['Out',6,.45]]},
+{id:'cn_press',cat:'calm',kind:'guide',name:'Press and release',tag:'Let go of tension',durs:[3,5],def:3,
+ goal:'Squeezing a muscle on purpose, then letting go, makes tension easier to feel and release.',setup:SIT,
+ steps:[[2,'Hands',['Make tight fists. Squeeze for 5 seconds.','Now open your hands and let them go loose.','Notice the difference: warm, heavy, soft.'],'m:forearms|biceps'],
+ [2,'Arms and shoulders',['Pull your shoulders up to your ears. Hold for 5 seconds.','Drop them with a big sigh.','Let your arms hang heavy.'],'m:shoulders|biceps,triceps'],
+ [2,'Chest and belly',['Take a big breath in and hold it for 3 seconds.','Let it out slowly.','Tighten your belly for 5 seconds, then release.'],'m:core|chest'],
+ [2,'Legs and feet',['Press your feet hard into the floor. Squeeze your thighs for 5 seconds.','Let go.','Feel your legs get heavy.'],'m:quads|hamstrings,calves,glutes'],
+ [1,'Face and jaw',['Scrunch your whole face tight for 5 seconds.','Release. Let your jaw hang loose and your tongue rest.'],'e:🙂'],
+ [2,'Breathe',['Slow breath in for 4, out for 6.','Notice how your body feels now.'],'p:w_sit','slow']]},
 /* ---- anxiety relief ---- */
 {id:'a_name',cat:'anx',kind:'guide',name:'Name it to tame it',tag:'When a feeling is big',durs:[3,5],def:3,
- desc:'Putting a name on a feeling can take some of its power away. A gentle way to slow down and check in.',
- steps:[[1,'Pause','Stop what you are doing. Put a hand on your chest or belly and take a slow breath out.'],
- [2,'Name it','Say quietly: I am feeling anxious, or worried, or overwhelmed. Use whatever word fits. Feelings are allowed.'],
- [1,'Where is it?','Notice where you feel it in your body: chest, stomach, throat, hands. Just notice.'],
- [1,'How big?','Give it a number from 0 to 10. Remember that feelings rise and fall.'],
- [2,'Breathe','Breathe in for 4 and out for 6, three times, letting the exhale be long.'],
- [1,'What do I need?','Ask yourself: what is one small thing that would help right now? A drink of water, a walk, a message to someone.']]},
+ goal:'Putting a name on a feeling can make it feel smaller. A gentle way to slow down and check in with yourself.',setup:SITC,
+ steps:[[1,'Pause',['Stop what you are doing.','Rest one hand on your chest.','Breathe out slowly.'],'p:w_sit_chest','slow'],
+ [2,'Name it',['Say it quietly: I am feeling anxious. Or worried. Or overwhelmed.','Use the word that fits. Feelings are allowed.','Naming a feeling helps it feel smaller.'],'e:💬'],
+ [2,'Where is it?',['Scan your body: chest, stomach, throat, hands, jaw.','Where do you feel it most?','Just notice it. You do not have to fix it.'],'m:core|chest'],
+ [1,'How big?',['Give it a number from 0 to 10.','Feelings rise and fall. This number will change.'],'e:📊'],
+ [2,'Breathe',['In for 4, out for 6.','Let each out-breath be slow and long.','Feel your hand rise and fall.'],'p:w_sit_chest','slow'],
+ [2,'What do I need?',['Ask: what is one small thing that would help right now?','A drink of water? A short walk? Telling someone?','Pick one and do it when you finish.'],'e:🌱']]},
 {id:'a_worry',cat:'anx',kind:'guide',name:'Worry check',tag:'Spiralling thoughts',durs:[3,5,10],def:5,
- desc:'Sort a worry into something you can act on and something you cannot, so your mind has somewhere to put it.',
- steps:[[1,'Pause','Take a slow breath out. You do not have to solve everything right now.'],
- [2,'Name the worry','Say it as one plain sentence. Write it down if you can.'],
- [2,'Can I do something?','If yes, pick one small step you could take today. If no, that is okay. Some things are not in your hands.'],
- [2,'Set it down','Tell yourself: I have a plan for this, or I will come back to it later. Then picture setting it on a shelf.'],
- [1,'Come back to now','Look around. Name three things you can see. Take a slow breath in and out.']]},
+ goal:'Gets a worry out of your head and either into a plan or onto a shelf for later.',setup:SIT,
+ steps:[[1,'Pause',['Take a slow breath out.','You do not have to solve everything right now.'],'p:w_sit','slow'],
+ [2,'Name the worry',['Say it as one plain sentence.','Write it down if you can.','What exactly are you worried will happen?'],'e:📝'],
+ [2,'Can I act on it?',['If yes: choose one small step you could take today.','If no: that is okay. Some things are not in your hands.'],'e:🧭'],
+ [2,'Set it down',['Tell yourself: I have a plan, or I will come back to this later.','Picture the worry on a shelf. You can pick it up later if you need to.'],'e:📦'],
+ [1,'Back to now',['Look around and name three things you can see.','Feel your feet on the floor.','One slow breath out.'],'e:👀']]},
 {id:'a_defuse',cat:'anx',kind:'guide',name:'Thoughts are not facts',tag:'Loosen the grip',durs:[3,5],def:3,
- desc:'A thought feeling true does not make it true. This practice creates a little distance from anxious thoughts.',
- steps:[[1,'Pause','Take a slow breath out and let your shoulders drop.'],
- [2,'Notice the thought','Pick the thought that is loudest right now.'],
- [2,'Add a few words','Say it again starting with: I am having the thought that... Notice how it feels to say it that way.'],
- [2,'Watch it pass','Picture the thought as a cloud or a leaf on a stream, drifting by. You do not have to push it away.'],
- [1,'Back to now','Feel your feet on the floor and take a slow breath.']]},
+ goal:'A thought feeling true does not make it true. This creates a little distance from anxious thoughts.',setup:SIT,
+ steps:[[1,'Pause',['Take a slow breath out.','Let your shoulders drop.'],'p:w_sit','slow'],
+ [2,'Notice the thought',['Find the loudest thought right now.','Say it to yourself.'],'e:💭'],
+ [2,'Add a few words',['Say it again, starting with: I am having the thought that...','Notice how it feels to say it that way.'],'e:🗣️'],
+ [2,'Watch it pass',['Picture the thought as a cloud drifting across the sky.','Or a leaf floating down a stream.','You do not have to push it away. Just watch.'],'e:☁️'],
+ [1,'Back to now',['Feel your feet on the floor.','Take a slow breath in and out.'],'e:🌿']]},
 /* ---- breathing ---- */
 {id:'b_sigh',cat:'breath',kind:'breath',name:'Physiological sigh',tag:'Quick reset',durs:[1,2,5],def:2,
- desc:'Two short breaths in, one long breath out. A very quick way to settle your body.',
- pat:[['Breathe in through your nose',2,.8],['Sip a little more air in',1,1],['Slow, long breath out',6,.45]]},
+ goal:'Two short breaths in, one long breath out. A very quick way to settle your body.',setup:SITANY,cue:'Two short sips in through your nose, then one long breath out through your mouth.',
+ pat:[['In',2,.8],['Sip more',1,1],['Slow out',6,.45]]},
 {id:'b_box',cat:'breath',kind:'breath',name:'Box breathing',tag:'Steady focus',durs:[3,5,10],def:5,
- desc:'In for 4, hold for 4, out for 4, hold for 4. Even and steady. Good before something that needs your attention.',
- pat:[['Breathe in',4,1],['Hold',4,1],['Breathe out',4,.45],['Hold',4,.45]]},
+ goal:'Even, steady breathing that helps you settle and focus. Good before something that needs your attention.',setup:SIT,cue:'In for 4, hold for 4, out for 4, hold for 4. Picture tracing the sides of a square.',
+ pat:[['In',4,1],['Hold',4,1],['Out',4,.45],['Hold',4,.45]]},
 {id:'b_exhale',cat:'breath',kind:'breath',name:'Long exhale',tag:'Calm the body',durs:[3,5,10],def:5,
- desc:'In for 4, out for 6. A simple, gentle way to slow down at any time of day.',
- pat:[['Breathe in',4,1],['Breathe out slowly',6,.45]]},
+ goal:'A simple, gentle way to slow down at any time of day.',setup:SITANY,cue:'In through your nose for 4. Out through softly pursed lips for 6.',
+ pat:[['In',4,1],['Out',6,.45]]},
 {id:'b_coh',cat:'breath',kind:'breath',name:'Slow even breathing',tag:'About 6 breaths a minute',durs:[5,10,20],def:10,
- desc:'Breathe in for 5 and out for 5, smooth and easy. A steady rhythm that works well after exercise or when you want to unwind.',
- pat:[['Breathe in',5,1],['Breathe out',5,.45]]},
+ goal:'Smooth, steady breathing at a calm rhythm. Works well after exercise or when you want to unwind.',setup:SIT,cue:'Breathe in for 5 and out for 5, through your nose if you can. Keep it smooth, never forced.',
+ pat:[['In',5,1],['Out',5,.45]]},
 {id:'b_478',cat:'breath',kind:'breath',name:'4-7-8 breathing',tag:'Slow and sleepy',durs:[3,5],def:3,
- desc:'In for 4, hold for 7, out for 8. Start with a few rounds only. If you feel light-headed, return to normal breathing.',
- pat:[['Breathe in',4,1],['Hold gently',7,1],['Breathe out slowly',8,.45]]},
+ goal:'A slow pattern with a long out-breath, popular at bedtime. Do a few rounds only at first.',setup:SIT,cue:'In for 4, hold for 7, out for 8. If you feel light-headed, go back to normal breathing.',
+ pat:[['In',4,1],['Hold',7,1],['Out',8,.45]]},
 /* ---- meditation ---- */
 {id:'m_breath',cat:'med',kind:'guide',name:'Mindful breathing',tag:'The classic starting point',durs:[5,10,15],def:5,
- desc:'Rest your attention on your breath. Your mind will wander. Each time you notice and come back, that is the practice working.',
- steps:[[1,'Settle','Sit or lie comfortably. Let your hands rest. Close your eyes or soften your gaze on one spot.'],
- [1,'Find your breath','Notice where you feel the breath most: nostrils, chest or belly. You do not need to change it.'],
- [2,'Stay with it','Follow each breath in and each breath out.'],
- [2,'Come back','If your mind has wandered, that is normal. Notice where it went, then gently return to the breath.'],
- [2,'Stay with it','Just this breath, then the next one.'],
- [2,'Come back','Wandering and returning is the exercise. Be kind to yourself each time.'],
- [1,'Widen','Let your attention open to sounds and sensations around you, still breathing easily.'],
- [1,'Finish','Take one deeper breath. Wiggle your fingers and toes. Open your eyes when ready.']]},
+ goal:'Trains your attention to settle, and to come back each time it wanders. Wandering and returning is the exercise.',setup:SIT,
+ steps:[[1,'Settle',['Sit tall with your hands on your thighs.','Close your eyes or soften your gaze on one spot.','Take three slow breaths and let your shoulders drop.'],'p:w_sit','easy'],
+ [1,'Find your breath',['Notice where you feel the breath most: nostrils, chest or belly.','Do not change it. Just notice.','In... and out.'],'p:w_sit_belly','easy'],
+ [2,'Count your breaths',['Count each out-breath: 1, then 2, up to 10.','Then start again at 1.','If you lose count, that is fine. Start again at 1.'],'e:🔢'],
+ [2,'Stay with it',['Follow each breath in and each breath out.','Thoughts will come. Notice them, then return to the breath.','There is no right way. Just come back.'],'p:w_sit_belly','easy'],
+ [2,'Come back',['If your mind wandered, welcome back.','Noticing is the practice working.','Return to the breath, gently.'],'e:🌊'],
+ [1,'Widen your attention',['Open up to the sounds around you.','Feel your whole body sitting here.','Rest in that.'],'e:👂'],
+ [1,'Finish',['Take a deeper breath.','Wiggle your fingers and toes.','Open your eyes when you are ready.'],'e:🌅']]},
 {id:'m_scan',cat:'med',kind:'guide',name:'Body scan',tag:'Release tension',durs:[5,10,15],def:10,
- desc:'Move your attention slowly through the body, noticing sensations without trying to change them.',
- steps:[[1,'Settle','Lie down or sit. Take three slow breaths and let your body get heavy.'],
- [1,'Feet and legs','Notice your feet, ankles, calves and thighs. Let them soften.'],
- [1,'Hips and belly','Notice your hips and belly. Let the belly rise and fall without effort.'],
- [1,'Chest and back','Notice your chest and the length of your back. Let it be supported.'],
- [1,'Hands and arms','Notice your hands, forearms and upper arms. Let your fingers uncurl.'],
- [1,'Shoulders and neck','Notice your shoulders and neck. Let your shoulders drop away from your ears.'],
- [1,'Face and head','Soften your jaw, your eyes and your forehead.'],
- [1,'Whole body','Feel your whole body breathing. Rest here for a few breaths, then slowly open your eyes.']]},
+ goal:'Move your attention slowly through the body, noticing sensations without trying to change them. Helps release tension you did not know you were holding.',setup:LIE,
+ steps:[[1,'Settle',['Lie down. Let the floor hold your weight.','Take three slow breaths.','Let your body get heavy.'],'p:w_lie','easy'],
+ [2,'Feet and legs',['Notice your feet, ankles and calves.','Then your knees and thighs.','Let them soften and get heavy.'],'m:quads,calves|hamstrings'],
+ [1,'Hips and belly',['Notice your hips and lower back.','Let your belly rise and fall without effort.'],'m:glutes,core'],
+ [1,'Chest and back',['Notice your chest rising and falling.','Feel the length of your back against the floor.'],'m:chest,back'],
+ [1,'Hands and arms',['Notice your fingers, hands and forearms.','Then your upper arms. Let your fingers uncurl.'],'m:forearms,biceps|triceps'],
+ [1,'Shoulders and neck',['Notice your shoulders. Let them drop away from your ears.','Release the back of your neck.'],'m:shoulders|back'],
+ [1,'Face and head',['Soften your jaw, your eyes and your forehead.','Let your tongue rest.'],'e:🙂'],
+ [1,'Whole body',['Feel your whole body breathing.','Rest here for a few breaths.','When you are ready, wiggle your fingers and toes and open your eyes.'],'p:w_lie','easy']]},
 {id:'m_kind',cat:'med',kind:'guide',name:'Kindness meditation',tag:'Warmth and self-compassion',durs:[5,10],def:5,
- desc:'Silently offer good wishes, first to someone easy, then to yourself, then more widely.',
- steps:[[1,'Settle','Sit comfortably. Breathe slowly and let your shoulders relax.'],
- [2,'Someone you care about','Picture someone easy to care for. Silently say: may you be well, may you be at ease.'],
- [2,'Yourself','Now offer the same to yourself: may I be well, may I be at ease, may I be kind to myself.'],
- [2,'Someone neutral','Think of someone you barely know, like a neighbour. May you be well, may you be at ease.'],
- [1,'Everyone','Let the wish widen to everyone: may we all be well.'],
- [1,'Finish','Take a deep breath. Notice how you feel, then open your eyes.']]},
+ goal:'Silently offer good wishes to others and to yourself. Builds warmth and eases harsh self-talk.',setup:SIT,
+ steps:[[1,'Settle',['Sit tall and take three slow breaths.','Rest a hand on your heart if that feels good.'],'p:w_sit_chest','easy'],
+ [2,'Someone you care about',['Picture someone who is easy to care for.','Silently say: may you be well.','May you be at ease.'],'e:💛'],
+ [2,'Yourself',['Now offer the same to yourself.','May I be well. May I be at ease.','May I be kind to myself.'],'p:w_sit_chest'],
+ [2,'Someone neutral',['Think of someone you barely know, like a neighbour or a cashier.','May you be well. May you be at ease.'],'e:🧑'],
+ [1,'Everyone',['Let the wish widen to everyone.','May we all be well.'],'e:🌍'],
+ [1,'Finish',['Take a deep breath.','Notice how you feel.','Open your eyes.'],'e:🌅']]},
 {id:'m_think',cat:'med',kind:'guide',name:'Watching your thoughts',tag:'Let thoughts pass',durs:[5,10],def:5,
- desc:'Treat thoughts like clouds drifting by. You are the sky, not the weather.',
- steps:[[1,'Settle','Sit comfortably. Take three slow breaths.'],
- [2,'Notice','Let thoughts come up. Simply notice them without following them.'],
- [2,'Label','Give each thought a quiet label: planning, worrying, remembering. Then let it drift away.'],
- [2,'Return','If you get pulled into a story, that is fine. Come back to the breath for a moment, then keep watching.'],
- [1,'Finish','Take a deeper breath and stretch gently.']]},
+ goal:'Treat thoughts like clouds drifting by. You are the sky, not the weather.',setup:SIT,
+ steps:[[1,'Settle',['Sit tall and take three slow breaths.','Close your eyes or soften your gaze.'],'p:w_sit','easy'],
+ [2,'Notice',['Let thoughts come up.','Simply notice them, without following them.'],'e:☁️'],
+ [2,'Label',['Give each thought a quiet label: planning, worrying, remembering.','Then let it drift away.'],'e:🏷️'],
+ [2,'Return',['If you get pulled into a story, that is fine.','Come back to the breath for a moment, then keep watching.'],'p:w_sit_belly','easy'],
+ [1,'Finish',['Take a deeper breath and stretch gently.'],'e:🌅']]},
 {id:'m_grat',cat:'med',kind:'guide',name:'Gratitude pause',tag:'Shift your attention',durs:[3,5],def:5,
- desc:'A short, gentle practice for noticing what is okay or good, even on a hard day.',
- steps:[[1,'Settle','Breathe slowly. Let your shoulders drop.'],
- [2,'Three small things','Bring to mind three small things that were okay today. A warm drink, a kind word, a quiet moment.'],
- [2,'Pick one','Choose one and stay with it. Where do you feel it in your body?'],
- [1,'Finish','Take a deep breath in, and out. Carry that with you.']]},
+ goal:'A short, gentle practice for noticing what is okay or good, even on a hard day.',setup:SIT,
+ steps:[[1,'Settle',['Breathe slowly.','Let your shoulders drop.'],'p:w_sit','easy'],
+ [2,'Three small things',['Bring to mind three small things that were okay today.','A warm drink. A kind word. A quiet moment.'],'e:🌤️'],
+ [2,'Pick one',['Choose one and stay with it.','Where do you feel it in your body?'],'p:w_sit_chest'],
+ [1,'Finish',['Take a deep breath in, and out.','Carry that feeling with you.'],'e:🌅']]},
 /* ---- quick boost ---- */
 {id:'q_mood',cat:'boost',kind:'guide',name:'Mood boost',tag:'Upbeat and moving',durs:[3,5],def:5,
- desc:'Light, upbeat movement to get your body going and your head up. Put on music if you like.',
- steps:[[1,'Shake it out','Shake your hands, arms, legs and shoulders. Loose and silly is fine.'],
- [2,'March and swing','March in place with big arm swings. Lift your knees and keep it bouncy.'],
- [2,'Squats','Bodyweight squats at an easy pace. Stand tall each time.','bw_squat'],
- [1,'Open up','Arms wide, chest open, big breath in. Look up and breathe out.'],
- [2,'March and swing','Back to marching, a little faster. Swing your arms.'],
- [1,'One good thing','Slow down and think of one thing that went okay today. Take a long breath out.']]},
+ goal:'Light, upbeat movement to get your body going and your head up. Put on music if you like.',setup:STAND,
+ steps:[[1,'Shake it out',['Shake your hands, then your arms, then your shoulders.','Shake your legs. Loose and silly is fine.'],'p:w_shake'],
+ [2,'March and swing',['March in place, lifting your knees.','Swing your arms big.','Keep it bouncy and light.'],'p:march'],
+ [2,'Squats',['Feet shoulder-width apart.','Sit back and down, chest up.','Stand tall each time. Easy pace.'],'p:bw_squat'],
+ [1,'Reach up',['Reach both arms up and breathe in.','Open your chest and look up.','Breathe out and let your arms float down.'],'p:w_reach'],
+ [1,'March faster',['Back to marching, a little faster.','Swing your arms. Smile if you can.'],'p:march'],
+ [1,'One good thing',['Slow down. Take a long breath out.','Think of one thing that went okay today.','Hold on to it for a few breaths.'],'e:🌤️','slow']]},
 {id:'q_energy',cat:'boost',kind:'guide',name:'Energy boost',tag:'Wake the body up',durs:[3,5],def:5,
- desc:'A few quick moves to lift your energy when you feel flat or sluggish.',
- steps:[[1,'March it up','March in place and swing your arms.'],
- [2,'Squats','Steady bodyweight squats.','bw_squat'],
- [2,'Reverse lunges','Step back, lower, and switch sides.','reverse_lunge'],
- [2,'Mountain climbers','Hands on the floor or a sturdy bench. Drive your knees in. Keep it controlled.','mountain_climber'],
- [1,'Shake and breathe','Shake it out and take slow breaths until your heart rate settles.']]},
+ goal:'Quick moves to lift your energy when you feel flat or sluggish.',setup:STAND,
+ steps:[[1,'March it up',['March in place and swing your arms.','Pick up the pace as you warm up.'],'p:march'],
+ [2,'Squats',['Feet shoulder-width apart.','Sit back and down, chest up.','Steady pace.'],'p:bw_squat'],
+ [2,'Reverse lunges',['Step one foot back and lower down.','Push through the front foot to stand.','Switch sides each rep.'],'p:reverse_lunge'],
+ [2,'Mountain climbers',['Hands on the floor or a sturdy bench. Body in a straight line.','Drive one knee in, then switch.','Keep your core tight and move at a pace you can control.'],'p:mountain_climber'],
+ [1,'Shake and breathe',['Shake out your arms and legs.','Breathe slowly until your heart rate settles.'],'p:w_shake','slow']]},
 {id:'q_clear',cat:'boost',kind:'guide',name:'Clarity boost',tag:'Before something that needs focus',durs:[3,5,10],def:5,
- desc:'A short mix of coordination and balance with steady breathing. Good right before a task that needs your full attention.',
- steps:[[1,'Wake up','March in place for a few seconds, swinging your arms.'],
- [2,'Cross crawl','March, touching each hand to the opposite knee. Keep a steady rhythm.'],
- [2,'One-leg balance','Stand on one leg, eyes on one spot. Switch halfway. Try eyes closed if it feels safe.'],
- [2,'Cross crawl','Same again, a little faster. Stay smooth and coordinated.'],
- [2,'Box breathing','Breathe in for 4, hold 4, out 4, hold 4. Steady and even.'],
- [1,'Set one intention','Decide the one thing you are about to do. Take a deep breath and start.']]},
+ goal:'Gets your body moving and your attention sharp before a task that needs focus. Coordination moves first, then steady breathing.',setup:STAND,
+ steps:[[1,'Wake up',['March in place, swinging your arms.','Get a little warm.'],'p:march'],
+ [2,'Cross crawl',['March, touching each hand to the opposite knee.','Keep a steady rhythm.','Stay smooth and tall.'],'p:w_cross'],
+ [2,'One-leg balance',['Stand on one leg and look at one spot.','Switch halfway.','Hold a wall or chair if you need to.'],'p:w_balance'],
+ [2,'Cross crawl faster',['Same again, a little quicker.','Smooth and coordinated.'],'p:w_cross'],
+ [2,'Box breathing',['In for 4, hold 4, out 4, hold 4.','Steady and even.'],'p:w_stand','box'],
+ [1,'Set your intention',['Decide the one thing you are about to do.','Take a deep breath and start.'],'e:🎯']]},
 /* ---- move ---- */
 {id:'v_focus',cat:'move',kind:'guide',name:'Focus workout',tag:'Cardio, then coordination',durs:[10,15,20],def:15,
- desc:'Steady cardio first, a couple of harder pushes, then balance and coordination. Moderate means you can talk but not sing.',
- steps:[[2,'Warm up','March in place or walk briskly. Swing your arms and loosen up.'],
- [3,'Steady cardio','Jog on the spot, step, cycle or brisk walk at a pace where you can talk but not sing.'],
- [1,'Push','Pick up the pace for a short burst. Hard but controlled.'],
- [2,'Ease off','Slow down and recover. Breathe in through your nose.'],
- [1,'Push','One more burst. Keep your form clean.'],
- [2,'Ease off','Walk it out until your breathing settles.'],
- [2,'Balance','Single-leg balance on each side. Slow and steady.','single_leg_rdl'],
- [2,'Cross crawl','Opposite hand to opposite knee, smooth rhythm.'],
- [1,'Cool down','Slow breaths and a gentle stretch.']]},
+ goal:'Cardio gets your body and mind switched on. Balance and coordination moves then give your brain something to work on. Moderate means you can talk but not sing.',setup:STAND,
+ steps:[[2,'Warm up',['March in place or walk briskly.','Swing your arms and loosen up.'],'p:march'],
+ [3,'Steady cardio',['Jog on the spot, step, cycle or walk briskly.','Pace: you can talk but not sing.','Breathe steadily and stay relaxed.'],'e:🏃'],
+ [1,'Push',['Pick up the pace for a short burst.','Hard but controlled.'],'e:🔥'],
+ [2,'Ease off',['Slow down and recover.','Breathe in through your nose.'],'e:🚶'],
+ [1,'Push',['One more burst.','Keep your form clean.'],'e:🔥'],
+ [2,'Ease off',['Walk it out until your breathing settles.'],'e:🚶'],
+ [2,'Balance',['Stand on one leg. Eyes on one spot.','Switch halfway.'],'p:w_balance'],
+ [2,'Cross crawl',['Opposite hand to opposite knee.','Smooth, steady rhythm.'],'p:w_cross'],
+ [1,'Cool down',['Slow breaths in and out.','Let your arms hang loose.'],'p:w_stand','slow']]},
 {id:'v_cardio',cat:'move',kind:'guide',name:'Steady calm cardio',tag:'Easy, even effort',durs:[10,20,30],def:20,
- desc:'A walk, easy bike or easy treadmill pace where you could hold a conversation. Calm and steady, no pushing.',
- steps:[[1,'Ease in','Start slowly. Let your breathing find a rhythm.'],
- [3,'Steady','Settle into an easy pace you could hold all day. Relax your shoulders and unclench your jaw.'],
- [3,'Steady','Notice what is around you. Sights, sounds, the feeling of moving.'],
- [3,'Steady','Keep the effort easy. Breathe in through your nose if you can.'],
- [1,'Ease out','Slow down gradually and let your heart rate drop.']]},
+ goal:'A walk, easy bike or easy treadmill pace where you could hold a conversation. Calm and steady, no pushing.',setup:STAND,
+ steps:[[1,'Ease in',['Start slowly.','Let your breathing find a rhythm.'],'e:🚶'],
+ [3,'Steady',['Settle into an easy pace you could keep up all day.','Relax your shoulders and unclench your jaw.'],'e:🚶'],
+ [3,'Notice',['Look around. Notice sights, sounds, the feeling of moving.','Let your thoughts drift.'],'e:🌳'],
+ [3,'Steady',['Keep the effort easy.','Breathe in through your nose if you can.'],'e:🚶'],
+ [1,'Ease out',['Slow down gradually.','Let your heart rate drop.'],'e:🚶']]},
 {id:'v_mobil',cat:'move',kind:'guide',name:'Gentle mobility flow',tag:'Loosen up',durs:[5,10,15],def:10,
- desc:'Easy joint and spine movements to release stiffness. Move slowly and breathe.',
- steps:[[1,'Neck','Slowly tilt your ear toward each shoulder. Gentle, no force.'],
- [1,'Shoulders','Roll your shoulders back and then forward in slow circles.'],
- [2,'Cat and cow','On hands and knees, round your back, then lift your chest. Slow with your breath.'],
- [1,'Hip circles','Standing, draw slow circles with your hips in each direction.'],
- [1,'Forward fold','Hinge forward with soft knees and let your head hang.'],
- [2,'Spinal twist','Lie on your back, drop your knees to one side, then the other.'],
- [1,'Rest','Lie still and breathe. Feel what has changed.']]},
+ goal:'Easy joint and spine movements to release stiffness. Move slowly and breathe.',setup:STAND,
+ steps:[[1,'Neck',['Drop your chin slightly. Tilt one ear toward your shoulder.','Hold 10 seconds, then switch sides.','Gentle only. No forcing.'],'e:🙂'],
+ [1,'Shoulders',['Roll your shoulders back in slow circles.','Then roll them forward.'],'p:w_reach'],
+ [2,'Reach and sway',['Reach both arms overhead and breathe in.','Lean gently to one side, then the other.'],'p:w_reach'],
+ [2,'Forward fold',['Hinge at the hips with soft knees.','Let your head and arms hang heavy.','Roll slowly back up.'],'p:w_fold'],
+ [2,'Hip circles',['Hands on your hips.','Draw slow circles in each direction.'],'e:🔄'],
+ [2,'Lying twist',['Lie on your back, knees bent.','Drop both knees to one side, then the other.'],'p:w_lie'],
+ [1,'Rest',['Lie still and breathe.','Feel what has changed.'],'p:w_lie','slow']]},
 /* ---- sleep ---- */
 {id:'s_478',cat:'sleep',kind:'breath',dim:1,name:'4-7-8 for bed',tag:'Slow and sleepy',durs:[3,5,8],def:5,
- desc:'In for 4, hold for 7, out for 8, in the dark if you like. Stop if you feel light-headed.',
- pat:[['Breathe in',4,1],['Hold gently',7,1],['Breathe out slowly',8,.45]]},
+ goal:'A slow breathing pattern with a long out-breath, to help your body wind down for sleep.',setup:LIE,cue:'In for 4, hold for 7, out for 8. Stop if you feel light-headed.',
+ pat:[['In',4,1],['Hold',7,1],['Out',8,.45]]},
 {id:'s_exhale',cat:'sleep',kind:'breath',dim:1,name:'Wind-down breathing',tag:'Gentle and slow',durs:[5,10],def:5,
- desc:'Lie down and breathe in for 4 and out for 6. Let each out breath be a little softer.',
- pat:[['Breathe in',4,1],['Breathe out slowly',6,.45]]},
+ goal:'Slow breathing with a longer out-breath, lying down, to help your body ease into rest.',setup:LIE,cue:'In for 4, out for 6. Let each out-breath be a little softer.',
+ pat:[['In',4,1],['Out',6,.45]]},
 {id:'s_scan',cat:'sleep',kind:'guide',dim:1,name:'Sleep body scan',tag:'Drift off',durs:[10,15,20],def:10,
- desc:'A slow, lying-down body scan. It is fine to fall asleep partway through.',
- steps:[[1,'Settle in','Lie comfortably. Let the bed hold your weight. Breathe slowly.'],
- [2,'Feet and legs','Let your feet, calves and thighs grow heavy and warm.'],
- [2,'Belly and back','Let your belly soften. Feel your back sink into the bed.'],
- [2,'Hands and arms','Let your hands and arms feel heavy and loose.'],
- [2,'Shoulders and neck','Let your shoulders melt down. Release your neck.'],
- [2,'Face','Soften your jaw, eyes and forehead.'],
- [1,'Rest','Nothing left to do. Let your breathing be slow and easy.']]},
+ goal:'A slow, lying-down body scan to help you let go of the day. It is fine to fall asleep partway through.',setup:LIE,
+ steps:[[1,'Settle in',['Lie comfortably. Let the bed hold your weight.','Breathe slowly.'],'p:w_lie','slow'],
+ [2,'Feet and legs',['Let your feet grow heavy and warm.','Then your calves and thighs.'],'m:quads,calves|hamstrings'],
+ [2,'Belly and back',['Let your belly soften.','Feel your back sink into the bed.'],'m:core,back'],
+ [2,'Hands and arms',['Let your hands and arms feel heavy and loose.'],'m:forearms,biceps|triceps'],
+ [2,'Shoulders and neck',['Let your shoulders melt down.','Release your neck.'],'m:shoulders'],
+ [2,'Face',['Soften your jaw, your eyes and your forehead.'],'e:🌙'],
+ [1,'Rest',['Nothing left to do.','Let your breathing be slow and easy.'],'e:🌙','slow']]},
 {id:'s_pmr',cat:'sleep',kind:'guide',dim:1,name:'Muscle release',tag:'Tense, then let go',durs:[8,12,15],def:12,
- desc:'Tense each area gently for a few seconds, then let go. Good when your body feels wound up.',
- steps:[[1,'Feet','Curl your toes for 5 seconds, then release.'],
- [1,'Legs','Tighten your calves and thighs, hold, then let them go heavy.'],
- [1,'Belly and back','Tighten your belly, hold, then release and breathe out.'],
- [1,'Hands and arms','Make fists and tighten your arms, then let them go limp.'],
- [1,'Shoulders','Lift your shoulders to your ears, hold, then drop.'],
- [1,'Face','Scrunch your face, hold, then let your jaw hang loose.'],
- [1,'Whole body','Let everything rest. Breathe slow and easy.']]},
+ goal:'Tense each area gently for a few seconds, then let go. Helps when your body feels wound up.',setup:LIE,
+ steps:[[1,'Feet',['Curl your toes for 5 seconds.','Release.','Notice the heaviness.'],'m:calves'],
+ [1,'Legs',['Tighten your calves and thighs. Hold 5 seconds.','Let them go heavy.'],'m:quads,calves|hamstrings'],
+ [1,'Belly and back',['Tighten your belly. Hold 5 seconds.','Release and breathe out.'],'m:core|back'],
+ [1,'Hands and arms',['Make fists and tighten your arms. Hold 5 seconds.','Let them go limp.'],'m:forearms,biceps|triceps'],
+ [1,'Shoulders',['Lift your shoulders to your ears. Hold 5 seconds.','Drop them.'],'m:shoulders'],
+ [1,'Face',['Scrunch your face. Hold 5 seconds.','Let your jaw hang loose.'],'e:🌙'],
+ [1,'Whole body',['Let everything rest.','Breathe slow and easy.'],'p:w_lie','slow']]},
 {id:'s_stretch',cat:'sleep',kind:'guide',dim:1,name:'Bedtime stretch',tag:'Ease out of the day',durs:[5,10],def:5,
- desc:'Slow stretches on the floor or bed. No effort, just easing out.',
- steps:[[2,'Child pose','Kneel and sit back on your heels, forehead down, arms forward. Breathe.'],
- [2,'Knees to chest','Lie on your back and hug your knees in. Rock gently.'],
- [2,'Lying twist','Drop both knees to one side, then the other.'],
- [2,'Legs up','Rest your legs up a wall or on the bed if you like. Breathe slowly.'],
- [1,'Rest','Lie still. Let your breath slow down.']]}
+ goal:'Slow stretches on the floor or bed. No effort, just easing out of the day.',setup:{v:'childs_pose',t:'Find a soft spot on the floor or your bed. Dim the lights if you can.'},
+ steps:[[2,"Child's pose",['Kneel and sit back on your heels.','Rest your forehead down, arms stretched forward.','Breathe into your back.'],'p:childs_pose'],
+ [2,'Knees to chest',['Lie on your back and hug your knees in.','Rock gently side to side.'],'p:w_knees'],
+ [2,'Lying twist',['Drop both knees to one side, then the other.','Keep your shoulders on the floor.'],'p:w_lie'],
+ [2,'Legs up',['Rest your legs up a wall or on the bed if you like.','Breathe slowly.'],'p:w_lie'],
+ [1,'Rest',['Lie still.','Let your breath slow down.'],'p:w_lie','slow']]}
 ];
 const WALL={};WLIST.forEach(s=>WALL[s.id]=s);
 let wcat=null,wsel=null,WP=null;
-const wLookup=id=>WALL[id]||(W().mine||[]).map(m=>({id:m.id,cat:'mine',kind:'guide',name:m.name,tag:'Your own',durs:[m.min],def:m.min,desc:m.text,steps:[[1,m.name,m.text]],mine:1})).find(s=>s.id===id);
 function W(){if(!S.well)S.well={log:[],mine:[],snd:1,hide:0};if(!S.well.log)S.well.log=[];if(!S.well.mine)S.well.mine=[];return S.well;}
-function wMins(s){return s.durs.map(d=>d);}
+function wMineSess(m){const parts=m.text.split(/\n+/).map(x=>x.trim()).filter(Boolean);const lines=parts.length>1?parts:(m.text.match(/[^.!?]+[.!?]*/g)||[m.text]).map(x=>x.trim()).filter(Boolean);return {id:m.id,cat:'mine',kind:'guide',name:m.name,tag:'Your own',durs:[m.min],def:m.min,goal:m.text,steps:[[1,m.name,lines,'e:🧘']],mine:1};}
+const wLookup=id=>WALL[id]||(W().mine||[]).filter(m=>m.id===id).map(wMineSess)[0];
 /* ---------- views ---------- */
 function wWeek(){const cut=Date.now()-7*864e5;const l=W().log.filter(x=>x.ts>=cut);return {n:l.length,m:l.reduce((a,x)=>a+x.min,0)};}
 function wRow(s){return `<div class="wrow" data-act="wopen" data-id="${s.id}"><div><b>${s.name}</b><span>${s.tag}</span></div><em>${s.durs.length>1?s.durs[0]+' to '+s.durs[s.durs.length-1]:s.durs[0]} min</em></div>`;}
@@ -1042,11 +1089,10 @@ function viewWell(){
   if(wcat){
     const c=WCATS.find(x=>x.id===wcat)||WMED;
     let h=`<button class="wback" data-act="wcat" data-k="">Back</button><section class="card"><div class="sec-h">${c.name}<span>${c.sub}</span></div>`;
-    const c2=wcat==='anx'?['anx','calm']:[wcat];const list=wcat==='mine'?(W().mine||[]).map(m=>wLookup(m.id)):WLIST.filter(s=>c2.includes(s.cat));
-    if(wcat==='mine'){
-      h+=`<p class="hint" style="margin-top:0">Add exercises from your counselor or another app. Write the steps in your own words and pick a time. It runs as a timer with your text on screen.</p>`;
-    }
-    h+=list.length?list.map(wRow).join(''):(wcat==='mine'?'':'<p class="hint">Nothing here yet.</p>');
+    const c2=wcat==='anx'?['anx','calm']:[wcat];
+    const list=wcat==='mine'?(W().mine||[]).map(wMineSess):WLIST.filter(s=>c2.includes(s.cat));
+    if(wcat==='mine')h+=`<p class="hint" style="margin-top:0">Add exercises from your counselor or another app. Write the steps in your own words and pick a time. Each sentence or line shows on screen in turn.</p>`;
+    h+=list.length?list.map(wRow).join(''):'';
     if(wcat==='mine')h+=`<div class="col"><button class="ghost" data-act="wmine">Add your own</button></div>`;
     return h+`</section>`;
   }
@@ -1062,13 +1108,16 @@ function wGearCard(){const w=W();return `<section class="card"><div class="sec-h
 function wOpenSheet(id,m){
   const s=wLookup(id);if(!s)return;
   if(!m)m=s.def;wsel={id,m};
-  let h=`<h2>${s.name}</h2><p class="hint" style="margin-top:6px">${s.desc}</p>`;
-  if(s.durs.length>1)h+=`<div class="sec-h" style="margin-top:14px">How long?</div><div class="seg wseg">${s.durs.map(d=>`<button class="${d===m?'on':''}" data-act="wdur" data-m="${d}">${d} min</button>`).join('')}</div>`;
+  let h=`<h2>${s.name}</h2><div class="wlab">What it is for</div><p class="hint" style="margin-top:2px">${s.goal}</p>`;
+  if(s.setup)h+=`<div class="wlab">How to set up</div><p class="hint" style="margin-top:2px">${s.setup.t}</p>`;
+  if(s.kind==='guide'&&!s.mine)h+=`<div class="wlab">What you will do</div><p class="hint" style="margin-top:2px">${s.steps.map(x=>x[1]).join(', ')}.</p>`;
+  if(s.kind==='breath')h+=`<div class="wlab">How it works</div><p class="hint" style="margin-top:2px">${s.cue}</p>`;
+  if(s.durs.length>1)h+=`<div class="wlab">How long?</div><div class="seg wseg">${s.durs.map(d=>`<button class="${d===m?'on':''}" data-act="wdur" data-m="${d}">${d} min</button>`).join('')}</div>`;
   else h+=`<p class="hint">${m} min</p>`;
-  h+=`<div class="col"><button class="primary" data-act="wstart">Start</button>${s.mine?'<button class="ghost danger" data-act="wdelmine" data-id="'+id+'">Delete</button>':''}<button class="ghost" data-act="closesheet">Cancel</button></div>`;
+  h+=`<div class="col"><button class="primary" data-act="wstart">Get ready</button>${s.mine?'<button class="ghost danger" data-act="wdelmine" data-id="'+id+'">Delete</button>':''}<button class="ghost" data-act="closesheet">Cancel</button></div>`;
   openSheet(h);
 }
-function wMineSheet(){openSheet(`<h2>Add your own</h2><p class="hint" style="margin-top:4px">Name it, pick a time, and write the steps or instructions. They appear on screen during the timer.</p><input id="wmn" class="field" placeholder="Name, for example Counselor breathing" maxlength="40"><select id="wmm" class="field">${[3,5,10,15,20,30].map(n=>`<option value="${n}" ${n===5?'selected':''}>${n} minutes</option>`).join('')}</select><textarea id="wmt" class="field" rows="6" placeholder="Instructions"></textarea><div class="col"><button class="primary" data-act="wmsave">Save</button><button class="ghost" data-act="closesheet">Cancel</button></div>`);}
+function wMineSheet(){openSheet(`<h2>Add your own</h2><p class="hint" style="margin-top:4px">Name it, pick a time, and write the instructions. Put each step on its own line. They appear on screen one after another, spread across the time you choose.</p><input id="wmn" class="field" placeholder="Name, for example Counselor breathing" maxlength="40"><select id="wmm" class="field">${[3,5,10,15,20,30].map(n=>`<option value="${n}" ${n===5?'selected':''}>${n} minutes</option>`).join('')}</select><textarea id="wmt" class="field" rows="6" placeholder="Instructions, one step per line"></textarea><div class="col"><button class="primary" data-act="wmsave">Save</button><button class="ghost" data-act="closesheet">Cancel</button></div>`);}
 /* ---------- audio ---------- */
 let wAC=null;
 function wChime(big){
@@ -1085,75 +1134,98 @@ function wChime(big){
 }
 /* ---------- player ---------- */
 function wBuild(s,total){
-  if(s.kind==='breath'){const n=s.pat.reduce((a,p)=>a+p[1],0);return {cyc:n};}
+  if(s.kind==='breath')return {cyc:s.pat.reduce((a,p)=>a+p[1],0)};
   const sw=s.steps.reduce((a,x)=>a+x[0],0);let t=0;
-  return {segs:s.steps.map(x=>{const d=total*x[0]/sw;const o={t0:t,t1:t+d,title:x[1],text:x[2],ex:x[3]};t+=d;return o;})};
+  return {segs:s.steps.map((x,i)=>{const d=total*x[0]/sw;const o={t0:t,t1:t+d,title:x[1],lines:x[2],vis:x[3]||'e:🧘',br:x[4]?BR[x[4]]:null};t+=d;return o;})};
 }
-function wStart(id,m){
+function wBreath(pat,t){
+  const cyc=pat.reduce((a,p)=>a+p[1],0),pos=t%cyc;let acc=0,i=0;
+  for(;i<pat.length;i++){if(pos<acc+pat[i][1])break;acc+=pat[i][1];}
+  if(i>=pat.length)i=pat.length-1;
+  const p=pat[i],prev=pat[(i-1+pat.length)%pat.length][2],fr=Math.min(1,Math.max(0,(pos-acc)/p[1]));
+  return {label:p[0],sec:Math.max(1,Math.ceil(p[1]-(pos-acc))),scale:prev+(p[2]-prev)*fr};
+}
+function wVis(v,br){
+  if(br)return `<div class="wcirc sm"><i id="wc"></i><div class="wcl"><b id="wph"></b><span id="wsec"></span></div></div>`;
+  const k=v.slice(0,2),x=v.slice(2);
+  if(k==='p:'&&EX[x])return `<div class="wfig">${figEl(x,'')}</div>`;
+  if(k==='m:'){const [a,b]=x.split('|');return `<div class="wmap">${mmEl((a||'').split(',').filter(Boolean),(b||'').split(',').filter(Boolean))}</div>`;}
+  return `<div class="wemo">${k==='e:'?x:'🧘'}</div>`;
+}
+function wStart(id,m,prep){
   const s=wLookup(id);if(!s)return;
   closeSheet();
-  WP={s,m,total:m*60,el:0,paused:false,last:performance.now(),seg:-1,done:false,tl:wBuild(s,m*60)};
+  WP={s,m,total:m*60,el:0,paused:false,last:performance.now(),seg:-1,line:-1,done:false,tl:wBuild(s,m*60),phase:s.setup?(prep?'prep':'intro'):'run',intro:0,introLen:s.kind==='breath'?6:8};
   const el=$('#wplayer');el.classList.toggle('dim',!!s.dim);el.classList.add('show');document.body.classList.add('lock');lockWake();
-  wChime(false);wRender();clearInterval(WP.timer);WP.timer=setInterval(wTick,100);
+  try{wAC=wAC||new (window.AudioContext||window.webkitAudioContext)();if(wAC.state==='suspended')wAC.resume();}catch(e){}
+  if(WP.phase==='run')wChime(false);
+  wRender();clearInterval(WP.timer);WP.timer=setInterval(wTick,100);
 }
+function wBegin(){if(!WP||WP.phase==='run')return;WP.phase='run';WP.last=performance.now();WP.seg=-1;WP.line=-1;wChime(false);wRender();}
 function wFmt(sec){sec=Math.max(0,Math.ceil(sec));return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');}
+function wTop(){return `<div class="wtop"><b>${WP.s.name}</b><button class="wx" data-act="wend" aria-label="End session">End</button></div>`;}
 function wRender(){
-  const s=WP.s;
-  let h=`<div class="wp"><div class="wtop"><b>${s.name}</b><button class="wx" data-act="wend" aria-label="End session">End</button></div>`;
-  if(WP.done){
+  const s=WP.s;let h=`<div class="wp">${wTop()}`;
+  if(WP.phase==='done'){
     const nx=s.next&&wLookup(s.next);
     h+=`<div class="wdone"><h1>Well done</h1><p>${Math.max(1,Math.round(WP.el/60))} min. Take a moment to notice how you feel.</p><div class="col">${nx?`<button class="primary" data-act="wgo" data-id="${nx.id}" data-m="${nx.def}">Still on edge? Try: ${nx.name.replace(' (5-4-3-2-1)','')}</button>`:''}<button class="${nx?'ghost':'primary'}" data-act="wclose">Done</button></div></div></div>`;
     $('#wplayer').innerHTML=h;return;
   }
-  h+=`<div class="wstage" id="wstage"></div><div class="wbar"><i id="wbar"></i></div><div class="wtime" id="wtime">${wFmt(WP.total-WP.el)}</div><div class="row wctl"><button class="ghost" data-act="wpause" id="wpb">${WP.paused?'Resume':'Pause'}</button>${s.kind==='guide'?'<button class="ghost" data-act="wskip">Skip step</button>':''}</div></div>`;
-  $('#wplayer').innerHTML=h;WP.seg=-1;wUpdate();
+  if(WP.phase==='prep'||WP.phase==='intro'){
+    const n=s.kind==='guide'?s.steps.length+' steps':'paced breathing';
+    h+=`<div class="wstage"><div class="wsn">Get ready</div><div class="wfig">${figEl(s.setup.v,'')}</div><p class="wgoal">${s.goal}</p><p class="wset">${s.setup.t}</p><div class="wnext">${WP.m} min, ${n}</div></div>`;
+    h+=WP.phase==='prep'?`<div class="col"><button class="primary" data-act="wbegin">Begin</button></div></div>`:`<div class="wtime" id="wtime">Starting in ${Math.ceil(WP.introLen-WP.intro)}</div><div class="row wctl"><button class="ghost" data-act="wbegin">Start now</button></div></div>`;
+    $('#wplayer').innerHTML=h;hook();return;
+  }
+  const ticks=s.kind==='guide'?WP.tl.segs.slice(1).map(x=>`<u style="left:${(x.t0/WP.total*100).toFixed(2)}%"></u>`).join(''):'';
+  h+=`<div class="wstage" id="wstage"></div><div class="wbar"><i id="wbar"></i>${ticks}</div><div class="wtime" id="wtime">${wFmt(WP.total-WP.el)}</div><div class="row wctl"><button class="ghost" data-act="wpause" id="wpb">${WP.paused?'Resume':'Pause'}</button>${s.kind==='guide'?'<button class="ghost" data-act="wskip">Next step</button>':''}</div></div>`;
+  $('#wplayer').innerHTML=h;WP.seg=-1;WP.line=-1;wUpdate();
 }
 function wStage(i){
-  const seg=WP.tl.segs[i];const f=seg.ex&&EX[seg.ex]?`<div class="wfig">${figEl(seg.ex,'')}</div>`:'';
-  $('#wstage').innerHTML=`${f}<div class="wstep"><h2>${seg.title}</h2><p>${seg.text}</p></div>`;hook();
+  const sg=WP.tl.segs[i],n=WP.tl.segs.length;
+  $('#wstage').innerHTML=`<div class="wsn">Step ${i+1} of ${n}</div><h2 class="wsh">${sg.title}</h2>${wVis(sg.vis,sg.br)}<p class="wline" id="wline"></p><div class="wnext">${i+1<n?'Next: '+WP.tl.segs[i+1].title:'Last step'}</div>`;hook();
 }
 function wUpdate(){
   const s=WP.s,el=WP.el;
   const bar=$('#wbar'),tm=$('#wtime');if(!bar)return;
   bar.style.width=Math.min(100,el/WP.total*100)+'%';tm.textContent=wFmt(WP.total-el);
   if(s.kind==='breath'){
-    const st=$('#wstage');
-    if(!$('#wc')){st.innerHTML=`<div class="wcirc"><i id="wc"></i><div class="wcl"><b id="wph"></b><span id="wsec"></span></div></div>`;}
-    const cyc=WP.tl.cyc,pos=el%cyc;let acc=0,i=0;
-    for(;i<s.pat.length;i++){if(pos<acc+s.pat[i][1])break;acc+=s.pat[i][1];}
-    if(i>=s.pat.length)i=s.pat.length-1;
-    const p=s.pat[i],prev=s.pat[(i-1+s.pat.length)%s.pat.length][2],fr=(pos-acc)/p[1];
-    const sc=prev+(p[2]-prev)*Math.min(1,Math.max(0,fr));
-    $('#wc').style.transform='scale('+(0.35+0.65*sc).toFixed(3)+')';
-    $('#wph').textContent=p[0];$('#wsec').textContent=Math.max(1,Math.ceil(p[1]-(pos-acc)));
-  }else{
-    let i=WP.tl.segs.findIndex(x=>el>=x.t0&&el<x.t1);if(i<0)i=WP.tl.segs.length-1;
-    if(i!==WP.seg){if(WP.seg>=0)wChime(false);WP.seg=i;wStage(i);}
+    if(!$('#wc'))$('#wstage').innerHTML=`<div class="wcirc"><i id="wc"></i><div class="wcl"><b id="wph"></b><span id="wsec"></span></div></div><p class="wline">${s.cue}</p>`;
+    const b=wBreath(s.pat,el);
+    $('#wc').style.transform='scale('+(0.35+0.65*b.scale).toFixed(3)+')';$('#wph').textContent=b.label;$('#wsec').textContent=b.sec;
+    return;
   }
+  const segs=WP.tl.segs;let i=segs.findIndex(x=>el>=x.t0&&el<x.t1);if(i<0)i=segs.length-1;
+  if(i!==WP.seg){if(WP.seg>=0)wChime(false);WP.seg=i;WP.line=-1;wStage(i);}
+  const sg=segs[i],f=(el-sg.t0)/(sg.t1-sg.t0),li=Math.min(sg.lines.length-1,Math.max(0,Math.floor(f*sg.lines.length)));
+  if(li!==WP.line){WP.line=li;const ln=$('#wline');if(ln){ln.classList.remove('in');ln.textContent=sg.lines[li];void ln.offsetWidth;ln.classList.add('in');}}
+  if(sg.br){const b=wBreath(sg.br,el-sg.t0),c=$('#wc');if(c){c.style.transform='scale('+(0.35+0.65*b.scale).toFixed(3)+')';$('#wph').textContent=b.label;$('#wsec').textContent=b.sec;}}
 }
 function wTick(){
-  if(!WP||WP.paused||WP.done)return;
-  const now=performance.now();const dt=Math.min(2,(now-WP.last)/1000);WP.last=now;WP.el+=dt;
+  if(!WP||WP.paused||WP.phase==='done'||WP.phase==='prep')return;
+  const now=performance.now();const dt=Math.min(2,(now-WP.last)/1000);WP.last=now;
+  if(WP.phase==='intro'){WP.intro+=dt;const tm=$('#wtime');if(tm)tm.textContent='Starting in '+Math.max(1,Math.ceil(WP.introLen-WP.intro));if(WP.intro>=WP.introLen)wBegin();return;}
+  WP.el+=dt;
   if(WP.el>=WP.total){WP.el=WP.total;wFinish(true);return;}
   wUpdate();
 }
 function wFinish(full){
   if(!WP)return;
   clearInterval(WP.timer);
-  const min=Math.round(WP.el/60);
-  if(WP.el>=30){W().log.push({ts:Date.now(),id:WP.s.id,min:Math.max(1,min)});if(W().log.length>300)W().log.splice(0,W().log.length-300);save();}
-  if(full){WP.done=true;wChime(true);wRender();}else wClose();
+  if(WP.el>=30){W().log.push({ts:Date.now(),id:WP.s.id,min:Math.max(1,Math.round(WP.el/60))});if(W().log.length>300)W().log.splice(0,W().log.length-300);save();}
+  if(full){WP.phase='done';wChime(true);wRender();}else wClose();
 }
 function wClose(){if(WP)clearInterval(WP.timer);WP=null;unlockWake();const el=$('#wplayer');el.classList.remove('show','dim');el.innerHTML='';document.body.classList.remove('lock');if(S.tab==='well')render();}
 const WACT={
  wcat(t){wcat=t.dataset.k||null;render();window.scrollTo(0,0);},
  wopen(t){wOpenSheet(t.dataset.id);},
  wdur(t){wOpenSheet(wsel.id,+t.dataset.m);},
- wstart(){if(wsel)wStart(wsel.id,wsel.m);},
- wgo(t){wStart(t.dataset.id,+t.dataset.m);},
+ wstart(){if(wsel)wStart(wsel.id,wsel.m,true);},
+ wgo(t){wStart(t.dataset.id,+t.dataset.m,false);},
+ wbegin(){wBegin();},
  wpause(){if(!WP)return;WP.paused=!WP.paused;WP.last=performance.now();const b=$('#wpb');if(b)b.textContent=WP.paused?'Resume':'Pause';},
- wskip(){if(!WP||WP.s.kind!=='guide')return;const segs=WP.tl.segs;const i=Math.max(0,segs.findIndex(x=>WP.el>=x.t0&&WP.el<x.t1));if(i+1<segs.length){WP.el=segs[i+1].t0;WP.last=performance.now();wUpdate();}else{WP.el=WP.total;wFinish(true);}},
- wend(){if(WP&&!WP.done)wFinish(false);else wClose();},
+ wskip(){if(!WP||WP.s.kind!=='guide'||WP.phase!=='run')return;const segs=WP.tl.segs;const i=Math.max(0,segs.findIndex(x=>WP.el>=x.t0&&WP.el<x.t1));if(i+1<segs.length){WP.el=segs[i+1].t0;WP.last=performance.now();wUpdate();}else{WP.el=WP.total;wFinish(true);}},
+ wend(){if(WP&&WP.phase!=='done')wFinish(false);else wClose();},
  wclose(){wClose();},
  wtog(t){const w=W();w[t.dataset.k]=w[t.dataset.k]?0:1;save();render();},
  wmine(){wMineSheet();},
