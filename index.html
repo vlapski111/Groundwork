@@ -208,6 +208,13 @@ nav button{min-width:0}
 .dim .wtime{color:#8d97ad}
 .wctl{justify-content:center}.wctl button{flex:1;min-width:120px;padding:14px;border-radius:14px}
 .wdone{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center}.wdone h1{font-size:30px;color:var(--teal)}.wdone p{color:var(--mut);margin-top:8px}
+
+.wquick{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px}
+.wquick button{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:left}.wquick button:not(:first-child) b{font-size:13px}.wquick button:not(:first-child) span{font-size:11px}
+.wquick button:first-child{grid-column:1/-1;background:linear-gradient(135deg,#1f9c8d,#2fd3be);color:#04211d;border:0}
+.wquick b{display:block;font-size:15px}.wquick span{font-size:12px;opacity:.75}
+.wquick button:first-child b{font-size:18px}
+.wbig{background:linear-gradient(135deg,#5b4bd6,#8f7bff);color:#fff}.wbig span{opacity:.9}
 </style></head><body>
 <div id="app"><header class="top"><b>Ground<i>work</i></b><button id="pchip" data-act="profiles">Me</button></header><main id="view"></main></div>
 <nav>
@@ -824,13 +831,14 @@ X('bear_hold','Bear Hold',{m:M(['core'],['shoulders','quads']),kind:'t',rng:[10,
 
 /* ---------- Mental wellness ---------- */
 const WCATS=[
+ {id:'anx',name:'Anxiety relief',sub:'For anxious thoughts and spikes'},
  {id:'breath',name:'Breathing',sub:'Paced breathing patterns'},
- {id:'med',name:'Meditation',sub:'Guided, 5 to 15 min'},
  {id:'boost',name:'Quick boost',sub:'Mood, energy, clarity'},
  {id:'move',name:'Move',sub:'Workouts for the mind'},
  {id:'sleep',name:'Sleep well',sub:'Wind down for bed'},
  {id:'mine',name:'My own',sub:'Add your counselor\'s exercises'}
 ];
+const WMED={id:'med',name:'Meditation',sub:'Guided, 5 to 15 min'};
 const WLIST=[
 /* ---- calm now ---- */
 {id:'cn_sigh',cat:'calm',kind:'breath',name:'Physiological sigh',tag:'Fastest reset',durs:[1,2,5],def:2,next:'cn_ground',
@@ -855,6 +863,29 @@ const WLIST=[
  [1,'Shoulders','Lift your shoulders up to your ears, hold, then drop them with a sigh.'],
  [1,'Jaw and face','Scrunch your face tight for 5 seconds, then let your jaw hang loose.'],
  [1,'Breathe out','Take a slow breath in and a long breath out. Check in: is there anything softer than a minute ago?']]},
+/* ---- anxiety relief ---- */
+{id:'a_name',cat:'anx',kind:'guide',name:'Name it to tame it',tag:'When a feeling is big',durs:[3,5],def:3,
+ desc:'Putting a name on a feeling can take some of its power away. A gentle way to slow down and check in.',
+ steps:[[1,'Pause','Stop what you are doing. Put a hand on your chest or belly and take a slow breath out.'],
+ [2,'Name it','Say quietly: I am feeling anxious, or worried, or overwhelmed. Use whatever word fits. Feelings are allowed.'],
+ [1,'Where is it?','Notice where you feel it in your body: chest, stomach, throat, hands. Just notice.'],
+ [1,'How big?','Give it a number from 0 to 10. Remember that feelings rise and fall.'],
+ [2,'Breathe','Breathe in for 4 and out for 6, three times, letting the exhale be long.'],
+ [1,'What do I need?','Ask yourself: what is one small thing that would help right now? A drink of water, a walk, a message to someone.']]},
+{id:'a_worry',cat:'anx',kind:'guide',name:'Worry check',tag:'Spiralling thoughts',durs:[3,5,10],def:5,
+ desc:'Sort a worry into something you can act on and something you cannot, so your mind has somewhere to put it.',
+ steps:[[1,'Pause','Take a slow breath out. You do not have to solve everything right now.'],
+ [2,'Name the worry','Say it as one plain sentence. Write it down if you can.'],
+ [2,'Can I do something?','If yes, pick one small step you could take today. If no, that is okay. Some things are not in your hands.'],
+ [2,'Set it down','Tell yourself: I have a plan for this, or I will come back to it later. Then picture setting it on a shelf.'],
+ [1,'Come back to now','Look around. Name three things you can see. Take a slow breath in and out.']]},
+{id:'a_defuse',cat:'anx',kind:'guide',name:'Thoughts are not facts',tag:'Loosen the grip',durs:[3,5],def:3,
+ desc:'A thought feeling true does not make it true. This practice creates a little distance from anxious thoughts.',
+ steps:[[1,'Pause','Take a slow breath out and let your shoulders drop.'],
+ [2,'Notice the thought','Pick the thought that is loudest right now.'],
+ [2,'Add a few words','Say it again starting with: I am having the thought that... Notice how it feels to say it that way.'],
+ [2,'Watch it pass','Picture the thought as a cloud or a leaf on a stream, drifting by. You do not have to push it away.'],
+ [1,'Back to now','Feel your feet on the floor and take a slow breath.']]},
 /* ---- breathing ---- */
 {id:'b_sigh',cat:'breath',kind:'breath',name:'Physiological sigh',tag:'Quick reset',durs:[1,2,5],def:2,
  desc:'Two short breaths in, one long breath out. A very quick way to settle your body.',
@@ -1009,9 +1040,9 @@ function wRow(s){return `<div class="wrow" data-act="wopen" data-id="${s.id}"><d
 function viewWell(){
   const w=wWeek();
   if(wcat){
-    const c=WCATS.find(x=>x.id===wcat);
+    const c=WCATS.find(x=>x.id===wcat)||WMED;
     let h=`<button class="wback" data-act="wcat" data-k="">Back</button><section class="card"><div class="sec-h">${c.name}<span>${c.sub}</span></div>`;
-    const list=wcat==='mine'?(W().mine||[]).map(m=>wLookup(m.id)):WLIST.filter(s=>s.cat===wcat);
+    const c2=wcat==='anx'?['anx','calm']:[wcat];const list=wcat==='mine'?(W().mine||[]).map(m=>wLookup(m.id)):WLIST.filter(s=>c2.includes(s.cat));
     if(wcat==='mine'){
       h+=`<p class="hint" style="margin-top:0">Add exercises from your counselor or another app. Write the steps in your own words and pick a time. It runs as a timer with your text on screen.</p>`;
     }
@@ -1019,10 +1050,10 @@ function viewWell(){
     if(wcat==='mine')h+=`<div class="col"><button class="ghost" data-act="wmine">Add your own</button></div>`;
     return h+`</section>`;
   }
-  const calm=WLIST.filter(s=>s.cat==='calm');
   let h=`<section class="card wintro"><div class="eyebrow">Mental wellness</div><h1>Take a few minutes</h1><p>${w.n?`This week: ${w.n} session${w.n>1?'s':''}, ${w.m} min`:'Short guided exercises for calm, focus, energy and sleep.'}</p></section>`;
-  h+=`<button class="wbig" data-act="wgo" data-id="cn_sigh" data-m="2"><b>Calm down now</b><span>Starts a 2 minute breathing exercise. One tap.</span></button>`;
-  h+=`<div class="presets wq">${calm.filter(s=>s.id!=='cn_sigh').map(s=>`<button data-act="wgo" data-id="${s.id}" data-m="${s.def}">${s.name.replace(' (5-4-3-2-1)','')}</button>`).join('')}</div>`;
+  h+=`<button class="wbig" data-act="wcat" data-k="med"><b>Meditation</b><span>Guided sessions, 5 to 15 minutes</span></button>`;
+  h+=`<div class="sec-h" style="margin:14px 2px 8px">Need to calm down?<span>one tap</span></div>`;
+  h+=`<div class="wquick"><button data-act="wgo" data-id="cn_sigh" data-m="2"><b>Calm down</b><span>2 min breathing</span></button><button data-act="wgo" data-id="cn_ground" data-m="3"><b>Ground yourself</b><span>3 min, 5 senses</span></button><button data-act="wgo" data-id="cn_exhale" data-m="3"><b>Slow your exhale</b><span>3 min breathing</span></button><button data-act="wgo" data-id="cn_press" data-m="3"><b>Press and release</b><span>3 min, tension</span></button></div>`;
   h+=`<div class="wtiles">${WCATS.map(c=>`<button class="wtile" data-act="wcat" data-k="${c.id}"><b>${c.name}</b><span>${c.sub}</span></button>`).join('')}</div>`;
   h+=`<p class="hint">These are relaxation and movement exercises, not medical care. If you are in crisis or thinking about harming yourself, call or text 9-8-8 (Canada) any time.</p>`;
   return h;
