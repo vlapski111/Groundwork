@@ -239,6 +239,17 @@ nav button{min-width:0}
 .chev{width:8px;height:8px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg);margin:0 4px}.chev.o{transform:rotate(-135deg)}
 .ramp{background:rgba(47,211,190,.1);border:1px solid rgba(47,211,190,.3);color:var(--teal);border-radius:12px;padding:8px 12px;font-size:13px;margin:8px 0;text-align:left}
 svg.mach{background:#101520;border-radius:10px}
+
+.gtiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 12px}
+.gt{position:relative;background:var(--card2);border:2px solid var(--line);border-radius:14px;padding:6px 6px 10px;text-align:center;cursor:pointer}
+.gt.on{border-color:var(--teal);background:rgba(47,211,190,.08)}
+.gt b{display:block;font-size:13px;margin-top:4px;line-height:1.2}
+.gart{width:100%;height:auto;display:block;border-radius:10px;background:#101520}
+.gart.big{border-radius:0}
+.gi{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(13,17,24,.8);border:1px solid var(--line);font:700 13px Georgia,serif;font-style:italic;color:var(--text)}
+.gck{position:absolute;top:8px;left:8px;width:22px;height:22px;border-radius:50%;background:rgba(13,17,24,.7);border:2px solid var(--mut)}
+.gt.on .gck{background:var(--teal);border-color:var(--teal)}
+.gt.on .gck::after{content:'';position:absolute;left:6px;top:2px;width:5px;height:10px;border-right:2.5px solid #04211d;border-bottom:2.5px solid #04211d;transform:rotate(40deg)}
 </style></head><body>
 <div id="app"><header class="top"><b>Ground<i>work</i></b><button id="pchip" data-act="profiles">Me</button></header><main id="view"></main></div>
 <nav>
@@ -938,29 +949,71 @@ const MGROUPS=[
 const MACH_EQ=MGROUPS.flatMap(g=>g.items.map(i=>i[0])).filter(id=>!['dumbbell','bench','tower','band','ball','bike','tread','ellip','rower','stair'].includes(id));
 const GEAR_ALIAS={legpress:'sled hack squat',legextm:'quad extension',legcurlm:'hamstring curl',hipm:'inner outer thigh abductor adductor',pecdeck:'fly butterfly chest fly rear delt',pulldown:'lat pull down',rowm:'row machine back',cable:'cables pulley crossover functional trainer',smith:'smith bar',barbell:'squat rack power rack olympic bar',shpm:'overhead press',curlm:'bicep curl preacher',tricepm:'tricep dip',abm:'crunch abdominal',roman:'hyperextension',tread:'run running',bike:'cycle spin',ellip:'cross trainer',rower:'row erg',stair:'stairmaster step mill'};
 /* ---- drawings ---- */
-function machInner(e){
+const GGLYPH={dumbbell:'db',bench:'bench',barbell:'bar',smith:'smith',tower:'tower',band:'band',ball:'ball',legpress:'sled',legextm:'legs',legcurlm:'legs',calfm:'sled',hipm:'legs',chestm:'press',pecdeck:'press',pulldown:'pull',rowm:'row',cable:'cable',roman:'roman',shpm:'press',curlm:'press',tricepm:'press',abm:'ab',bike:'bike',tread:'tread',ellip:'ellip',rower:'rower',stair:'tread'};
+const GINFO={
+ dumbbell:['A short bar with weight plates on each end, held in one hand. Gyms have a rack of fixed pairs.','Arms, shoulders, chest, back, legs'],
+ bench:['A padded bench, flat or with an adjustable back. You sit or lie on it for presses and rows.','Used with dumbbells or a barbell'],
+ barbell:['A long steel bar loaded with plates, held in a rack with adjustable catch arms. Used for squats, presses and deadlifts.','Legs, back, chest, shoulders'],
+ smith:['A barbell fixed to two vertical rails, so it only moves up and down. Safety hooks let you stop any time. Good for learning squats and presses.','Legs, chest, shoulders'],
+ tower:['A frame with a pull-up bar on top and padded dip handles or knee-raise arm pads below.','Back, arms, core'],
+ band:['Stretchy loops or tubes with handles. Resistance rises as you stretch them.','Any muscle, light to medium load'],
+ ball:['A weighted ball used for core work, throws and loaded carries.','Core, shoulders'],
+ legpress:['You sit or lie back and push a heavy platform away with your feet. The seat supports your back.','Quads, glutes, hamstrings'],
+ legextm:['Seated machine. You straighten your legs against a padded bar just above your ankles.','Quads (front of thigh)'],
+ legcurlm:['Seated or lying machine. You curl your heels toward your glutes against a padded roller.','Hamstrings (back of thigh)'],
+ calfm:['You stand or sit with the balls of your feet on a platform and raise your heels against weight.','Calves'],
+ hipm:['Seated machine with leg pads. Pads on the outside push your knees apart, pads on the inside squeeze them together.','Outer and inner thighs, glutes'],
+ chestm:['Seated, back against a pad. You push two handles forward at chest height.','Chest, triceps, front shoulders'],
+ pecdeck:['Seated with arms on two padded levers. You bring them together in front (chest) or face the pad and pull them apart (rear shoulders).','Chest, rear shoulders'],
+ pulldown:['Seated under a high pulley with a wide bar. Thigh pads hold you down while you pull the bar to your chest.','Back, biceps'],
+ rowm:['Seated with your chest on a pad. You pull two handles toward your ribs.','Upper back, biceps'],
+ cable:['A tall frame with an adjustable pulley and a weight stack. You attach a handle, rope or bar and pull in many directions.','Almost anything'],
+ roman:['An angled bench with ankle pads. You hinge at the hips and raise your torso back up.','Lower back, glutes, hamstrings'],
+ shpm:['Seated machine. You press two handles overhead from shoulder height.','Shoulders, triceps'],
+ curlm:['Seated with upper arms on a pad. You curl the handles toward your shoulders.','Biceps'],
+ tricepm:['Seated machine. You press handles down or forward until your arms are straight.','Triceps'],
+ abm:['Seated machine. You curl forward against a pad or handles to crunch your abs.','Abs'],
+ bike:['A stationary bike with a seat, handlebars and a flywheel. Easy pedalling for a warm-up.','Legs, heart and lungs'],
+ tread:['A moving belt you walk or run on. Easy walking works well as a warm-up.','Legs, heart and lungs'],
+ ellip:['Foot pedals and moving handles in a smooth gliding motion. Low impact.','Legs, arms, heart and lungs'],
+ rower:['A seat that slides on a rail. You push with your legs, lean back, then pull the handle to your ribs.','Legs, back, arms'],
+ stair:['A rotating staircase you climb. Hold the rails lightly.','Legs, glutes, heart and lungs']};
+function machG(g,anim){
   const F='#3b4766',PD='#566387',AC='#ff6a2b',ST='#2b3550',PL='#7683a6',BG='#101520';
+  const tr=(dx,dy,d)=>anim?`<animateTransform attributeName="transform" type="translate" values="0 0;${dx} ${dy};0 0" dur="${d||2.4}s" repeatCount="indefinite"/>`:'';
+  const ro=(deg,cx,cy,d)=>anim?`<animateTransform attributeName="transform" type="rotate" values="0 ${cx} ${cy};${deg} ${cx} ${cy};0 ${cx} ${cy}" dur="${d||2.4}s" repeatCount="indefinite"/>`:'';
+  const an=(a,v,d)=>anim?`<animate attributeName="${a}" values="${v}" dur="${d||2.4}s" repeatCount="indefinite"/>`:'';
+  const grp=(inner,motion)=>`<g>${inner}${motion||''}</g>`;
   const stack=(x,y,h)=>`<rect x="${x}" y="${y}" width="30" height="${h}" rx="3" fill="${ST}"/>`+[0,1,2,3,4,5].map(i=>`<rect x="${x+4}" y="${y+6+i*((h-12)/6)}" width="22" height="${(h-12)/6-3}" rx="2" fill="${i===2?AC:PL}" opacity="${i===2?1:.55}"/>`).join('');
   const floor=`<rect x="20" y="150" width="200" height="6" rx="3" fill="${F}"/>`;
-  const L=(x1,y1,x2,y2,c,w)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w||5}" stroke-linecap="round"/>`;
-  const g=e.g;let s=`<rect width="240" height="180" fill="${BG}"/>`+floor;
-  if(g==='press'||g==='ab'){s+=stack(180,44,106)+`<rect x="88" y="106" width="46" height="12" rx="5" fill="${PD}"/><rect x="76" y="50" width="13" height="64" rx="6" fill="${PD}"/>`+L(110,118,110,150,F,6)+L(82,44,170,44,F,5)+L(170,44,170,60,F,5)+(g==='ab'?`<rect x="108" y="64" width="26" height="22" rx="8" fill="${AC}"/>`+L(122,66,100,90,F,4):L(94,72,148,72,AC,6)+`<circle cx="150" cy="72" r="7" fill="${AC}"/>`);}
-  else if(g==='pull'){s+=stack(184,44,106)+L(106,150,106,30,F,6)+L(150,150,150,30,F,6)+L(106,30,170,30,F,6)+L(128,30,128,66,PL,3)+L(98,66,158,66,AC,7)+`<rect x="116" y="112" width="26" height="10" rx="5" fill="${PD}"/><rect x="128" y="96" width="30" height="9" rx="4" fill="${PD}"/>`;}
-  else if(g==='row'){s+=stack(184,44,106)+`<rect x="62" y="112" width="44" height="12" rx="5" fill="${PD}"/><rect x="110" y="62" width="12" height="46" rx="5" fill="${PD}"/>`+L(110,124,110,150,F,6)+L(126,88,180,88,PL,3)+L(150,78,150,98,AC,6)+`<circle cx="150" cy="88" r="3" fill="${AC}"/>`;}
-  else if(g==='legs'){s+=stack(184,60,90)+`<rect x="80" y="104" width="46" height="12" rx="5" fill="${PD}"/><rect x="70" y="54" width="12" height="56" rx="6" fill="${PD}"/>`+L(104,116,104,150,F,6)+L(124,108,160,136,AC,6)+`<circle cx="160" cy="136" r="8" fill="${AC}"/>`+L(160,136,184,120,F,3);}
-  else if(g==='sled'){s+=`<polygon points="40,140 56,146 196,70 190,58" fill="${F}"/>`+`<rect x="168" y="46" width="14" height="40" rx="5" fill="${AC}" transform="rotate(28 175 66)"/>`+`<rect x="54" y="108" width="40" height="12" rx="5" fill="${PD}" transform="rotate(-28 74 114)"/>`;}
-  else if(g==='cable'){s+=stack(178,40,110)+L(176,150,176,24,F,5)+L(176,34,140,34,F,5)+`<circle cx="138" cy="34" r="7" fill="${AC}"/>`+L(138,41,118,104,PL,2.5)+L(108,104,128,104,AC,6);}
-  else if(g==='bar'){s+=L(70,150,70,28,F,7)+L(170,150,170,28,F,7)+L(60,64,80,64,PL,5)+L(160,64,180,64,PL,5)+L(30,60,210,60,AC,5)+`<rect x="22" y="40" width="9" height="40" rx="3" fill="${PL}"/><rect x="209" y="40" width="9" height="40" rx="3" fill="${PL}"/><rect x="32" y="46" width="7" height="28" rx="3" fill="${PD}"/><rect x="201" y="46" width="7" height="28" rx="3" fill="${PD}"/>`;}
-  else if(g==='smith'){s+=L(74,150,74,24,F,7)+L(166,150,166,24,F,7)+L(74,24,166,24,F,5)+L(74,66,166,66,AC,6)+`<rect x="60" y="52" width="9" height="28" rx="3" fill="${PL}"/><rect x="171" y="52" width="9" height="28" rx="3" fill="${PL}"/>`;}
-  else if(g==='roman'){s+=`<polygon points="60,150 84,150 150,100 126,88" fill="${F}"/><rect x="104" y="80" width="46" height="14" rx="6" fill="${AC}" transform="rotate(30 127 87)"/><rect x="60" y="116" width="14" height="30" rx="6" fill="${PD}"/>`;}
-  else if(g==='tread'){s+=`<polygon points="40,138 190,128 190,140 40,148" fill="${F}"/><polygon points="48,140 180,131 180,135 48,144" fill="${AC}"/>`+L(190,132,190,54,F,6)+`<rect x="168" y="38" width="44" height="26" rx="6" fill="${PD}"/>`+L(176,70,176,130,F,4)+L(176,84,120,88,PL,4);}
-  else if(g==='bike'){s+=`<circle cx="70" cy="112" r="22" fill="${ST}" stroke="${F}" stroke-width="4"/>`+L(70,112,128,70,F,6)+L(128,70,126,60,F,5)+`<rect x="112" y="52" width="30" height="8" rx="4" fill="${PD}"/>`+L(150,66,170,50,F,5)+L(70,112,150,66,F,5)+`<circle cx="112" cy="128" r="14" fill="none" stroke="${AC}" stroke-width="5"/>`+L(70,112,112,128,F,5);}
-  else if(g==='ellip'){s+=L(190,148,190,40,F,6)+L(190,48,150,70,PL,4)+L(190,48,168,40,F,5)+`<rect x="60" y="136" width="52" height="9" rx="4" fill="${AC}"/><rect x="118" y="120" width="52" height="9" rx="4" fill="${AC}" opacity=".7"/>`+L(112,136,150,70,F,4);}
-  else if(g==='rower'){s+=L(36,134,200,134,F,6)+`<rect x="92" y="118" width="32" height="12" rx="5" fill="${AC}"/>`+`<circle cx="198" cy="112" r="22" fill="${ST}" stroke="${F}" stroke-width="4"/>`+L(198,112,150,92,PL,3)+L(142,86,152,98,AC,6)+L(44,134,44,146,F,6);}
+  const L=(x1,y1,x2,y2,c,w,extra)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w||5}" stroke-linecap="round">${extra||''}</line>`;
+  let s=`<rect width="240" height="180" fill="${BG}"/>`+floor;
+  if(g==='press'){s+=stack(180,44,106)+`<rect x="88" y="106" width="46" height="12" rx="5" fill="${PD}"/><rect x="76" y="50" width="13" height="64" rx="6" fill="${PD}"/>`+L(110,118,110,150,F,6)+L(82,44,170,44,F,5)+L(170,44,170,60,F,5)+grp(L(94,72,148,72,AC,6)+`<circle cx="150" cy="72" r="7" fill="${AC}"/>`,tr(16,0));}
+  else if(g==='ab'){s+=stack(180,44,106)+`<rect x="88" y="106" width="46" height="12" rx="5" fill="${PD}"/><rect x="76" y="50" width="13" height="64" rx="6" fill="${PD}"/>`+L(110,118,110,150,F,6)+L(82,44,170,44,F,5)+L(170,44,170,60,F,5)+grp(`<rect x="108" y="64" width="26" height="22" rx="8" fill="${AC}"/>`+L(122,66,100,90,F,4),ro(-16,100,90));}
+  else if(g==='pull'){s+=stack(184,44,106)+L(106,150,106,30,F,6)+L(150,150,150,30,F,6)+L(106,30,170,30,F,6)+L(128,30,128,66,PL,3,an('y2','66;98;66'))+L(98,66,158,66,AC,7,an('y1','66;98;66')+an('y2','66;98;66'))+`<rect x="116" y="112" width="26" height="10" rx="5" fill="${PD}"/><rect x="128" y="96" width="30" height="9" rx="4" fill="${PD}"/>`;}
+  else if(g==='row'){s+=stack(184,44,106)+`<rect x="62" y="112" width="44" height="12" rx="5" fill="${PD}"/><rect x="110" y="62" width="12" height="46" rx="5" fill="${PD}"/>`+L(110,124,110,150,F,6)+grp(L(126,88,180,88,PL,3)+L(150,78,150,98,AC,6)+`<circle cx="150" cy="88" r="3" fill="${AC}"/>`,tr(-22,0));}
+  else if(g==='legs'){s+=stack(184,60,90)+`<rect x="80" y="104" width="46" height="12" rx="5" fill="${PD}"/><rect x="70" y="54" width="12" height="56" rx="6" fill="${PD}"/>`+L(104,116,104,150,F,6)+grp(L(124,108,160,136,AC,6)+`<circle cx="160" cy="136" r="8" fill="${AC}"/>`+L(160,136,184,120,F,3),ro(-32,124,108));}
+  else if(g==='sled'){s+=`<polygon points="40,140 56,146 196,70 190,58" fill="${F}"/>`+`<rect x="54" y="108" width="40" height="12" rx="5" fill="${PD}" transform="rotate(-28 74 114)"/>`+grp(`<rect x="168" y="46" width="14" height="40" rx="5" fill="${AC}" transform="rotate(28 175 66)"/>`,tr(-34,18));}
+  else if(g==='cable'){s+=stack(178,40,110)+L(176,150,176,24,F,5)+L(176,34,140,34,F,5)+`<circle cx="138" cy="34" r="7" fill="${AC}"/>`+L(138,41,118,104,PL,2.5,an('y2','104;70;104')+an('x2','118;126;118'))+grp(L(108,104,128,104,AC,6),tr(8,-34));}
+  else if(g==='bar'){s+=L(70,150,70,28,F,7)+L(170,150,170,28,F,7)+L(60,64,80,64,PL,5)+L(160,64,180,64,PL,5)+grp(L(30,60,210,60,AC,5)+`<rect x="22" y="40" width="9" height="40" rx="3" fill="${PL}"/><rect x="209" y="40" width="9" height="40" rx="3" fill="${PL}"/><rect x="32" y="46" width="7" height="28" rx="3" fill="${PD}"/><rect x="201" y="46" width="7" height="28" rx="3" fill="${PD}"/>`,tr(0,48,3));}
+  else if(g==='smith'){s+=L(74,150,74,24,F,7)+L(166,150,166,24,F,7)+L(74,24,166,24,F,5)+grp(L(74,66,166,66,AC,6)+`<rect x="60" y="52" width="9" height="28" rx="3" fill="${PL}"/><rect x="171" y="52" width="9" height="28" rx="3" fill="${PL}"/>`,tr(0,56,3));}
+  else if(g==='roman'){s+=`<polygon points="60,150 84,150 150,100 126,88" fill="${F}"/><rect x="60" y="116" width="14" height="30" rx="6" fill="${PD}"/>`+grp(`<rect x="104" y="80" width="46" height="14" rx="6" fill="${AC}" transform="rotate(30 127 87)"/>`,ro(-26,100,92));}
+  else if(g==='tread'){s+=`<polygon points="40,138 190,128 190,140 40,148" fill="${F}"/>`+L(48,139,184,131,AC,4,`<animate attributeName="stroke-dashoffset" values="0;-18" dur="${anim?0.6:0}s" repeatCount="indefinite"/>`).replace('stroke-linecap="round"','stroke-linecap="butt" stroke-dasharray="10 8"')+L(190,132,190,54,F,6)+`<rect x="168" y="38" width="44" height="26" rx="6" fill="${PD}"/>`+L(176,70,176,130,F,4)+L(176,84,120,88,PL,4);}
+  else if(g==='bike'){s+=`<circle cx="70" cy="112" r="22" fill="${ST}" stroke="${F}" stroke-width="4"/>`+L(70,112,128,70,F,6)+`<rect x="112" y="52" width="30" height="8" rx="4" fill="${PD}"/>`+L(150,66,170,50,F,5)+L(70,112,150,66,F,5)+L(70,112,112,128,F,5)+`<circle cx="112" cy="128" r="3" fill="${PL}"/>`+grp(L(112,128,112,112,AC,5)+`<circle cx="112" cy="112" r="5" fill="${AC}"/>`,anim?`<animateTransform attributeName="transform" type="rotate" values="0 112 128;360 112 128" dur="1.6s" repeatCount="indefinite"/>`:'');}
+  else if(g==='ellip'){s+=L(190,148,190,40,F,6)+L(190,48,150,70,PL,4)+L(190,48,168,40,F,5)+L(112,136,150,70,F,4)+grp(`<rect x="60" y="136" width="52" height="9" rx="4" fill="${AC}"/>`,tr(12,-12,1.8))+grp(`<rect x="118" y="120" width="52" height="9" rx="4" fill="${AC}" opacity=".7"/>`,tr(-12,12,1.8));}
+  else if(g==='rower'){s+=L(36,134,200,134,F,6)+`<circle cx="198" cy="112" r="22" fill="${ST}" stroke="${F}" stroke-width="4"/>`+L(198,112,150,92,PL,3)+L(44,134,44,146,F,6)+grp(`<rect x="70" y="118" width="32" height="12" rx="5" fill="${AC}"/>`,tr(46,0,2.4))+grp(L(142,86,152,98,AC,6),tr(-24,10,2.4));}
+  else if(g==='db'){s+=grp(L(70,100,170,100,PL,6)+`<rect x="50" y="76" width="12" height="48" rx="4" fill="${PD}"/><rect x="62" y="84" width="10" height="32" rx="3" fill="${PL}"/><rect x="178" y="76" width="12" height="48" rx="4" fill="${PD}"/><rect x="168" y="84" width="10" height="32" rx="3" fill="${PL}"/>`+L(104,100,136,100,AC,9),tr(0,-34,2));}
+  else if(g==='bench'){s+=`<rect x="70" y="112" width="100" height="14" rx="6" fill="${PD}"/>`+L(90,126,90,150,F,6)+L(150,126,150,150,F,6)+grp(`<rect x="96" y="108" width="82" height="14" rx="6" fill="${AC}" transform="rotate(-32 100 112)"/>`,ro(22,100,112,3));}
+  else if(g==='tower'){s+=L(70,150,70,28,F,7)+L(170,150,170,28,F,7)+L(60,36,180,36,AC,6)+L(70,96,100,96,PL,5)+L(140,96,170,96,PL,5)+`<rect x="100" y="100" width="40" height="10" rx="5" fill="${PD}"/>`;}
+  else if(g==='band'){s+=`<rect x="36" y="86" width="12" height="28" rx="5" fill="${PD}"/><rect x="192" y="86" width="12" height="28" rx="5" fill="${PD}"/>`+`<ellipse cx="120" cy="100" rx="64" ry="12" fill="none" stroke="${AC}" stroke-width="5">${an('rx','64;80;64')}</ellipse>`;}
+  else if(g==='ball'){s+=grp(`<circle cx="120" cy="104" r="34" fill="${AC}" opacity=".9"/><path d="M92 90 Q120 106 148 90 M92 120 Q120 104 148 120 M120 70 L120 138" stroke="${BG}" stroke-width="3" fill="none"/>`,tr(0,-26,1.4));}
   else s+=`<text x="120" y="96" text-anchor="middle" fill="${PL}" font-size="20">Machine</text>`;
   return s;
 }
+const machInner=e=>machG(e.g,false);
 const machEl=(id,cls)=>`<svg class="fig mach ${cls||''}" viewBox="0 0 240 180" preserveAspectRatio="xMidYMax meet">${machInner(EX[id])}</svg>`;
+const gearArt=(id,anim,cls)=>`<svg class="gart ${cls||''}" viewBox="0 0 240 180" preserveAspectRatio="xMidYMid meet">${machG(GGLYPH[id]||'x',!!anim)}</svg>`;
+const gearName=id=>{for(const g of MGROUPS){const i=g.items.find(x=>x[0]===id);if(i)return i[1];}return id;};
 
 /* ---------- Mental wellness ---------- */
 const WCATS=[
@@ -1596,13 +1649,19 @@ let gq='',gopen={};
 function gearList(){
   const away=S.mode==='away',g=G(),q=gq;let h='';
   MGROUPS.filter(x=>away||!x.away).forEach(grp=>{
-    const items=grp.items.filter(i=>!q||q.split(/\s+/).every(t=>(i[1]+' '+i[2]+' '+(GEAR_ALIAS[i[0]]||'')).toLowerCase().split(/[^a-z0-9]+/).some(w=>w.startsWith(t))));
+    const items=grp.items.filter(i=>!q||(i[1]+' '+i[2]+' '+(GEAR_ALIAS[i[0]]||'')).toLowerCase().split(/[^a-z0-9]+/).some(w=>q.split(/\s+/).every(t=>w.startsWith(t)))||q.split(/\s+/).every(t=>(i[1]+' '+i[2]+' '+(GEAR_ALIAS[i[0]]||'')).toLowerCase().split(/[^a-z0-9]+/).some(w=>w.startsWith(t))));
     if(!items.length)return;
     const on=grp.items.filter(i=>g[i[0]]).length,open=q||gopen[grp.g];
     h+=`<button class="ggrp" data-act="ggrp" data-g="${grp.g}"><b>${grp.g}</b><span>${on?on+' of '+grp.items.length+' selected':grp.items.length+' items'}</span><i class="chev ${open?'o':''}"></i></button>`;
-    if(open)items.forEach(i=>{h+=`<div class="gear"><div><b>${i[1]}</b>${i[2]?'<span>'+i[2]+'</span>':''}</div><button class="tog ${g[i[0]]?'on':''}" data-act="gear" data-id="${i[0]}" aria-label="toggle ${i[1]}"><i></i></button></div>`;});
+    if(open)h+=`<div class="gtiles">${items.map(i=>`<div class="gt ${g[i[0]]?'on':''}" data-act="gear" data-id="${i[0]}" role="button" aria-label="${i[1]}">${gearArt(i[0],false)}<b>${i[1]}</b><button class="gi" data-act="ginfo" data-id="${i[0]}" aria-label="About ${i[1]}">i</button><u class="gck"></u></div>`).join('')}</div>`;
   });
   return h||'<p class="hint">No match. Try another word.</p>';
+}
+function gearSheet(id){
+  const info=GINFO[id]||['',''],on=!!G()[id];
+  const mv=Object.values(EX).filter(e=>e.eq.includes(id)&&!e.cardio).map(e=>e.name);
+  const cardio=Object.values(EX).some(e=>e.cardio&&e.eq.includes(id));
+  openSheet(`<div class="bigfig">${gearArt(id,true,'big')}</div><h2>${gearName(id)}</h2><p class="hint" style="margin-top:6px">${info[0]}</p><div class="wlab">Works</div><p class="hint" style="margin-top:2px">${info[1]}</p>${mv.length?`<div class="wlab">Moves in this app</div><p class="hint" style="margin-top:2px">${mv.slice(0,10).join(', ')}${mv.length>10?'...':''}</p>`:''}${cardio?`<div class="wlab">Used as</div><p class="hint" style="margin-top:2px">A 2 to 3 minute easy warm-up.</p>`:''}<div class="col"><button class="${on?'ghost':'primary'}" data-act="ginfotog" data-id="${id}">${on?'Remove from my list':'This gym has it'}</button><button class="ghost" data-act="closesheet">Close</button></div>`);
 }
 function viewGear(){
   let h=`<section class="card"><div class="sec-h">Training style<span>${pname()}</span></div>`;
@@ -1867,6 +1926,8 @@ const ACT={
  gmode(t){S.mode=t.dataset.v==='away'?'away':'home';if(!S.agear)S.agear={};S.plan.swaps={};save();render();window.scrollTo(0,0);},
  gclear(){S.agear={};S.plan.swaps={};save();render();},
  gcopy(){S.agear=Object.assign({},S.gear);S.plan.swaps={};save();render();},
+ ginfo(t){gearSheet(t.dataset.id);},
+ ginfotog(t){const g=G();g[t.dataset.id]=g[t.dataset.id]?0:1;S.plan.swaps={};save();closeSheet();render();},
  ggrp(t){const k=t.dataset.g;gopen[k]=!gopen[k];render();},
  warmset(t){S.warm=t.dataset.v;save();render();},
  wt(t){const e=EX[t.dataset.id];S.weights[e.id]=stepW(curW(e),+t.dataset.d,e);save();render();},
