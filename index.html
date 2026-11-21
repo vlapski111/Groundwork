@@ -1941,7 +1941,8 @@ function viewGear(){
 }
 function render(){
   const v=S.tab;const root=$('#view');
-  root.innerHTML=v==='today'?viewToday():v==='plan'?viewPlan():v==='progress'?viewProgress():v==='well'?viewWell():viewGear();
+  try{root.innerHTML=v==='today'?viewToday():v==='plan'?viewPlan():v==='progress'?viewProgress():v==='well'?viewWell():viewGear();}
+  catch(e){root.innerHTML='<section class="card"><div class="sec-h">Something went wrong</div><p class="hint">Send this message to Claude:</p><p class="hint"><b>'+String(e&&e.message||e).replace(/</g,'&lt;')+'</b></p><p class="hint">'+String(e&&e.stack||'').split('\n').slice(0,3).join(' | ').replace(/</g,'&lt;').slice(0,300)+'</p></section>';}
   document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('on',b.dataset.t===v);if(b.dataset.t==='well')b.style.display=(W().hide&&v!=='well')?'none':'';});
   const pc=$('#pchip');if(pc)pc.textContent=pname()+(S.mode==='away'?' · Away':'');
   hook();
