@@ -1829,8 +1829,7 @@ function viewToday(){
   }else{
   h+=`<section class="card"><div class="sec-h">How much time do you have?<span>${done?done+' done, ':''}${totalMin} min to go</span></div>
     <div class="presets">
-      <button data-act="preset" data-v="10">10</button><button data-act="preset" data-v="20">20</button><button data-act="preset" data-v="30">30</button><button data-act="preset" data-v="45">45</button>
-      <button data-act="preset" data-v="10,20" class="wide">AM 10 + PM 20</button><button data-act="preset" data-v="p10,20" class="wide">Primer 10 + 20</button></div>`;
+      <button data-act="preset" data-v="10">10</button><button data-act="preset" data-v="20">20</button><button data-act="preset" data-v="30">30</button><button data-act="preset" data-v="40">40</button><button data-act="customtime">Custom</button></div>`;
   sess.forEach((s,i)=>{
     const nm=names[i]||'Session '+(i+1);
     h+=`<div class="srow ${s.done?'done':''}"><div class="slab"><b>${nm}</b><span>${s.f==='primer'?'Primer':s.done?'Done':F.name}</span></div>`;
@@ -2182,6 +2181,7 @@ const ACT={
  fav(t){const id=t.dataset.id,i=S.favs.indexOf(id);if(i>=0)S.favs.splice(i,1);else S.favs.push(id);save();render();},
  useprog(t){S.prog=t.dataset.id||null;S.plan.focus=null;S.plan.progOff=0;S.plan.swaps={};S.plan.open=null;save();closeSheet();S.tab=S.prog?'today':S.tab;render();window.scrollTo(0,0);},
  progoff(){S.plan.progOff=1;S.plan.focus=null;S.plan.swaps={};S.plan.open=null;save();render();},
+ customtime(){let v=null;try{v=prompt('How many minutes?','25');}catch(e){}const n=Math.round(parseFloat(v));if(n>=5&&n<=240){setSessions(parsePreset(String(n)));S.tab='today';render();window.scrollTo(0,0);}else if(v!==null)toast('Enter 5 to 240 minutes');},
  preset(t){setSessions(parsePreset(t.dataset.v));S.tab='today';render();window.scrollTo(0,0);},
  mm(t){const s=S.plan.sessions[+t.dataset.i];s.m=clamp(s.m+(+t.dataset.d),10,60);S.lastMins=s.m;S.plan.open=+t.dataset.i;save();render();},
  sf(t){const s=S.plan.sessions[+t.dataset.i];s.f=s.f==='primer'?null:'primer';save();render();},
