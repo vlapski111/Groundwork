@@ -157,8 +157,13 @@ nav button.on{color:var(--ac)}
 .sum{padding:24px 16px calc(30px + var(--sb));max-width:560px;margin:0 auto;width:100%;text-align:center}
 .sum .ok{width:64px;height:64px;border-radius:50%;background:rgba(74,222,128,.15);color:var(--ok);display:grid;place-items:center;font-size:32px;margin:10px auto}
 .sum h1{font-size:26px}.sum .card{text-align:left}
+
+#pchip{font-size:12px;font-weight:700;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:5px 12px;align-self:center}
+.radio{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;box-sizing:border-box}
+.radio.on{border-color:var(--ac);background:radial-gradient(var(--ac) 42%,transparent 48%)}
+.field{width:100%;box-sizing:border-box;margin-top:8px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--text);font:inherit;font-size:16px}
 </style></head><body>
-<div id="app"><header class="top"><b>Ground<i>work</i></b><span>Strength</span></header><main id="view"></main></div>
+<div id="app"><header class="top"><b>Ground<i>work</i></b><button id="pchip" data-act="profiles">Me</button></header><main id="view"></main></div>
 <nav>
 <button data-act="tab" data-t="today"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg>Today</button>
 <button data-act="tab" data-t="plan"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Plan</button>
@@ -590,6 +595,42 @@ X('tf_leg_extension','Total Flex Leg Extension',{m:M(['quads']),eq:['bench','leg
   a:{hx:84,hy:124,tor:194,ank:[113,152],ft:90,ua:30,fa:60},b:{hx:84,hy:124,tor:194,ank:[140,120],ft:90,ua:30,fa:60},
   cues:['Seat setting 3 only','Sit sideways, hook legs over the top rollers, feet under the bottom rollers','Lean back, extend both legs, lower slowly']});
 
+
+/* ---------- MORE CALISTHENICS (bodyweight, from common beginner progressions) ---------- */
+X('wall_pushup','Wall Push-Up',{m:M(['chest'],['triceps','shoulders','core']),rng:[10,20],p:P_.wall(158,1),
+  a:{hx:100,hy:102,tor:162,ank:[80,155],ft:60,hand:[156,64],neck:158},
+  b:{hx:112,hy:104,tor:150,ank:[80,155],ft:60,hand:[156,64],neck:146},
+  cues:['Hands on the wall at chest height','Body one straight line, heels down','Bend elbows, chest toward the wall, press back']});
+X('close_incline_pushup','Close-Grip Incline Push-Up',{m:M(['triceps','chest'],['shoulders','core']),eq:['bench'],rng:[8,15],
+  p:P_.bench(112,184,134),
+  a:{hx:102.6,hy:111.2,tor:126.9,ank:[57,145.4],ft:15,hand:[136,130],neck:120},
+  b:{hx:109.8,hy:123.9,tor:115,ank:[57,145.4],ft:15,hand:[136,130],neck:110},
+  cues:['Hands on the bench, directly under your chest, close together','Elbows brush your ribs as you lower','Press up to straight arms']});
+X('pike_pushup','Pike Push-Up',{m:M(['shoulders'],['triceps','chest','core']),rng:[5,10],floorMat:1,
+  a:{hx:105,hy:97,tor:69,ank:[95,153],ft:15,hand:[146,156],neck:62},
+  b:{hx:110.5,hy:98.2,tor:45,ank:[95,153],ft:15,hand:[146,156],neck:38},
+  cues:['Hips high, body an upside down V','Lower the top of your head toward the floor','Press back up, keep legs as straight as comfortable']});
+X('scap_pushup','Scapular Push-Up',{m:M(['shoulders','back'],['chest','core']),rng:[8,15],floorMat:1,
+  a:{hx:110.7,hy:126.2,tor:110,ank:[57,145.4],ft:15,hand:[150,156],neck:105},
+  b:{hx:112,hy:129.5,tor:106,ank:[57,145.4],ft:15,hand:[150,156],neck:101},
+  cues:['Arms stay straight the whole time','Let your chest sink, shoulder blades squeeze together','Push the floor away to round up and spread them']});
+X('flexed_arm_hang','Flexed-Arm Hang',{m:M(['back','biceps'],['forearms','core']),eq:['tower'],kind:'t',rng:[5,20],hold:1,p:P_.bar(118,4,196),
+  a:{hx:106,hy:66,tor:172,th:8,sh:-35,ft:60,hand:[118,6],neck:182},
+  b:{hx:106,hy:67,tor:172,th:8,sh:-35,ft:60,hand:[118,6],neck:182},
+  cues:['Step up so your chin is over the bar','Hold with elbows tight, shoulders down','Lower slowly with control when done']});
+X('chin_negative','Slow-Lower Chin-Up',{m:M(['biceps','back'],['forearms','core']),eq:['tower'],rng:[3,6],slow:1,p:P_.bar(118,4,196),
+  a:{hx:106,hy:66,tor:172,th:8,sh:-35,ft:60,hand:[118,6],neck:182},
+  b:{hx:118,hy:91,tor:180,hand:[118,6],th:6,sh:-8,ft:80,neck:176},
+  cues:['Palms facing you, hands shoulder width','Step up to chin over the bar','Lower for a slow 5 count']});
+X('prone_y_raise','Prone Y Raise',{m:M(['back','shoulders'],['glutes']),floorMat:1,rng:[8,12],
+  a:{hx:100,hy:148,tor:90,th:-90,sh:-90,ft:-90,ua:90,fa:90,neck:90},
+  b:{hx:100,hy:148,tor:92,th:-90,sh:-90,ft:-90,ua:122,fa:126,neck:96},
+  cues:['Lie face down, arms in a Y overhead','Thumbs up, lift arms by squeezing shoulder blades','Lower slowly, keep your neck long']});
+X('reverse_snow_angel','Reverse Snow Angel',{m:M(['back'],['shoulders','glutes']),floorMat:1,rng:[8,12],
+  a:{hx:100,hy:148,tor:90,th:-90,sh:-90,ft:-90,ua:-88,fa:-88,neck:90},
+  b:{hx:100,hy:148,tor:93,th:-90,sh:-90,ft:-90,ua:-112,fa:-112,neck:96},
+  cues:['Lie face down, arms by your sides, palms down','Lift arms and sweep them out and overhead','Slow and smooth, no shrugging']});
+
 /* ---------- LEGS ---------- */
 X('bench_sit_stand','Bench Sit-to-Stand',{m:M(['quads','glutes'],['core']),eq:['bench'],rng:[8,15],knee:1,
   p:P_.bench(56,106,134),
@@ -691,6 +732,48 @@ X('chest_stretch','Chest Opener',{m:M(['chest'],['shoulders']),kind:'t',rng:[30,
   cues:['Clasp your hands behind your back','Lift the hands and open the chest','Breathe, no forcing']});
 
 
+X('bw_squat','Bodyweight Squat',{m:M(['quads','glutes'],['hamstrings','core']),rng:[10,20],knee:1,
+  a:{...ST,ua:85,fa:88},
+  b:{hx:94,hy:124,tor:150,ank:[118,155],ft:90,ua:85,fa:88,neck:150},
+  cues:['Feet shoulder width, arms out front','Sit hips back and down, chest tall','Push through your whole foot to stand']});
+X('reverse_lunge','Reverse Lunge',{m:M(['quads','glutes'],['hamstrings','core']),rng:[6,10],per:1,knee:1,
+  a:{...ST,ua:10,fa:60},
+  b:{hx:104,hy:127,tor:180,ank:[132,155],ft:90,fank:[70,150],fkb:-1,fft:-90,ua:10,fa:60},
+  cues:['Step one foot back and lower straight down','Front knee over the ankle, torso tall','Push through the front heel to come back']});
+X('split_squat','Split Squat',{m:M(['quads','glutes'],['hamstrings','core']),rng:[6,10],per:1,knee:1,
+  a:{hx:102,hy:100,tor:180,ank:[130,155],ft:90,fank:[72,155],fkb:-1,fft:-90,ua:10,fa:60},
+  b:{hx:102,hy:127,tor:180,ank:[130,155],ft:90,fank:[70,150],fkb:-1,fft:-90,ua:10,fa:60},
+  cues:['Long stance, feet hip-width apart','Lower straight down, back knee toward the floor','Drive up through the front foot']});
+X('step_up','Bench Step-Up',{m:M(['quads','glutes'],['hamstrings','calves']),eq:['bench'],rng:[8,12],per:1,knee:1,p:P_.bench(116,176,134),
+  a:{hx:122,hy:100,tor:180,ank:[136,132],ft:90,fank:[108,155],fft:90,ua:10,fa:60},
+  b:{hx:132,hy:76,tor:180,ank:[136,132],ft:90,fank:[152,106],fft:90,ua:10,fa:60},
+  cues:['Whole foot on the bench','Drive up through the top foot, not the back one','Step down slowly with control']});
+X('single_leg_rdl','Single-Leg Hinge',{m:M(['hamstrings','glutes'],['back','core']),rng:[6,10],per:1,
+  a:{...ST,ua:0,fa:0},
+  b:{hx:114,hy:100,tor:102,ank:[114,155],ft:90,fank:[60,101],fft:-96,ua:0,fa:0,neck:106},
+  cues:['Soft knee on the standing leg','Hips back, the other leg reaches long behind you','Flat back, touch a wall or chair for balance']});
+X('glute_march','Glute Bridge March',{m:M(['glutes'],['core','hamstrings']),floorMat:1,rng:[8,14],per:1,
+  a:{...SUP,hy:126,tor:-58.4},
+  b:{...SUP,hy:126,tor:-58.4,fank:[138,118],fft:30},
+  cues:['Hold the bridge, hips level','Lift one knee toward your chest, no hip drop','Alternate sides slowly']});
+
+X('mountain_climber','Mountain Climber',{m:M(['core'],['shoulders','quads']),kind:'t',rng:[20,40],floorMat:1,
+  a:{hx:110.7,hy:126.2,tor:110,ank:[57,145.4],ft:15,hand:[150,156],neck:105},
+  b:{hx:110.7,hy:126.2,tor:110,ank:[57,145.4],ft:15,hand:[150,156],fank:[128,141],fft:0,neck:105},
+  cues:['Hands under shoulders, body in a line','Drive one knee toward your chest, then switch','Keep hips low and steady, breathe']});
+X('flutter_kick','Flutter Kick',{m:M(['core'],['quads']),kind:'t',rng:[20,40],floorMat:1,
+  a:{hx:108,hy:148,tor:-90,th:100,sh:100,ft:100,fth:112,fsh:112,fft:112,ua:90,fa:90,neck:-92},
+  b:{hx:108,hy:148,tor:-90,th:112,sh:112,ft:112,fth:100,fsh:100,fft:100,ua:90,fa:90,neck:-92},
+  cues:['Lie on your back, lower back pressed down','Small quick kicks, legs straight','If your back arches, raise your legs higher']});
+X('leg_raise','Lying Leg Raise',{m:M(['core'],['quads']),floorMat:1,rng:[6,12],
+  a:{hx:108,hy:148,tor:-90,th:98,sh:98,ft:98,ua:90,fa:90,neck:-92},
+  b:{hx:108,hy:148,tor:-90,th:178,sh:178,ft:178,ua:90,fa:90,neck:-92},
+  cues:['Hands under hips, lower back pressed down','Lift straight legs up, lower slowly','Bend your knees to make it easier']});
+X('bear_hold','Bear Hold',{m:M(['core'],['shoulders','quads']),kind:'t',rng:[10,30],hold:1,floorMat:1,
+  a:{hx:92,hy:116,tor:104.7,hand:[133,156],th:15,sh:-90,ft:-90,neck:100},
+  b:{hx:92,hy:115,tor:104.7,hand:[133,156],th:15,sh:-90,ft:-90,neck:100},
+  cues:['Hands under shoulders, knees under hips','Lift knees one inch off the floor','Back flat, breathe, hold still']});
+
 /* ================= APP: constants, state, planner ================= */
 const LAD=[5,7.5,10,12.5,15,17.5,20,22.5,25,30,35,40,45,50,52.5];
 const snap=w=>{let b=LAD[0];for(const v of LAD)if(Math.abs(v-w)<Math.abs(b-w))b=v;return b;};
@@ -708,15 +791,15 @@ const GEAR=[
 const ROT=['push','pull','legs','core','full'];
 const FOCUS={
  push:{name:'Push',sub:'Chest, shoulders, triceps',muscles:['chest','shoulders','triceps'],warm:['arm_circles','wall_angel'],cool:['chest_stretch'],
-  slots:['trk:push',['db_shoulder_press','band_overhead_press'],['db_bench_press','db_floor_press','band_chest_press','tf_chest_press'],'trk:dip',['db_lateral_raise','tf_front_raise'],['db_tricep_ext','band_pushdown'],['db_incline_press'],['band_chest_press'],['band_pushdown']]},
+  slots:['trk:push',['db_shoulder_press','band_overhead_press'],['db_bench_press','db_floor_press','band_chest_press','tf_chest_press'],'trk:dip',['db_lateral_raise','tf_front_raise'],['db_tricep_ext','band_pushdown'],['db_incline_press'],['band_chest_press'],['band_pushdown'],['pike_pushup'],['scap_pushup'],['close_incline_pushup','wall_pushup'],'trk:dip','trk:push']},
  pull:{name:'Pull',sub:'Back, biceps, grip',muscles:['back','biceps','forearms'],warm:['wall_angel','arm_circles'],cool:['childs_pose'],
-  slots:['trk:pull',['db_one_arm_row','band_row'],['band_pull_apart'],['db_curl','band_row'],['band_face_pull'],['db_hammer_curl'],['superman'],['farmer_carry'],['band_lat_pulldown']]},
+  slots:['trk:pull',['db_one_arm_row','band_row'],['band_pull_apart'],['db_curl','band_row'],['band_face_pull'],['db_hammer_curl'],['superman'],['farmer_carry'],['band_lat_pulldown'],['flexed_arm_hang'],['chin_negative'],['prone_y_raise'],['reverse_snow_angel'],'trk:pull']},
  legs:{name:'Legs & Glutes',sub:'Quads, glutes, hamstrings, calves',muscles:['quads','glutes','hamstrings','calves'],warm:['march','glute_bridge'],cool:['childs_pose'],
-  slots:['trk:squat',['db_rdl','good_morning_band'],['db_hip_thrust','glute_bridge'],['tf_leg_extension','calf_raise'],['banded_lateral_walk'],['single_leg_bridge'],['wall_sit'],['donkey_kick'],['good_morning_band']]},
+  slots:['trk:squat',['db_rdl','good_morning_band'],['db_hip_thrust','glute_bridge'],['tf_leg_extension','calf_raise'],['banded_lateral_walk'],['single_leg_bridge'],['wall_sit'],['donkey_kick'],['good_morning_band'],['reverse_lunge'],['split_squat'],['step_up'],['single_leg_rdl'],['glute_march']]},
  core:{name:'Core & Posture',sub:'Abs, lower back, upper back',muscles:['core','back','glutes'],warm:['wall_angel','march'],cool:['childs_pose'],
-  slots:['trk:core',['bird_dog'],['vkr_knee_raise','reverse_crunch'],['reverse_crunch'],['superman'],['med_ball_crunch','crunch'],['glute_bridge'],['band_pull_apart'],['plank']]},
+  slots:['trk:core',['bird_dog'],['vkr_knee_raise','reverse_crunch'],['reverse_crunch'],['superman'],['med_ball_crunch','crunch'],['glute_bridge'],['band_pull_apart'],['plank'],['mountain_climber'],['flutter_kick'],['leg_raise'],['bear_hold']]},
  full:{name:'Full Body',sub:'A bit of everything',muscles:['chest','back','quads','glutes','core','shoulders'],warm:['march','arm_circles'],cool:['childs_pose'],
-  slots:['trk:squat','trk:push',['db_one_arm_row','band_row'],['db_rdl','good_morning_band'],'trk:core',['db_shoulder_press','band_overhead_press'],'trk:pull',['glute_bridge'],['db_curl'],['band_pull_apart'],['calf_raise']]},
+  slots:['trk:squat','trk:push',['db_one_arm_row','band_row'],['db_rdl','good_morning_band'],'trk:core',['db_shoulder_press','band_overhead_press'],'trk:pull',['glute_bridge'],['db_curl'],['band_pull_apart'],['calf_raise'],['reverse_lunge'],['mountain_climber']]},
  primer:{name:'Morning Primer',sub:'Wake up posture, core, glutes',muscles:['back','core','glutes','shoulders'],baseSets:1,maxSets:2,rest:20,
   slots:[['wall_angel'],['arm_circles'],['glute_bridge'],['dead_bug'],['band_pull_apart'],['bird_dog'],['march']]}
 };
@@ -727,14 +810,33 @@ const TRACKS={
   up:['30 second dead hang, 3 times','3 sets of 10 scapular pulls','3 sets of 5 slow 5 second lowers','3 sets of 6 band-assisted reps','']},
  dip:{name:'Dip path',icon:'triceps',steps:['dip_support_hold','bench_dip','dip_assisted','dip'],
   up:['25 second support hold, 3 times','3 sets of 12 bench dips','3 sets of 8 assisted dips','']},
- squat:{name:'Squat path',icon:'quads',steps:['bench_sit_stand','goblet_box_squat'],up:['3 sets of 15 sit-to-stands','']},
+ squat:{name:'Squat path',icon:'quads',steps:['bench_sit_stand','bw_squat','goblet_box_squat'],up:['3 sets of 15 sit-to-stands','3 sets of 15 bodyweight squats','']},
  core:{name:'Core path',icon:'core',steps:['dead_bug','plank_knees','plank','hollow_hold'],
   up:['3 sets of 10 each side','3 sets of 40 seconds','3 sets of 40 seconds','']}
 };
 /* ---------- state ---------- */
-const KEY='groundwork_v2';
+/* ---------- profiles ---------- */
+const REG='groundwork_profiles';
+const keyFor=id=>id==='p1'?'groundwork_v2':'groundwork_v2_'+id;
+function loadReg(){try{const r=JSON.parse(localStorage.getItem(REG));if(r&&r.list&&r.list.length)return r;}catch(e){}return {active:'p1',list:[{id:'p1',name:'Me'}]};}
+let REGI=loadReg();
+if(!REGI.list.some(p=>p.id===REGI.active))REGI.active=REGI.list[0].id;
+let KEY=keyFor(REGI.active);
+function saveReg(){try{localStorage.setItem(REG,JSON.stringify(REGI));}catch(e){}}
+const pname=()=>(REGI.list.find(p=>p.id===REGI.active)||REGI.list[0]).name;
+const STYLES=[
+ {id:'mix',name:'Mix of everything',sub:'Weights, bands and bodyweight together'},
+ {id:'weights',name:'Free weights',sub:'Dumbbell and bench moves lead'},
+ {id:'bands',name:'Bands',sub:'Band and Power Pod moves lead'},
+ {id:'wb',name:'Weights + bands',sub:'Both, with bodyweight as support'},
+ {id:'cali',name:'Calisthenics only',sub:'Bodyweight and the power tower, no weights or bands'}];
+const CALI_X=['dumbbell','band','pods','legext','headrest','ball'];
+const styleOK=ex=>S.style!=='cali'||!ex.eq.some(e=>CALI_X.includes(e));
+function srank(ex){const s=S.style,q=ex.eq,w=q.includes('dumbbell'),b=q.includes('band')||q.includes('pods')||q.includes('legext');
+ if(s==='weights')return w?0:b?2:1;if(s==='bands')return b?0:w?2:1;if(s==='wb')return(w||b)?0:1;return 0;}
+/* ---------- state ---------- */
 const todayKey=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
-const DEF=()=>({gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
+const DEF=()=>({gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,style:'mix',lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
   weights:{},reps:{},hold:{},logs:[],plan:null,tab:'today'});
 let S=load();
 function load(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r){const d=DEF();return Object.assign(d,r,{gear:Object.assign(d.gear,r.gear||{}),tracks:Object.assign(d.tracks,r.tracks||{})});}}catch(e){}return DEF();}
@@ -745,7 +847,7 @@ function ensurePlan(){
 }
 const activeFocus=()=>S.plan.focus||ROT[S.cycle%ROT.length];
 /* ---------- planner ---------- */
-const avail=ex=>ex.eq.every(e=>S.gear[e]);
+const avail=ex=>ex.eq.every(e=>S.gear[e])&&styleOK(ex);
 const mid=a=>(a[0]+a[1])/2;
 const workSec=ex=>ex.kind==='t'?mid(ex.rng):mid(ex.rng)*3.4*(ex.per?2:1);
 const exSec=(ex,sets,rest)=>12+sets*workSec(ex)+Math.max(0,sets-1)*rest+8;
@@ -760,7 +862,7 @@ function resolveTrack(k,used){
 function resolveSlot(slot,used){
   let e=null;
   if(typeof slot==='string'&&slot.startsWith('trk:'))e=resolveTrack(slot.slice(4),used);
-  else for(const id of slot){const c=EX[id];if(c&&avail(c)&&!used.has(c.id)){e=c;break;}}
+  else for(const id of slot.filter(x=>EX[x]).sort((x,y)=>srank(EX[x])-srank(EX[y]))){const c=EX[id];if(c&&avail(c)&&!used.has(c.id)){e=c;break;}}
   if(e){const sw=S.plan.swaps[e.id];if(sw&&EX[sw]&&avail(EX[sw])&&!used.has(sw))e=EX[sw];}
   return e;
 }
@@ -819,6 +921,15 @@ function streak(){
   if(!days.has(k(d)))d.setDate(d.getDate()-1);
   while(days.has(k(d))){n++;d.setDate(d.getDate()-1);}return n;
 }
+
+function switchProfile(id){save();REGI.active=id;saveReg();KEY=keyFor(id);S=load();ensurePlan();render();}
+function addProfile(name,style){save();const id='p'+Date.now().toString(36);REGI.list.push({id,name});REGI.active=id;saveReg();KEY=keyFor(id);S=DEF();S.style=style||'mix';ensurePlan();save();render();}
+function deleteProfile(id){if(REGI.list.length<2)return;try{localStorage.removeItem(keyFor(id));}catch(e){}REGI.list=REGI.list.filter(p=>p.id!==id);if(REGI.active===id)REGI.active=REGI.list[0].id;saveReg();KEY=keyFor(REGI.active);S=load();ensurePlan();render();}
+function allBackup(){save();const data={};REGI.list.forEach(p=>{data[p.id]=localStorage.getItem(keyFor(p.id));});return JSON.stringify({app:'groundwork',v:2,reg:REGI,data});}
+function restoreText(txt){let o;try{o=JSON.parse(txt);}catch(e){return 'That does not look like a backup.';}
+ try{if(o&&o.reg&&o.data){Object.keys(o.data).forEach(id=>{if(o.data[id])localStorage.setItem(keyFor(id),o.data[id]);});REGI=o.reg;saveReg();KEY=keyFor(REGI.active);S=load();ensurePlan();return '';}
+ if(o&&o.gear&&o.logs){const d=DEF();S=Object.assign(d,o,{gear:Object.assign(d.gear,o.gear),tracks:Object.assign(d.tracks,o.tracks||{})});save();ensurePlan();return '';}}catch(e){return 'Could not save the backup.';}
+ return 'That does not look like a backup.';}
 
 /* ================= APP: views ================= */
 const $=s=>document.querySelector(s);
@@ -913,22 +1024,34 @@ function viewProgress(){
   return h;
 }
 function viewGear(){
-  let h=`<section class="card"><div class="sec-h">Your equipment<span>turn off what you do not use</span></div>`;
+  let h=`<section class="card"><div class="sec-h">Training style<span>${pname()}</span></div>`;
+  STYLES.forEach(s=>{h+=`<div class="gear" data-act="style" data-id="${s.id}" style="cursor:pointer"><div><b>${s.name}</b><span>${s.sub}</span></div><i class="radio ${S.style===s.id?'on':''}"></i></div>`;});
+  h+=`<p class="hint">Calisthenics and your skill paths are part of every style. This only changes what fills the rest of each session.</p></section>`;
+  h+=`<section class="card"><div class="sec-h">Your equipment<span>turn off what you do not use</span></div>`;
   GEAR.forEach(g=>{h+=`<div class="gear"><div><b>${g.name}</b><span>${g.sub}</span></div><button class="tog ${S.gear[g.id]?'on':''}" data-act="gear" data-id="${g.id}" aria-label="toggle ${g.name}"><i></i></button></div>`;});
   h+=`<p class="hint">Bodyweight, wall and floor moves are always on. Treadmill and elliptical are left out on purpose, this app is strength only.</p></section>`;
   const loaded=Object.values(EX).filter(e=>e.w0&&avail(e));
   h+=`<section class="card"><div class="sec-h">Starting weights<span>per dumbbell</span></div><p class="hint" style="margin-top:0">These are cautious beginner starts. Change them to match what feels challenging but clean. The app raises them for you when you earn it.</p>`;
   loaded.forEach(e=>{h+=`<div class="gear"><div><b>${e.name}</b><span>${e.one?'one dumbbell':'each hand'}</span></div><div class="step"><button data-act="wt" data-id="${e.id}" data-d="-1">-</button><b>${curW(e)} lb</b><button data-act="wt" data-id="${e.id}" data-d="1">+</button></div></div>`;});
-  h+=`</section><section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Everything is saved on this phone only.</p><div class="row"><button class="ghost" data-act="export">Copy backup</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
+  h+=`</section><section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Everything is saved on this phone only. Copy a backup now and then, in case browser data is cleared.</p><div class="row"><button class="ghost" data-act="export">Copy backup</button><button class="ghost" data-act="exportall">Backup all</button><button class="ghost" data-act="restore">Restore</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
   return h;
 }
 function render(){
   const v=S.tab;const root=$('#view');
   root.innerHTML=v==='today'?viewToday():v==='plan'?viewPlan():v==='progress'?viewProgress():viewGear();
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===v));
+  const pc=$('#pchip');if(pc)pc.textContent=pname();
   hook();
 }
 /* ---------- sheets ---------- */
+function profileSheet(){
+  let h=`<h2>Profiles</h2><p class="hint" style="margin-top:4px">Each profile has its own progress, plan, gear and style.</p>`;
+  REGI.list.forEach(p=>{h+=`<div class="rot ${p.id===REGI.active?'next':''}" data-act="switchp" data-id="${p.id}"><div class="rt"><b>${p.name}</b><span>${p.id===REGI.active?'Active now':'Tap to switch'}</span></div></div>`;});
+  h+=`<div class="sec-h" style="margin-top:16px">Add a profile</div><input id="pname" class="field" placeholder="Name" maxlength="20"><select id="pstyle" class="field">${STYLES.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select><div class="col"><button class="primary" data-act="addp">Add and switch</button></div>`;
+  h+=`<div class="sec-h" style="margin-top:16px">This profile</div><input id="rname" class="field" value="${pname()}" maxlength="20"><div class="row"><button class="ghost" data-act="renp">Rename</button>${REGI.list.length>1?'<button class="ghost danger" data-act="delp">Delete</button>':''}</div>`;
+  openSheet(h);
+}
+function restoreSheet(){openSheet(`<h2>Restore a backup</h2><p class="hint" style="margin-top:4px">Paste a backup you copied earlier. A single-profile backup replaces the current profile. An all-profiles backup replaces everyone.</p><textarea id="rtext" class="field" rows="6" placeholder="Paste backup here"></textarea><div class="col"><button class="primary" data-act="restoredo">Restore</button><button class="ghost" data-act="closesheet">Cancel</button></div>`);}
 function openSheet(html){const s=$('#sheet');s.querySelector('.panel').innerHTML=html+'<div style="height:14px"></div>';s.classList.add('show');s.querySelector('.panel').scrollTop=0;hook();}
 function closeSheet(){$('#sheet').classList.remove('show');}
 function ask(title,msg,btns){
@@ -1110,6 +1233,7 @@ function saveSession(){
 }
 function closePlayer(){stopTick();unlockWake();$('#player').classList.remove('show');document.body.classList.remove('lock');P=null;render();}
 /* ---------- actions ---------- */
+function copyText(j,msg){if(navigator.clipboard)navigator.clipboard.writeText(j).then(()=>toast(msg),()=>window.prompt('Copy your backup',j));else window.prompt('Copy your backup',j);}
 const ACT={
  tab(t){S.tab=t.dataset.t;save();render();window.scrollTo(0,0);},
  focus(){focusSheet();},
@@ -1129,7 +1253,16 @@ const ACT={
  lvl(t){const k=t.dataset.k,T=TRACKS[k];S.tracks[k]=clamp(S.tracks[k]+(+t.dataset.d),0,T.steps.length-1);save();render();toast(EX[T.steps[S.tracks[k]]].name);},
  gear(t){S.gear[t.dataset.id]=S.gear[t.dataset.id]?0:1;S.plan.swaps={};save();render();},
  wt(t){const e=EX[t.dataset.id];S.weights[e.id]=stepW(curW(e),+t.dataset.d);save();render();},
- export(){const j=JSON.stringify(S);if(navigator.clipboard)navigator.clipboard.writeText(j).then(()=>toast('Backup copied'),()=>window.prompt('Copy your backup',j));else window.prompt('Copy your backup',j);},
+ export(){copyText(JSON.stringify(S),'Backup copied');},
+ exportall(){copyText(allBackup(),'All profiles copied');},
+ restore(){restoreSheet();},
+ restoredo(){const m=restoreText(($('#rtext')||{}).value||'');if(m){toast(m);return;}closeSheet();render();toast('Restored');},
+ style(t){S.style=t.dataset.id;S.plan.swaps={};save();render();},
+ profiles(){profileSheet();},
+ switchp(t){switchProfile(t.dataset.id);closeSheet();toast(pname());},
+ addp(){const n=(($('#pname')||{}).value||'').trim();if(!n){toast('Type a name first');return;}addProfile(n,($('#pstyle')||{}).value);closeSheet();S.tab='gear';render();toast(n+' added');},
+ renp(){const n=(($('#rname')||{}).value||'').trim();if(!n)return;REGI.list.find(p=>p.id===REGI.active).name=n;saveReg();closeSheet();render();},
+ delp(){const nm=pname(),id=REGI.active;ask('Delete '+nm+'?','This removes their history, plan and gear from this phone.',[{t:'Yes, delete',cls:'danger',fn(){deleteProfile(id);closeSheet();toast('Deleted');}},{t:'Keep',fn(){closeSheet();}}]);},
  reset(){ask('Reset everything?','This clears your history, weights and skill levels on this phone.',[{t:'Yes, reset',cls:'danger',fn(){try{localStorage.removeItem(KEY);}catch(e){}S=DEF();ensurePlan();closeSheet();render();}},{t:'Keep my data',fn(){closeSheet();}}]);},
  /* player */
  wd(t){P.w=stepW(P.w,+t.dataset.d);renderPlayer();},
@@ -1159,6 +1292,7 @@ document.addEventListener('click',e=>{
 });
 /* ---------- init ---------- */
 ensurePlan();render();requestAnimationFrame(loop);
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){try{navigator.serviceWorker.register('sw.js').catch(()=>{});}catch(e){}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){ensurePlan();if(!P)render();else if(P&&!wake)lockWake();}});
 
