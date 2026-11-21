@@ -1937,7 +1937,7 @@ function viewGear(){
   const loaded=Object.values(EX).filter(e=>e.w0&&!e.mach&&!e.prog&&avail(e));
   h+=`<section class="card"><div class="sec-h">Starting weights<span>per dumbbell</span></div><p class="hint" style="margin-top:0">These are cautious beginner starts. Change them to match what feels challenging but clean. The app raises them for you when you earn it.</p>`;
   loaded.forEach(e=>{h+=`<div class="gear"><div><b>${e.name}</b><span>${e.one?'one dumbbell':'each hand'}</span></div><div class="step"><button data-act="wt" data-id="${e.id}" data-d="-1">-</button><b>${curW(e)} lb</b><button data-act="wt" data-id="${e.id}" data-d="1">+</button></div></div>`;});
-  h+=`</section>`+wGearCard()+`<section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Progress is saved in Chrome on this phone. Keep a copy outside Chrome in case browser data is cleared. Last copy: <b>${bkAgo()}</b>.</p><div class="gear"><div><b>Offer a backup after each workout</b><span>One tap to share or save a file</span></div><button class="tog ${S.bkask?'on':''}" data-act="bktog" aria-label="toggle backup prompt"><i></i></button></div><div class="row"><button class="ghost" data-act="bksheet">Back up now</button><button class="ghost" data-act="welagain">Show the intro again</button><button class="ghost" data-act="export">Copy backup</button><button class="ghost" data-act="exportall">Copy all</button><button class="ghost" data-act="restore">Restore</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
+  h+=`</section>`+wGearCard()+`<section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Progress is saved in Chrome on this phone. Keep a copy outside Chrome in case browser data is cleared. Last copy: <b>${bkAgo()}</b>.</p>${fsBlock()}<div class="gear"><div><b>Offer a backup after each workout</b><span>One tap to share or save a file</span></div><button class="tog ${S.bkask?'on':''}" data-act="bktog" aria-label="toggle backup prompt"><i></i></button></div><div class="row"><button class="ghost" data-act="bksheet">Back up now</button><button class="ghost" data-act="welagain">Show the intro again</button><button class="ghost" data-act="export">Copy backup</button><button class="ghost" data-act="exportall">Copy all</button><button class="ghost" data-act="restore">Restore</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
   return h;
 }
 function render(){
@@ -2236,7 +2236,7 @@ const ACT={
     ...(any?[{t:'Save and finish',fn(){closeSheet();P.phase='done';renderPlayer();}}]:[]),
     {t:'Discard',cls:'danger',fn(){closeSheet();closePlayer();}}]);},
  plup(t){const k=t.dataset.k;S.tracks[k]=clamp(S.tracks[k]+1,0,TRACKS[k].steps.length-1);save();t.textContent='Done';t.disabled=true;toast('Level up!');},
- plsave(){const had=P&&P.sum&&P.sum.logged&&P.sum.logged.length;saveSession();closePlayer();toast('Saved');if(had&&S.bkask)setTimeout(bkSheet,1500);},
+ plsave(){const had=P&&P.sum&&P.sum.logged&&P.sum.logged.length;saveSession();closePlayer();toast('Saved');if(had){if(typeof fsAfterWorkout==='function'&&fsAfterWorkout()){}else if(S.bkask)setTimeout(bkSheet,1500);}},
  bksheet(){bkSheet();},
  bkshare(){bkShare().then(r=>{if(r==='shared'){closeSheet();toast('Backup shared');render();}else if(r==='saved'){closeSheet();toast('Saved to Downloads');render();}});},
  bksave(){bkSave();closeSheet();toast('Saved to Downloads');render();},
@@ -2268,16 +2268,72 @@ try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){try{navigator.serviceWorker.register('sw.js').catch(()=>{});}catch(e){}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){ensurePlan();if(!P)render();else if(P&&!wake)lockWake();}});
 
+/* ---------- automatic backup to a chosen folder (File System Access API) ---------- */
+const FSN='MUSCLES app',FSF='MUSCLES-app-backup.json';
+const fsOK=()=>{try{return 'showDirectoryPicker' in window&&window.self===window.top;}catch(e){return false;}};
+let FSH=null;
+function fsIdb(){return new Promise((res,rej)=>{const r=indexedDB.open('groundwork_fs',1);r.onupgradeneeded=()=>r.result.createObjectStore('h');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+async function fsGet(k){try{const d=await fsIdb();return await new Promise(res=>{const q=d.transaction('h').objectStore('h').get(k);q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null);});}catch(e){return null;}}
+async function fsSet(k,v){try{const d=await fsIdb();await new Promise(res=>{const t=d.transaction('h','readwrite'),s=t.objectStore('h');if(v===null)s.delete(k);else s.put(v,k);t.oncomplete=res;t.onerror=res;});}catch(e){}}
+async function fsPerm(h,ask){const o={mode:'readwrite'};try{if(h.queryPermission&&(await h.queryPermission(o))==='granted')return true;if(!ask)return false;return h.requestPermission?(await h.requestPermission(o))==='granted':true;}catch(e){return false;}}
+async function fsPick(){const h=await window.showDirectoryPicker({id:'musclesapp',mode:'readwrite',startIn:'documents'});FSH=h;await fsSet('dir',h);return h;}
+async function fsPut(h,name,txt){const fh=await h.getFileHandle(name,{create:true});const w=await fh.createWritable();await w.write(txt);await w.close();}
+async function fsWrite(){
+  if(!FSH)return 'nofolder';
+  try{
+    if(!(await fsPerm(FSH,true)))return 'perm';
+    const txt=allBackup();
+    await fsPut(FSH,FSF,txt);
+    const d=new Date(),p=n=>String(n).padStart(2,'0');
+    await fsPut(FSH,'MUSCLES-app-backup-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'.json',txt);
+    try{const names=[];for await(const [n] of FSH.entries()){if(/^MUSCLES-app-backup-\d{4}-\d\d-\d\d\.json$/.test(n))names.push(n);}names.sort();while(names.length>7){await FSH.removeEntry(names.shift());}}catch(e){}
+    markBk();try{localStorage.setItem('groundwork_fsok','1');}catch(e){}
+    return '';
+  }catch(e){return 'err:'+(e&&e.name||'unknown');}
+}
+async function fsReadLatest(h){const fh=await h.getFileHandle(FSF);const f=await fh.getFile();return f.text();}
+async function fsLoad(){FSH=await fsGet('dir');if(S&&S.tab==='gear'&&!document.getElementById('welcome'))render();}
+function fsBlock(){
+  if(!fsOK())return `<div class="gear"><div><b>Backup folder</b><span>This browser cannot save straight to a folder. After each workout the app offers to share or download a backup instead.</span></div></div>`;
+  if(FSH)return `<div class="gear"><div><b>Backup folder: ${FSH.name}</b><span>Saves automatically after every workout. Last copy: <b>${bkAgo()}</b>.</span></div></div><div class="row"><button class="ghost" data-act="fsnow">Save now</button><button class="ghost" data-act="fspick">Change folder</button><button class="ghost" data-act="fsrestore">Restore from folder</button><button class="ghost" data-act="fsstop">Stop</button></div>`;
+  return `<div class="gear"><div><b>Backup folder</b><span>Pick a folder once and the app saves there after every workout. Recommended: Internal storage, Documents, then a new folder named <b>${FSN}</b>.</span></div></div><div class="row"><button class="primary" data-act="fspick">Choose backup folder</button><button class="ghost" data-act="fsrestore">Restore from folder</button></div>`;
+}
+const fsMsg=r=>r===''?'Saved to '+(FSH?FSH.name:'folder'):r==='perm'?'Folder permission was not granted':r==='nofolder'?'No backup folder chosen':'Could not save to the folder ('+r.slice(4)+')';
+Object.assign(ACT,{
+ async fspick(){
+   try{await fsPick();}catch(e){if(e&&e.name!=='AbortError')toast('Could not open the folder picker');return;}
+   const r=await fsWrite();toast(fsMsg(r));
+   if(document.getElementById('welcome'))welRender();else render();
+ },
+ async fsnow(){const r=await fsWrite();toast(fsMsg(r));render();},
+ async fsstop(){FSH=null;await fsSet('dir',null);toast('Folder backup stopped');if(document.getElementById('welcome'))welRender();else render();},
+ async fsrestore(){
+   let h=FSH;
+   try{if(!h||!(await fsPerm(h,true)))h=await window.showDirectoryPicker({id:'musclesapp',mode:'read',startIn:'documents'});}catch(e){if(e&&e.name!=='AbortError')toast('Could not open the folder');return;}
+   let txt;try{txt=await fsReadLatest(h);}catch(e){toast('No backup file found in that folder');return;}
+   const m=restoreText(txt);if(m){toast(m);return;}
+   if(!FSH){FSH=h;await fsSet('dir',h);}
+   closeSheet();render();toast('Progress restored');
+ }
+});
+function fsAfterWorkout(){
+  if(!FSH)return false;
+  fsWrite().then(r=>{if(r===''){toast('Backup saved to '+(FSH?FSH.name:'folder'));}else{toast(fsMsg(r));if(S.bkask)setTimeout(bkSheet,1200);}});
+  return true;
+}
+fsLoad();
+
 /* ---------- first-launch walkthrough ---------- */
 const WELKEY='groundwork_welcomed';
 let WS={i:0};
 const welDone=()=>{try{return !!localStorage.getItem(WELKEY);}catch(e){return true;}};
 const welMark=()=>{try{localStorage.setItem(WELKEY,'1');}catch(e){}};
 const isInstalled=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone;}catch(e){return false;}};
-const WSTEPS=['hello','name','style','gear','prog','safe','install'];
+const WSTEPS=['hello','folder','name','style','gear','prog','safe','install'];
 function welHTML(){
   const k=WSTEPS[WS.i],n=WSTEPS.length;let b='';
-  if(k==='hello')b=`<h1>Welcome to Groundwork</h1><p class="hint big">Short strength sessions you can fit into any day, at home or at a gym. It plans each session for the time you have, tracks your weights and tells you when to go heavier.</p><div class="card"><b>First time here?</b><p class="hint" style="margin:4px 0 0">Tap <b>Next</b>. A one minute setup follows and you can change everything later.</p></div><div class="card"><b>Cleared Chrome data or cache by mistake?</b><p class="hint" style="margin:4px 0 10px">Restore your progress here from the backup file you saved.</p><button class="ghost" data-act="welrestore">Restore my backup</button></div><p class="hint" style="color:var(--fg,#e8edf7)"><b>If you clear your Chrome history and browsing data, this screen will appear again. Restore your progress from the backup file you saved, so back up regularly.</b></p>`;
+  if(k==='hello')b=`<h1>Welcome to Groundwork</h1><p class="hint big">Short strength sessions you can fit into any day, at home or at a gym. It plans each session for the time you have, tracks your weights and tells you when to go heavier.</p><div class="card"><b>First time here?</b><p class="hint" style="margin:4px 0 0">Tap <b>Next</b>. A one minute setup follows and you can change everything later.</p></div><div class="card"><b>Cleared Chrome data or cache by mistake?</b><p class="hint" style="margin:4px 0 10px">Restore your progress here from the backup file you saved.</p><div class="row"><button class="ghost" data-act="welrestore">Paste or load a file</button>${fsOK()?'<button class="ghost" data-act="fsrestore">Restore from my folder</button>':''}</div></div><p class="hint" style="color:var(--fg,#e8edf7)"><b>If you clear your Chrome history and browsing data, this screen will appear again. Restore your progress from the backup file you saved, so back up regularly.</b></p>`;
+  if(k==='folder'){const ok=fsOK();b=`<h1>Back up automatically</h1><p class="hint big">Choose a folder once. After that the app saves your progress there at the end of every workout, so you never rely on Chrome's storage alone.</p>${!ok?`<div class="card"><p class="hint" style="margin:0">This browser cannot save straight to a folder. No problem: after each workout the app offers to share or download a backup file instead.</p></div>`:FSH?`<div class="card warn" style="border-color:#2fd3be88;background:rgba(47,211,190,.08)"><b>Saving to: ${FSH.name}</b><p class="hint" style="margin:6px 0 0">Done. A backup is saved there after every workout. You can change this later in Gear, Your data.</p></div><div class="col"><button class="ghost" data-act="fspick">Choose a different folder</button></div>`:`<div class="card"><b>Recommended location</b><p class="hint" style="margin:4px 0 8px">Internal storage, Documents, <b>${FSN}</b></p><ol class="hint" style="margin:0;padding-left:18px;line-height:1.6"><li>Tap <b>Choose backup folder</b></li><li>Open <b>Internal storage</b>, then <b>Documents</b></li><li>Tap the new folder icon and name it <b>${FSN}</b></li><li>Tap <b>Use this folder</b>, then <b>Allow</b></li></ol></div><div class="col"><button class="primary" data-act="fspick">Choose backup folder</button></div><p class="hint">You can skip this and set it up later in Gear, Your data.</p>`}`;}
   if(k==='name')b=`<h1>Who is training?</h1><p class="hint big">Your name keeps your progress, plan and equipment separate from anyone else who uses this phone.</p><input id="wname" class="field" placeholder="Your name" maxlength="20" value="${pname()==='Me'?'':pname()}"><p class="hint">Sharing this phone? Tap the name at the top right any time to add or switch people.</p>`;
   if(k==='style')b=`<h1>How do you like to train?</h1><p class="hint big">This decides which kinds of moves lead each session.</p>${STYLES.map(s=>`<div class="gear" data-act="welstyle" data-id="${s.id}" style="cursor:pointer"><div><b>${s.name}</b><span>${s.sub}</span></div><i class="radio ${S.style===s.id?'on':''}"></i></div>`).join('')}`;
   if(k==='gear'){const ids=['dumbbell','bench','tower','band','ball'];b=`<h1>What do you have at home?</h1><p class="hint big">Turn off anything you do not own. Bodyweight moves are always included.</p>${GEAR.filter(g=>ids.includes(g.id)).map(g=>`<div class="gear"><div><b>${g.name}</b><span>${g.sub}</span></div><button class="tog ${S.gear[g.id]?'on':''}" data-act="welgear" data-id="${g.id}" aria-label="toggle ${g.name}"><i></i></button></div>`).join('')}<p class="hint">Going to a gym? Open Gear later and switch to Away to tick machines. Home and Away are kept separate.</p>`;}
