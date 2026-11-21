@@ -445,6 +445,7 @@ function jointOf(R,name){
 }
 /* ---- full scene ---- */
 function sceneInner(ex,t){
+  if(ex.mach&&typeof machScene==='function')return machScene(ex.scn,t,ex.m);
   const P=lerpPose(ex.a,ex.b,t),view=ex.view==='front'||ex.view==='back'?ex.view:'side';
   const R=solve(P,view==='side'?'side':'front');
   const lowX=(R.H[0]);
@@ -471,6 +472,7 @@ const SVG_OPEN=`<svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" pr
 function sceneSVG(ex,t){return SVG_OPEN+sceneInner(ex,t)+'</svg>';}
 /* animation phase: 0..1 loop -> blend t (with dwell) */
 function phaseT(ex,ph){
+  if(ex.cyc)return ph;
   if(ex.hold){return .5-.5*Math.cos(ph*Math.PI*2)*.5+.0; }
   const k=ph;let u;
   if(k<.42)u=k/.42;else if(k<.5)u=1;else if(k<.92)u=1-(k-.5)/.42;else u=0;
@@ -949,7 +951,8 @@ const MGROUPS=[
 const MACH_EQ=MGROUPS.flatMap(g=>g.items.map(i=>i[0])).filter(id=>!['dumbbell','bench','tower','band','ball','bike','tread','ellip','rower','stair'].includes(id));
 const GEAR_ALIAS={legpress:'sled hack squat',legextm:'quad extension',legcurlm:'hamstring curl',hipm:'inner outer thigh abductor adductor',pecdeck:'fly butterfly chest fly rear delt',pulldown:'lat pull down',rowm:'row machine back',cable:'cables pulley crossover functional trainer',smith:'smith bar',barbell:'squat rack power rack olympic bar',shpm:'overhead press',curlm:'bicep curl preacher',tricepm:'tricep dip',abm:'crunch abdominal',roman:'hyperextension',tread:'run running',bike:'cycle spin',ellip:'cross trainer',rower:'row erg',stair:'stairmaster step mill'};
 /* ---- drawings ---- */
-const GGLYPH={dumbbell:'db',bench:'bench',barbell:'bar',smith:'smith',tower:'tower',band:'band',ball:'ball',legpress:'sled',legextm:'legs',legcurlm:'legs',calfm:'sled',hipm:'legs',chestm:'press',pecdeck:'press',pulldown:'pull',rowm:'row',cable:'cable',roman:'roman',shpm:'press',curlm:'press',tricepm:'press',abm:'ab',bike:'bike',tread:'tread',ellip:'ellip',rower:'rower',stair:'tread'};
+const MCYC_KEYS=['bike','tread','ellip','rower','stair'];
+const GGLYPH_OLD={dumbbell:'db',bench:'bench',barbell:'bar',smith:'smith',tower:'tower',band:'band',ball:'ball',legpress:'sled',legextm:'legs',legcurlm:'legs',calfm:'sled',hipm:'legs',chestm:'press',pecdeck:'press',pulldown:'pull',rowm:'row',cable:'cable',roman:'roman',shpm:'press',curlm:'press',tricepm:'press',abm:'ab',bike:'bike',tread:'tread',ellip:'ellip',rower:'rower',stair:'tread'};
 const GINFO={
  dumbbell:['A short bar with weight plates on each end, held in one hand. Gyms have a rack of fixed pairs.','Arms, shoulders, chest, back, legs'],
  bench:['A padded bench, flat or with an adjustable back. You sit or lie on it for presses and rows.','Used with dumbbells or a barbell'],
@@ -978,42 +981,175 @@ const GINFO={
  ellip:['Foot pedals and moving handles in a smooth gliding motion. Low impact.','Legs, arms, heart and lungs'],
  rower:['A seat that slides on a rail. You push with your legs, lean back, then pull the handle to your ribs.','Legs, back, arms'],
  stair:['A rotating staircase you climb. Hold the rails lightly.','Legs, glutes, heart and lungs']};
-function machG(g,anim){
-  const F='#3b4766',PD='#566387',AC='#ff6a2b',ST='#2b3550',PL='#7683a6',BG='#101520';
-  const tr=(dx,dy,d)=>anim?`<animateTransform attributeName="transform" type="translate" values="0 0;${dx} ${dy};0 0" dur="${d||2.4}s" repeatCount="indefinite"/>`:'';
-  const ro=(deg,cx,cy,d)=>anim?`<animateTransform attributeName="transform" type="rotate" values="0 ${cx} ${cy};${deg} ${cx} ${cy};0 ${cx} ${cy}" dur="${d||2.4}s" repeatCount="indefinite"/>`:'';
-  const an=(a,v,d)=>anim?`<animate attributeName="${a}" values="${v}" dur="${d||2.4}s" repeatCount="indefinite"/>`:'';
-  const grp=(inner,motion)=>`<g>${inner}${motion||''}</g>`;
-  const stack=(x,y,h)=>`<rect x="${x}" y="${y}" width="30" height="${h}" rx="3" fill="${ST}"/>`+[0,1,2,3,4,5].map(i=>`<rect x="${x+4}" y="${y+6+i*((h-12)/6)}" width="22" height="${(h-12)/6-3}" rx="2" fill="${i===2?AC:PL}" opacity="${i===2?1:.55}"/>`).join('');
-  const floor=`<rect x="20" y="150" width="200" height="6" rx="3" fill="${F}"/>`;
-  const L=(x1,y1,x2,y2,c,w,extra)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w||5}" stroke-linecap="round">${extra||''}</line>`;
-  let s=`<rect width="240" height="180" fill="${BG}"/>`+floor;
-  if(g==='press'){s+=stack(180,44,106)+`<rect x="88" y="106" width="46" height="12" rx="5" fill="${PD}"/><rect x="76" y="50" width="13" height="64" rx="6" fill="${PD}"/>`+L(110,118,110,150,F,6)+L(82,44,170,44,F,5)+L(170,44,170,60,F,5)+grp(L(94,72,148,72,AC,6)+`<circle cx="150" cy="72" r="7" fill="${AC}"/>`,tr(16,0));}
-  else if(g==='ab'){s+=stack(180,44,106)+`<rect x="88" y="106" width="46" height="12" rx="5" fill="${PD}"/><rect x="76" y="50" width="13" height="64" rx="6" fill="${PD}"/>`+L(110,118,110,150,F,6)+L(82,44,170,44,F,5)+L(170,44,170,60,F,5)+grp(`<rect x="108" y="64" width="26" height="22" rx="8" fill="${AC}"/>`+L(122,66,100,90,F,4),ro(-16,100,90));}
-  else if(g==='pull'){s+=stack(184,44,106)+L(106,150,106,30,F,6)+L(150,150,150,30,F,6)+L(106,30,170,30,F,6)+L(128,30,128,66,PL,3,an('y2','66;98;66'))+L(98,66,158,66,AC,7,an('y1','66;98;66')+an('y2','66;98;66'))+`<rect x="116" y="112" width="26" height="10" rx="5" fill="${PD}"/><rect x="128" y="96" width="30" height="9" rx="4" fill="${PD}"/>`;}
-  else if(g==='row'){s+=stack(184,44,106)+`<rect x="62" y="112" width="44" height="12" rx="5" fill="${PD}"/><rect x="110" y="62" width="12" height="46" rx="5" fill="${PD}"/>`+L(110,124,110,150,F,6)+grp(L(126,88,180,88,PL,3)+L(150,78,150,98,AC,6)+`<circle cx="150" cy="88" r="3" fill="${AC}"/>`,tr(-22,0));}
-  else if(g==='legs'){s+=stack(184,60,90)+`<rect x="80" y="104" width="46" height="12" rx="5" fill="${PD}"/><rect x="70" y="54" width="12" height="56" rx="6" fill="${PD}"/>`+L(104,116,104,150,F,6)+grp(L(124,108,160,136,AC,6)+`<circle cx="160" cy="136" r="8" fill="${AC}"/>`+L(160,136,184,120,F,3),ro(-32,124,108));}
-  else if(g==='sled'){s+=`<polygon points="40,140 56,146 196,70 190,58" fill="${F}"/>`+`<rect x="54" y="108" width="40" height="12" rx="5" fill="${PD}" transform="rotate(-28 74 114)"/>`+grp(`<rect x="168" y="46" width="14" height="40" rx="5" fill="${AC}" transform="rotate(28 175 66)"/>`,tr(-34,18));}
-  else if(g==='cable'){s+=stack(178,40,110)+L(176,150,176,24,F,5)+L(176,34,140,34,F,5)+`<circle cx="138" cy="34" r="7" fill="${AC}"/>`+L(138,41,118,104,PL,2.5,an('y2','104;70;104')+an('x2','118;126;118'))+grp(L(108,104,128,104,AC,6),tr(8,-34));}
-  else if(g==='bar'){s+=L(70,150,70,28,F,7)+L(170,150,170,28,F,7)+L(60,64,80,64,PL,5)+L(160,64,180,64,PL,5)+grp(L(30,60,210,60,AC,5)+`<rect x="22" y="40" width="9" height="40" rx="3" fill="${PL}"/><rect x="209" y="40" width="9" height="40" rx="3" fill="${PL}"/><rect x="32" y="46" width="7" height="28" rx="3" fill="${PD}"/><rect x="201" y="46" width="7" height="28" rx="3" fill="${PD}"/>`,tr(0,48,3));}
-  else if(g==='smith'){s+=L(74,150,74,24,F,7)+L(166,150,166,24,F,7)+L(74,24,166,24,F,5)+grp(L(74,66,166,66,AC,6)+`<rect x="60" y="52" width="9" height="28" rx="3" fill="${PL}"/><rect x="171" y="52" width="9" height="28" rx="3" fill="${PL}"/>`,tr(0,56,3));}
-  else if(g==='roman'){s+=`<polygon points="60,150 84,150 150,100 126,88" fill="${F}"/><rect x="60" y="116" width="14" height="30" rx="6" fill="${PD}"/>`+grp(`<rect x="104" y="80" width="46" height="14" rx="6" fill="${AC}" transform="rotate(30 127 87)"/>`,ro(-26,100,92));}
-  else if(g==='tread'){s+=`<polygon points="40,138 190,128 190,140 40,148" fill="${F}"/>`+L(48,139,184,131,AC,4,`<animate attributeName="stroke-dashoffset" values="0;-18" dur="${anim?0.6:0}s" repeatCount="indefinite"/>`).replace('stroke-linecap="round"','stroke-linecap="butt" stroke-dasharray="10 8"')+L(190,132,190,54,F,6)+`<rect x="168" y="38" width="44" height="26" rx="6" fill="${PD}"/>`+L(176,70,176,130,F,4)+L(176,84,120,88,PL,4);}
-  else if(g==='bike'){s+=`<circle cx="70" cy="112" r="22" fill="${ST}" stroke="${F}" stroke-width="4"/>`+L(70,112,128,70,F,6)+`<rect x="112" y="52" width="30" height="8" rx="4" fill="${PD}"/>`+L(150,66,170,50,F,5)+L(70,112,150,66,F,5)+L(70,112,112,128,F,5)+`<circle cx="112" cy="128" r="3" fill="${PL}"/>`+grp(L(112,128,112,112,AC,5)+`<circle cx="112" cy="112" r="5" fill="${AC}"/>`,anim?`<animateTransform attributeName="transform" type="rotate" values="0 112 128;360 112 128" dur="1.6s" repeatCount="indefinite"/>`:'');}
-  else if(g==='ellip'){s+=L(190,148,190,40,F,6)+L(190,48,150,70,PL,4)+L(190,48,168,40,F,5)+L(112,136,150,70,F,4)+grp(`<rect x="60" y="136" width="52" height="9" rx="4" fill="${AC}"/>`,tr(12,-12,1.8))+grp(`<rect x="118" y="120" width="52" height="9" rx="4" fill="${AC}" opacity=".7"/>`,tr(-12,12,1.8));}
-  else if(g==='rower'){s+=L(36,134,200,134,F,6)+`<circle cx="198" cy="112" r="22" fill="${ST}" stroke="${F}" stroke-width="4"/>`+L(198,112,150,92,PL,3)+L(44,134,44,146,F,6)+grp(`<rect x="70" y="118" width="32" height="12" rx="5" fill="${AC}"/>`,tr(46,0,2.4))+grp(L(142,86,152,98,AC,6),tr(-24,10,2.4));}
-  else if(g==='db'){s+=grp(L(70,100,170,100,PL,6)+`<rect x="50" y="76" width="12" height="48" rx="4" fill="${PD}"/><rect x="62" y="84" width="10" height="32" rx="3" fill="${PL}"/><rect x="178" y="76" width="12" height="48" rx="4" fill="${PD}"/><rect x="168" y="84" width="10" height="32" rx="3" fill="${PL}"/>`+L(104,100,136,100,AC,9),tr(0,-34,2));}
-  else if(g==='bench'){s+=`<rect x="70" y="112" width="100" height="14" rx="6" fill="${PD}"/>`+L(90,126,90,150,F,6)+L(150,126,150,150,F,6)+grp(`<rect x="96" y="108" width="82" height="14" rx="6" fill="${AC}" transform="rotate(-32 100 112)"/>`,ro(22,100,112,3));}
-  else if(g==='tower'){s+=L(70,150,70,28,F,7)+L(170,150,170,28,F,7)+L(60,36,180,36,AC,6)+L(70,96,100,96,PL,5)+L(140,96,170,96,PL,5)+`<rect x="100" y="100" width="40" height="10" rx="5" fill="${PD}"/>`;}
-  else if(g==='band'){s+=`<rect x="36" y="86" width="12" height="28" rx="5" fill="${PD}"/><rect x="192" y="86" width="12" height="28" rx="5" fill="${PD}"/>`+`<ellipse cx="120" cy="100" rx="64" ry="12" fill="none" stroke="${AC}" stroke-width="5">${an('rx','64;80;64')}</ellipse>`;}
-  else if(g==='ball'){s+=grp(`<circle cx="120" cy="104" r="34" fill="${AC}" opacity=".9"/><path d="M92 90 Q120 106 148 90 M92 120 Q120 104 148 120 M120 70 L120 138" stroke="${BG}" stroke-width="3" fill="none"/>`,tr(0,-26,1.4));}
-  else s+=`<text x="120" y="96" text-anchor="middle" fill="${PL}" font-size="20">Machine</text>`;
+const GSC={dumbbell:'db',bench:'dbp',barbell:'sq',smith:'sq_smith',tower:'pullup',band:'band',ball:'ball',legpress:'legpress',legextm:'legext',legcurlm:'legcurl',calfm:'calf',hipm:'hipab',chestm:'press',pecdeck:'fly',pulldown:'pull',rowm:'row',cable:'cabpush',roman:'roman',shpm:'shp',curlm:'curl',tricepm:'tri',abm:'ab',bike:'bike',tread:'tread',ellip:'ellip',rower:'rower',stair:'stair'};
+const EXSC={ml_legpress:'legpress',ml_legext:'legext',ml_legcurl:'legcurl',ml_calf:'calf',ml_hip_abduct:'hipab',ml_hip_adduct:'hipad',ml_smith_squat:'sq_smith',ml_smith_bench:'bn_smith',ml_bb_squat:'sq',ml_bb_deadlift:'dl',ml_bb_bench:'bn',ml_bb_row:'brow',ml_bb_ohp:'ohp',ml_chestpress:'press',ml_pecdeck:'fly',ml_reardelt:'rfly',ml_pulldown:'pull',ml_seatedrow:'row',ml_backext:'roman',ml_cable_row:'cabrow',ml_face_pull:'cabfp',ml_tri_pushdown:'cabpush',ml_cable_curl:'cabcurl',ml_cable_chop:'cabfp',ml_shpress:'shp',ml_bicepcurl:'curl',ml_tri_ext:'tri',ml_abcrunch:'ab',c_bike:'bike',c_tread:'tread',c_ellip:'ellip',c_rower:'rower',c_stair:'stair'};
+for(const id in EXSC){if(EX[id]){EX[id].scn=EXSC[id];if(MCYC_KEYS.includes(EXSC[id])){EX[id].cyc=1;EX[id].per={bike:1.7,tread:1.3,ellip:1.8,rower:3.6,stair:1.6}[EXSC[id]];}}}
+const machEl=(id,cls)=>`<svg class="fig mach ${cls||''}" data-ex="${id}" data-ph="${Math.random().toFixed(2)}" viewBox="0 0 240 180" preserveAspectRatio="xMidYMax meet">${machScene(EX[id].scn,EX[id].cyc?.15:.62,EX[id].m)}</svg>`;
+const gearArt=(id,anim,cls)=>{const k=GSC[id]||'press';return `<svg class="gart ${cls||''}" data-k="${k}"${anim?' data-an="1"':''} viewBox="0 0 240 180" preserveAspectRatio="xMidYMid meet">${machScene(k,MTILE(k))}</svg>`;};
+const gearName=id=>{for(const g of MGROUPS){const i=g.items.find(x=>x[0]===id);if(i)return i[1];}return id;};
+
+/* ---------- machine art: person on shaded machines, animated ---------- */
+const MC={st:'#5b6786',stD:'#343d58',stH:'#9aa7c6',pad:'#232a3b',padH:'#454f6b',ac:'#ff6a2b',acD:'#b8430f',acH:'#ffa879',pl:'#aab5d0',plD:'#6a7592',pin:'#ffd166',cab:'#d3dbee'};
+const MDEFS=`<defs><linearGradient id="mgW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3cce4"/><stop offset="1" stop-color="#7c88a8"/></linearGradient><linearGradient id="mgP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f496a"/><stop offset="1" stop-color="#1f2536"/></linearGradient><linearGradient id="mgA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9a62"/><stop offset="1" stop-color="#d9501a"/></linearGradient><radialGradient id="mgB" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ff9a62"/><stop offset="1" stop-color="#c2430f"/></radialGradient><radialGradient id="mgR" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#4b5678"/><stop offset="1" stop-color="#1d2335"/></radialGradient></defs>`;
+const mlerp=(a,b,e)=>a+(b-a)*e;
+const msm=u=>{u=Math.max(0,Math.min(1,u));return u*u*(3-2*u);};
+const mp=(p)=>f1(p[0])+' '+f1(p[1]);
+function tube(a,b,w,c){c=c||MC.st;
+  const L=(x1,y1,x2,y2,col,ww,op)=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${col}" stroke-width="${f1(ww)}" stroke-linecap="round"${op?` opacity="${op}"`:''}/>`;
+  const o=w*.2;
+  return L(a[0],a[1],b[0],b[1],c===MC.ac?MC.acD:MC.stD,w+1.6)+L(a[0],a[1],b[0],b[1],c,w)+L(a[0]-o,a[1]-o,b[0]-o,b[1]-o,c===MC.ac?MC.acH:MC.stH,w*.3,.6);
+}
+function mpad(cx,cy,w,h,rot,acc){
+  return `<g transform="rotate(${rot||0} ${f1(cx)} ${f1(cy)})"><rect x="${f1(cx-w/2)}" y="${f1(cy-h/2)}" width="${w}" height="${h}" rx="${f1(Math.min(w,h)*.42)}" fill="${acc?'url(#mgA)':'url(#mgP)'}" stroke="${acc?MC.acD:MC.padH}" stroke-width="1"/><rect x="${f1(cx-w/2+1.8)}" y="${f1(cy-h/2+1.2)}" width="${f1(w-3.6)}" height="${f1(Math.min(h,w)*.28)}" rx="1.5" fill="#fff" opacity=".12"/></g>`;
+}
+function mstack(x,y,w,h,lift,sel){
+  const n=8,ph=(h-4)/n;sel=sel===undefined?3:sel;let s='';
+  s+=`<rect x="${x-3}" y="${y-9}" width="${w+6}" height="${h+12}" rx="4" fill="${MC.stD}"/><rect x="${x-3}" y="${y-9}" width="${w+6}" height="5" rx="2.5" fill="${MC.st}"/>`;
+  s+=`<line x1="${x+5}" y1="${y-4}" x2="${x+5}" y2="${y+h}" stroke="${MC.stH}" stroke-width="1.2" opacity=".7"/><line x1="${x+w-5}" y1="${y-4}" x2="${x+w-5}" y2="${y+h}" stroke="${MC.stH}" stroke-width="1.2" opacity=".7"/>`;
+  for(let i=n-1;i>=0;i--){const yy=y+i*ph-(i<=sel?lift:0);
+    s+=`<rect x="${x+1.5}" y="${f1(yy)}" width="${w-3}" height="${f1(ph-1.8)}" rx="1.6" fill="${i===sel?'url(#mgA)':'url(#mgW)'}" stroke="#2a3248" stroke-width=".6"/>`;
+    if(i===sel)s+=`<rect x="${x+w-8}" y="${f1(yy+ph/2-2.6)}" width="9" height="3.6" rx="1.6" fill="${MC.pin}" stroke="#8a6a1a" stroke-width=".6"/>`;}
   return s;
 }
-const machInner=e=>machG(e.g,false);
-const machEl=(id,cls)=>`<svg class="fig mach ${cls||''}" viewBox="0 0 240 180" preserveAspectRatio="xMidYMax meet">${machInner(EX[id])}</svg>`;
-const gearArt=(id,anim,cls)=>`<svg class="gart ${cls||''}" viewBox="0 0 240 180" preserveAspectRatio="xMidYMid meet">${machG(GGLYPH[id]||'x',!!anim)}</svg>`;
-const gearName=id=>{for(const g of MGROUPS){const i=g.items.find(x=>x[0]===id);if(i)return i[1];}return id;};
+function cable(pts,w){return `<polyline points="${pts.map(mp).join(' ')}" fill="none" stroke="#1b2133" stroke-width="${(w||1.8)+1.2}" stroke-linejoin="round"/><polyline points="${pts.map(mp).join(' ')}" fill="none" stroke="${MC.cab}" stroke-width="${w||1.8}" stroke-linejoin="round"/>`;}
+const pulley=(p,r)=>`<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="${r||5}" fill="url(#mgR)" stroke="${MC.stH}" stroke-width="1.2"/><circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="1.5" fill="${MC.ac}"/>`;
+const grip=(p,rot,len)=>`<rect x="${f1(p[0]-2.6)}" y="${f1(p[1]-(len||14)/2)}" width="5.2" height="${len||14}" rx="2.6" fill="url(#mgA)" stroke="${MC.acD}" stroke-width=".8" transform="rotate(${rot||0} ${f1(p[0])} ${f1(p[1])})"/>`;
+const plateEnd=(p,r)=>`<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="${r}" fill="url(#mgR)" stroke="${MC.stH}" stroke-width="1.2"/><circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="${f1(r*.66)}" fill="none" stroke="${MC.ac}" stroke-width="1.4"/><circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="${f1(Math.max(2,r*.2))}" fill="${MC.pl}"/>`;
+const base=(x1,x2,y)=>tube([x1,y||153],[x2,y||153],6)+`<rect x="${x1-4}" y="${(y||153)+2}" width="10" height="4" rx="2" fill="${MC.pad}"/><rect x="${x2-6}" y="${(y||153)+2}" width="10" height="4" rx="2" fill="${MC.pad}"/>`;
+const seatPad=(x,y,w)=>mpad(x,y,w||36,9,0);
+const backPad=(x,y,h,rot)=>mpad(x,y,10,h,rot||0);
+function seated(hx,hy,tor){return {hx,hy,tor,th:90,sh:0,ft:90};}
+function groundFix(P,y){const R=solve(P,'side');const a=Math.max(R.n.leg.A[1],R.f.leg.A[1]);P.hy+=y-a;return P;}
+/* gait: facing right, th 0=down, + forward */
+function gait(th,off){const s=Math.sin(th+off),c=Math.cos(th+off);const t=22*s,fl=40*Math.max(0,c);return {th:t,sh:t-fl};}
+const MSC={};
+/* ----- seated presses and arms ----- */
+MSC.press=e=>({P:{...seated(104,128,188),hand:[108+28*e,88],ank:[132,156]},
+ bk:R=>base(62,176)+tube([84,152],[82,60],6)+backPad(86,96,74,3)+seatPad(108,137)+tube([108,141],[108,152],5)+tube([156,92],[156,152],6)+mstack(178,46,32,104,e*13)+tube([156,92],[170,92-e*13],3.4,MC.stD)+tube([112+28*e,88],[156,92],4.4),
+ fr:R=>grip(R.n.arm.Hd,0,15)});
+MSC.shp=e=>({P:{...seated(100,128,182),hand:[110,92-46*e],ank:[130,156],eb:-1},
+ bk:R=>base(62,176)+tube([82,152],[82,60],6)+backPad(84,96,72,0)+seatPad(104,137)+tube([104,141],[104,152],5)+tube([150,152],[150,30],6)+mstack(178,46,32,104,e*13)+tube([110,92-46*e],[150,92-46*e],4.4),
+ fr:R=>grip(R.n.arm.Hd,90,15)});
+MSC.fly=e=>({P:{...seated(100,128,184),hand:[102+30*e,86],ank:[130,156]},
+ bk:R=>base(62,176)+tube([82,152],[82,62],6)+backPad(86,98,70,2)+seatPad(104,137)+tube([104,141],[104,152],5)+tube([150,152],[150,60],6)+mstack(178,46,32,104,e*12)+tube([130,62],[150,62],4)+mpad(R.n.arm.Hd[0]+4,R.n.arm.Hd[1]-2,8,36,0,1),
+ fr:R=>grip(R.n.arm.Hd,0,12)});
+MSC.rfly=e=>({P:{hx:92,hy:128,tor:172,th:90,sh:0,ft:90,hand:[142-30*e,84],ank:[128,156]},
+ bk:R=>base(62,176)+tube([114,152],[114,62],6)+mpad(110,86,10,48,0)+seatPad(96,137)+tube([96,141],[96,152],5)+mstack(180,46,30,104,e*12)+tube([142-30*e,84],[160,84],4.4),
+ fr:R=>grip(R.n.arm.Hd,0,13)});
+MSC.curl=e=>({P:{...seated(96,128,176),ua:55,fa:55+110*e,ank:[126,156]},
+ bk:R=>{const E=R.n.arm.E;return base(62,176)+tube([84,152],[84,70],6)+backPad(88,100,60,0)+seatPad(100,137)+tube([100,141],[100,152],5)+mpad(112,100,46,10,34)+tube([114,112],[118,152],6)+mstack(178,46,32,104,e*12)+tube(E,[E[0]+30,E[1]-16],4.2,MC.ac)},
+ fr:R=>grip(R.n.arm.Hd,0,14)});
+MSC.tri=e=>({P:{...seated(100,128,184),ua:6,fa:98-86*e,ank:[130,156]},
+ bk:R=>base(62,176)+tube([84,152],[84,62],6)+backPad(88,98,70,3)+seatPad(106,137)+tube([106,141],[106,152],5)+tube([148,152],[148,76],6)+mstack(178,46,32,104,e*13)+tube(R.n.arm.Hd,[148,R.n.arm.Hd[1]],4.4,MC.ac),
+ fr:R=>grip(R.n.arm.Hd,0,14)});
+MSC.ab=e=>{const tor=186-34*e,S=pt([100,128],tor,42);return {P:{hx:100,hy:128,tor,neck:tor+4,th:90,sh:0,ft:90,hand:[S[0]+13,S[1]+12],ank:[130,156]},
+ bk:R=>base(62,176)+tube([82,152],[84,66],6)+backPad(86,100,66,3)+seatPad(104,137)+tube([104,141],[104,152],5)+tube([150,152],[150,40],6)+mstack(178,46,32,104,e*12)+tube([150,70],[R.S[0]+10,R.S[1]+8],4,MC.ac)+mpad(124,141,16,8,0),
+ fr:R=>mpad(R.S[0]+11,R.S[1]+10,12,26,-(186-tor)*1.2+8,1)};};
+/* ----- back ----- */
+MSC.pull=e=>({P:{...seated(98,132,186+6*e),hand:[116,36+40*e],ank:[130,156],eb:1},
+ bk:R=>base(62,170)+tube([84,152],[84,70],6)+seatPad(100,141)+tube([100,145],[100,152],5)+tube([148,152],[148,20],6)+tube([148,20],[112,20],6)+pulley([112,22],5)+mpad(124,117,28,8,0)+tube([124,121],[146,121],4)+mstack(178,46,30,104,e*14)+cable([[112,27],[112,36+40*e-4]],0)+cable([[112,17],[194,17],[194,37-e*14]],0),
+ fr:R=>mpad(R.n.arm.Hd[0],R.n.arm.Hd[1],22,6,0,1)});
+MSC.row=e=>({P:{hx:96,hy:130,tor:168,th:90,sh:0,ft:90,hand:[140-28*e,96],ank:[128,156],eb:1},
+ bk:R=>base(62,176)+tube([108,152],[108,66],6)+mpad(112,88,10,44,-4)+seatPad(100,139,32)+tube([100,143],[100,152],5)+mstack(180,46,30,104,e*12)+tube([140-28*e,96],[160,96],4.4,MC.ac)+tube([160,96],[160,152],5),
+ fr:R=>grip(R.n.arm.Hd,0,13)});
+MSC.roman=e=>{const tor=40+90*e,H=[110,100],S=pt(H,tor,42);return {P:{hx:110,hy:100,tor,th:-50,sh:-50,ft:60,hand:[S[0]+8,S[1]+8]},
+ bk:R=>tube([46,152],[128,92],6)+tube([128,92],[128,152],6)+tube([70,152],[70,128],5)+mpad(108,106,26,9,-38)+mpad(66,132,12,10,-40,1),
+ fr:R=>''};};
+/* ----- legs ----- */
+MSC.legext=e=>({P:{...seated(98,128,186),th:90,sh:8+72*e,hand:[106,120]},
+ bk:R=>{const A=R.n.leg.A;return base(62,176)+tube([84,152],[84,62],6)+backPad(88,98,68,3)+seatPad(108,137,38)+tube([108,141],[108,152],5)+tube([124,140],[A[0]+2,A[1]-2],4.4,MC.ac)+tube([150,152],[150,100],6)+mstack(178,46,32,104,e*13)},
+ fr:R=>{const A=R.n.leg.A;return `<circle cx="${f1(A[0]+4)}" cy="${f1(A[1]-1)}" r="5.5" fill="url(#mgA)" stroke="${MC.acD}"/>`;}});
+MSC.legcurl=e=>({P:{...seated(98,126,186),th:96,sh:96-90*e,hand:[106,118]},
+ bk:R=>{const A=R.n.leg.A;return base(62,176)+tube([84,152],[84,62],6)+backPad(88,98,68,3)+seatPad(104,135,38)+tube([104,139],[104,152],5)+tube([124,136],[A[0],A[1]-10],4.4,MC.ac)+tube([150,152],[150,100],6)+mstack(178,46,32,104,e*13)+mpad(116,116,30,7,3)},
+ fr:R=>{const A=R.n.leg.A;return `<circle cx="${f1(A[0]-2)}" cy="${f1(A[1]-6)}" r="5.5" fill="url(#mgA)" stroke="${MC.acD}"/>`;}});
+MSC.legpress=e=>{const u=[.83,-.56],A=[116+20*e*u[0]/.83*.83,118-20*e*.56/.56*.56+0],A2=[116+u[0]*20*e,118+u[1]*20*e];
+ return {P:{hx:86,hy:132,tor:225,th:50,sh:50,ank:A2,ft:58,hand:[92,120]},
+ bk:R=>tube([62,152],[190,70],6)+tube([62,152],[62,158],5)+tube([160,90],[160,152],5)+mpad(70,128,50,10,-40)+mpad(88,142,24,9,-35)+`<g transform="translate(${f1(u[0]*20*e)} ${f1(u[1]*20*e)})">${tube([118,128],[150,106],6,MC.ac)+plateEnd([156,96],11)+plateEnd([164,92],9)}</g>`,
+ fr:R=>`<g transform="rotate(34 ${f1(A2[0]+6)} ${f1(A2[1])})">${mpad(A2[0]+6,A2[1],7,42,0)}</g>`};};
+MSC.calf=e=>{const ay=152-9*e;return {P:{hx:118,hy:ay-57,tor:180,th:0,sh:0,ank:[118,ay],ft:90,hand:[128,ay-56]},
+ bk:R=>base(76,168)+`<rect x="98" y="150" width="44" height="6" rx="2" fill="${MC.st}" stroke="${MC.stD}"/>`+tube([96,152],[96,24],6)+tube([96,24],[126,24],6)+mstack(176,46,32,104,e*9)+tube([126,24],[126,R.S[1]-6],4.2,MC.ac),
+ fr:R=>mpad(R.S[0],R.S[1]-5,22,9,0,1)};};
+MSC.hipab=e=>({front:1,P:{hx:120,hy:120,tor:180,th:62+18*e,sh:0,ft:90,ua:8,fa:10},
+ bk:R=>base(76,168)+tube([120,152],[120,64],7)+mpad(120,92,34,66,0)+mpad(120,129,40,9,0),
+ fr:R=>mpad(R.n.leg.K[0]+9,R.n.leg.K[1],9,24,0,1)+mpad(R.f.leg.K[0]-9,R.f.leg.K[1],9,24,0,1)});
+MSC.hipad=e=>({front:1,P:{hx:120,hy:120,tor:180,th:80-18*e,sh:0,ft:90,ua:8,fa:10},
+ bk:R=>base(76,168)+tube([120,152],[120,64],7)+mpad(120,92,34,66,0)+mpad(120,129,40,9,0),
+ fr:R=>mpad(R.n.leg.K[0]-8,R.n.leg.K[1],9,24,0,1)+mpad(R.f.leg.K[0]+8,R.f.leg.K[1],9,24,0,1)});
+/* ----- barbell and smith ----- */
+function squatP(e){const a={hx:124,hy:98,tor:180,ank:[124,155],ft:90},b={hx:100,hy:124,tor:150,ank:[124,155],ft:90};return lerpPose(a,b,e);}
+MSC.sq=e=>{const P=squatP(e),S=pt([P.hx,P.hy],P.tor,42),bp=[S[0]-3,S[1]-2];P.hand=[bp[0]+2,bp[1]+2];P.eb=-1;
+ return {P,bk:R=>tube([86,154],[86,30],6)+tube([86,150],[130,150],5)+tube([86,70],[98,70],5,MC.ac)+tube([86,128],[132,128],4,MC.stH),fr:R=>plateEnd(bp,11)};};
+MSC.sq_smith=e=>{const P=squatP(e),S=pt([P.hx,P.hy],P.tor,42),bp=[119,S[1]-2];P.hand=[119,bp[1]+3];P.eb=-1;
+ return {P,bk:R=>tube([119,154],[119,22],6)+tube([96,154],[146,154],5)+tube([119,66],[108,66],4,MC.ac)+tube([119,132],[108,132],4,MC.ac),fr:R=>plateEnd(bp,10)};};
+MSC.dl=e=>{const P={hx:98+22*e,hy:112-14*e,tor:105+75*e,th:0,sh:0,ank:[122,155],ft:90},bp=[126,142-42*e];P.hand=[bp[0],bp[1]];
+ return {P,bk:R=>'',fr:R=>plateEnd(bp,14)};};
+MSC.brow=e=>{const P={hx:96,hy:112,tor:118,ank:[120,155],ft:90},bp=[132,134-26*e];P.hand=bp;
+ return {P,bk:R=>'',fr:R=>plateEnd(bp,12)};};
+MSC.ohp=e=>{const P={hx:118,hy:98,tor:180,th:0,sh:0,ank:[118,155],ft:90},bp=[124,60-46*e];P.hand=[bp[0],bp[1]+2];P.eb=-1;
+ return {P,bk:R=>tube([92,154],[92,40],6)+tube([92,56],[104,56],5,MC.ac),fr:R=>plateEnd(bp,11)};};
+function lyingP(e,bar){const S=[108,132],P={hx:150,hy:132,tor:270,th:0,sh:0,ank:[172,155],ft:90};P.hand=[S[0]+6,bar-34*e];return P;}
+MSC.bn=e=>{const P=lyingP(e,122),bp=P.hand;return {P,bk:R=>tube([84,150],[84,60],6)+tube([84,84],[100,84],5,MC.ac)+`<rect x="82" y="140" width="94" height="10" rx="4" fill="url(#mgP)" stroke="${MC.padH}"/>`+tube([92,150],[92,160],5)+tube([166,150],[166,160],5),fr:R=>plateEnd(bp,12)};};
+MSC.bn_smith=e=>{const P=lyingP(e,122),bp=P.hand;return {P,bk:R=>tube([bp[0],156],[bp[0],20],6)+tube([bp[0],68],[bp[0]-12,68],4,MC.ac)+`<rect x="82" y="140" width="94" height="10" rx="4" fill="url(#mgP)" stroke="${MC.padH}"/>`+tube([92,150],[92,160],5)+tube([166,150],[166,160],5),fr:R=>plateEnd(bp,12)};};
+MSC.dbp=e=>{const P=lyingP(e,122);return {P,bk:R=>`<rect x="82" y="140" width="94" height="10" rx="4" fill="url(#mgP)" stroke="${MC.padH}"/>`+tube([92,150],[92,160],5)+tube([166,150],[166,160],5),fr:R=>dbDraw(R.n.arm.Hd,'end')};};
+/* ----- cable ----- */
+const cabTower=(lift,top)=>tube([176,154],[176,12],6)+mstack(180,40,30,108,lift)+(top?'':'');
+MSC.cabrow=e=>({P:{hx:84,hy:130,tor:166+20*e,th:90,sh:0,ank:[128,150],ft:90,hand:[134-30*e,112],eb:1},
+ bk:R=>base(60,176)+mpad(124,150,5,22,0,1)+mpad(86,139,30,9,0)+tube([86,143],[86,152],5)+mstack(184,40,28,108,e*12)+tube([172,152],[172,100],6)+pulley([170,112],5)+cable([[170,112],[R.n.arm.Hd[0],112]],0),
+ fr:R=>grip(R.n.arm.Hd,0,13)});
+MSC.cabpush=e=>({P:{hx:112,hy:98,tor:180,th:0,sh:0,ank:[112,155],ft:90,ua:6,fa:100-95*e},
+ bk:R=>tube([172,154],[172,14],6)+mstack(180,40,28,108,e*12)+pulley([154,20],5)+tube([154,20],[172,20],5)+cable([[154,25],[R.n.arm.Hd[0],R.n.arm.Hd[1]-4]],0)+cable([[154,15],[154,12],[190,12],[190,31-e*12]],0),
+ fr:R=>grip(R.n.arm.Hd,90,14)});
+MSC.cabcurl=e=>({P:{hx:112,hy:98,tor:180,th:0,sh:0,ank:[112,155],ft:90,ua:4,fa:6+158*e},
+ bk:R=>tube([172,154],[172,14],6)+mstack(180,40,28,108,e*12)+pulley([160,148],5)+tube([160,148],[172,148],5)+cable([[160,143],[R.n.arm.Hd[0]+2,R.n.arm.Hd[1]+4]],0),
+ fr:R=>grip(R.n.arm.Hd,90,14)});
+MSC.cabfp=e=>({P:{hx:106,hy:98,tor:180,th:0,sh:0,ank:[106,155],ft:90,hand:[142-32*e,62],eb:1},
+ bk:R=>tube([172,154],[172,14],6)+mstack(180,40,28,108,e*12)+pulley([160,52],5)+tube([160,52],[172,52],5)+cable([[160,52],[R.n.arm.Hd[0]+2,R.n.arm.Hd[1]]],0),
+ fr:R=>grip(R.n.arm.Hd,90,12)});
+/* ----- free weights, bands, ball, pull-up ----- */
+MSC.db=e=>({P:{hx:106,hy:98,tor:180,th:0,sh:0,ank:[106,155],ft:90,ua:4,fa:6+158*e},
+ bk:R=>tube([160,152],[160,92],5)+tube([200,152],[200,92],5)+tube([156,98],[204,98],5)+tube([156,126],[204,126],5)+[0,1].map(i=>dbDraw([170+i*22,89],'end')+dbDraw([170+i*22,117],'end')).join(''),
+ fr:R=>dbDraw(R.n.arm.Hd,'end')});
+MSC.pullup=e=>({P:{hx:118,hy:104-34*e,tor:180,th:28,sh:-58,ft:90,hand:[118,20],eb:1},
+ bk:R=>tube([160,154],[160,12],6)+tube([160,14],[124,16],6)+mpad(160,100,6,24,0,1)+tube([80,154],[80,12],6),
+ fr:R=>plateEnd([118,20],5.5)});
+MSC.band=e=>({P:{hx:118,hy:98,tor:180,th:0,sh:0,ank:[118,155],ft:90,hand:[148-34*e,76]},
+ bk:R=>tube([196,154],[196,60],6)+pulley([194,76],4.5)+`<polyline points="194,76 ${mp(R.n.arm.Hd)}" fill="none" stroke="#a63b0e" stroke-width="4.6" stroke-linecap="round"/><polyline points="194,76 ${mp(R.n.arm.Hd)}" fill="none" stroke="${MC.ac}" stroke-width="3" stroke-linecap="round"/>`,
+ fr:R=>grip(R.n.arm.Hd,0,12)});
+MSC.ball=e=>({P:{hx:118,hy:98,tor:180,th:0,sh:0,ank:[118,155],ft:90,hand:[126,64-50*e]},
+ bk:R=>'',
+ fr:R=>{const p=R.n.arm.Hd,c=[p[0]+3,p[1]-6];return `<circle cx="${f1(c[0])}" cy="${f1(c[1])}" r="12" fill="url(#mgB)" stroke="${MC.acD}"/><path d="M${f1(c[0]-12)} ${f1(c[1])}Q${f1(c[0])} ${f1(c[1]-6)} ${f1(c[0]+12)} ${f1(c[1])}M${f1(c[0])} ${f1(c[1]-12)}Q${f1(c[0]+6)} ${f1(c[1])} ${f1(c[0])} ${f1(c[1]+12)}" stroke="#7a2a08" stroke-width="1.3" fill="none"/>`;}});
+/* ----- cardio (e is a 0..1 cycle) ----- */
+MSC.bike=ph=>{const th=ph*Math.PI*2,B=[120,134],pn=[B[0]+13*Math.sin(th),B[1]+13*Math.cos(th)],pf=[B[0]-13*Math.sin(th),B[1]-13*Math.cos(th)];
+ return {P:{hx:92,hy:102,tor:160,hand:[138,70],ank:[pn[0]-2,pn[1]-5],fank:[pf[0]-2,pf[1]-5],ft:90,eb:1},
+ bk:R=>tube([86,154],[158,154],6)+`<circle cx="142" cy="126" r="17" fill="url(#mgR)" stroke="${MC.stH}" stroke-width="2"/><circle cx="142" cy="126" r="6" fill="${MC.st}"/>`+tube(B,[94,106],5)+tube(B,[138,84],5)+tube([138,84],[140,62],5)+mpad(138,58,22,9,-8)+mpad(90,106,22,7,-6,1)+tube(B,pf,3.4)+mpad(pf[0],pf[1]+1,13,4,0),
+ fr:R=>tube(B,pn,3.6,MC.ac)+mpad(pn[0],pn[1]+1,14,4,0,1)+`<circle cx="${B[0]}" cy="${B[1]}" r="4.5" fill="${MC.pl}" stroke="${MC.stD}"/>`};};
+MSC.tread=ph=>{const th=ph*Math.PI*2,g=gait(th,0),gf=gait(th,Math.PI);
+ const P=groundFix({hx:112,hy:98,tor:178,th:g.th,sh:g.sh,fth:gf.th,fsh:gf.sh,ua:-g.th*1.1,fa:-g.th*1.1+38,fua:g.th*1.1,ffa:g.th*1.1+38,ft:90},146);
+ const dashes=[];for(let i=0;i<9;i++){const x=((i*20-ph*20*2)%180+180)%180+30;dashes.push(`<rect x="${x}" y="147.5" width="9" height="2.4" rx="1" fill="#6c7898"/>`);}
+ return {P,bk:R=>`<rect x="26" y="146" width="176" height="11" rx="5.5" fill="${MC.pad}" stroke="${MC.padH}"/>`+dashes.join('')+tube([200,152],[184,60],6)+mpad(176,50,40,20,-8)+`<rect x="162" y="44" width="28" height="11" rx="2" fill="#0a1830"/><rect x="164" y="46" width="14" height="3" fill="#5ad1ff"/>`+tube([184,74],[134,84],4.2),fr:R=>''};};
+MSC.ellip=ph=>{const th=ph*Math.PI*2,pn=[118+17*Math.sin(th),146-5*Math.cos(th)],pf=[118-17*Math.sin(th),146+5*Math.cos(th)];
+ const hn=[142+13*Math.sin(th+Math.PI),80],hf=[142+13*Math.sin(th),80];
+ return {P:{hx:116,hy:92,tor:182,hand:hn,fhand:hf,ank:[pn[0],pn[1]-5],fank:[pf[0],pf[1]-5],ft:90},
+ bk:R=>`<rect x="48" y="120" width="44" height="34" rx="14" fill="url(#mgR)" stroke="${MC.stH}"/><circle cx="70" cy="137" r="9" fill="${MC.st}"/>`+tube([80,137],pf,4)+tube([164,154],[150,40],6)+tube([150,40],[hf[0],hf[1]],3.4)+mpad(150,30,30,10,0)+base(48,170),
+ fr:R=>tube([80,137],pn,4.4,MC.ac)+mpad(pn[0],pn[1]+1,24,5,0,1)+tube([150,40],hn,3.8,MC.ac)};};
+MSC.rower=ph=>{const s=ph<.4?msm(ph/.4):1-msm((ph-.4)/.6),H=[mlerp(128,92,s),134],tor=150+55*msm((s-.35)/.65),S=pt(H,tor,42),pull=msm((s-.55)/.45),hand=[S[0]+mlerp(38,16,pull),S[1]+mlerp(10,18,pull)];
+ return {P:{hx:H[0],hy:H[1],tor,th:90,sh:0,ank:[150,140],ft:60,hand,eb:1},
+ bk:R=>tube([36,150],[190,150],6)+tube([44,150],[44,158],5)+tube([176,150],[176,158],5)+`<circle cx="202" cy="128" r="24" fill="url(#mgR)" stroke="${MC.stH}" stroke-width="2"/>`+[0,1,2,3,4,5].map(i=>{const a=i*60+ph*720,x=202+16*Math.cos(a*Math.PI/180),y=128+16*Math.sin(a*Math.PI/180);return `<line x1="202" y1="128" x2="${f1(x)}" y2="${f1(y)}" stroke="${MC.st}" stroke-width="2"/>`;}).join('')+mpad(150,130,6,26,16,1)+tube([150,134],[150,150],4)+cable([[hand[0],hand[1]],[188,124]],0)+mpad(H[0],146,22,6,0),
+ fr:R=>grip(hand,0,12)};};
+MSC.stair=ph=>{const th=ph*Math.PI*2,y1=140-8*Math.sin(th),y2=140+8*Math.sin(th);
+ return {P:{hx:112,hy:92+3*Math.cos(th*2),tor:184,hand:[140,84],ank:[112,y1-4],fank:[110,y2-4],ft:90},
+ bk:R=>[0,1,2,3].map(i=>`<rect x="${40+i*8}" y="${148-i*12}" width="${60-i*8}" height="11" fill="${MC.stD}" stroke="${MC.st}"/>`).join('')+mpad(100,y2+1,38,6,0)+tube([170,154],[160,70],6)+tube([160,74],[138,84],4.2)+mpad(160,60,34,14,0)+base(60,170),
+ fr:R=>mpad(112,y1+1,38,6,0,1)};};
+const MMUS={press:{p:['chest'],s:['triceps']},shp:{p:['shoulders'],s:['triceps']},fly:{p:['chest'],s:['shoulders']},rfly:{p:['shoulders'],s:['back']},curl:{p:['biceps'],s:[]},tri:{p:['triceps'],s:[]},ab:{p:['core'],s:[]},pull:{p:['back'],s:['biceps']},row:{p:['back'],s:['biceps']},roman:{p:['back'],s:['glutes']},legext:{p:['quads'],s:[]},legcurl:{p:['hamstrings'],s:[]},legpress:{p:['quads','glutes'],s:[]},calf:{p:['calves'],s:[]},hipab:{p:['glutes'],s:[]},hipad:{p:['quads'],s:[]},sq:{p:['quads','glutes'],s:[]},sq_smith:{p:['quads','glutes'],s:[]},dl:{p:['hamstrings','glutes'],s:['back']},brow:{p:['back'],s:['biceps']},ohp:{p:['shoulders'],s:['triceps']},bn:{p:['chest'],s:['triceps']},bn_smith:{p:['chest'],s:['triceps']},dbp:{p:['chest'],s:['triceps']},cabrow:{p:['back'],s:['biceps']},cabpush:{p:['triceps'],s:[]},cabcurl:{p:['biceps'],s:[]},cabfp:{p:['shoulders'],s:['back']},db:{p:['biceps'],s:[]},pullup:{p:['back'],s:['biceps']},band:{p:['back'],s:['biceps']},ball:{p:['shoulders','core'],s:[]},bike:{p:['quads'],s:[]},tread:{p:['quads'],s:[]},ellip:{p:['quads'],s:[]},rower:{p:['back','quads'],s:[]},stair:{p:['quads','glutes'],s:[]}};
+const MCYC={bike:1.7,tread:1.3,ellip:1.8,rower:3.6,stair:1.6};
+function machScene(key,t,m){
+  const f=MSC[key]||MSC.press,o=f(t);m=m||MMUS[key]||{p:[],s:[]};const ex={m};
+  let R,fg;
+  if(o.front){R=solve(o.P,'front');fg=frontFigure(ex,R,false);}else{R=solve(o.P,'side');fg=sideFigure(ex,R);}
+  return MDEFS+P_.floor()+`<ellipse cx="${f1(R.H[0])}" cy="161" rx="46" ry="3.4" fill="#000" opacity=".35"/>`+(o.bk?o.bk(R):'')+fg+(o.fr?o.fr(R):'');
+}
+const MTILE=k=>MCYC[k]?.15:.62;
+setInterval(()=>{document.querySelectorAll('svg.gart[data-an]').forEach(n=>{const k=n.dataset.k,per=MCYC[k]||3.6,ph=(performance.now()/1000/per)%1;n.innerHTML=machScene(k,MCYC[k]?ph:phaseT({},ph));});},40);
 
 /* ---------- Mental wellness ---------- */
 const WCATS=[
@@ -1739,7 +1875,7 @@ function hook(){document.querySelectorAll('svg.fig').forEach(n=>{if(!n._h){n._h=
 let lastT=0;
 function loop(ts){requestAnimationFrame(loop);if(ts-lastT<34)return;lastT=ts;
   vis.forEach(n=>{if(!n.isConnected){vis.delete(n);return;}
-    const ex=EX[n.dataset.ex];if(!ex)return;const per=ex.slow?6:ex.hold?4.4:3.6;
+    const ex=EX[n.dataset.ex];if(!ex)return;const per=ex.per||(ex.slow?6:ex.hold?4.4:3.6);
     const ph=((ts/1000/per)+(+n.dataset.ph))%1;n.innerHTML=sceneInner(ex,reduce?.5:phaseT(ex,ph));});}
 
 /* ================= APP: player + actions ================= */
