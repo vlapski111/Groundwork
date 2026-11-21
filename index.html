@@ -162,6 +162,16 @@ nav button.on{color:var(--ac)}
 .radio{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;box-sizing:border-box}
 .radio.on{border-color:var(--ac);background:radial-gradient(var(--ac) 42%,transparent 48%)}
 .field{width:100%;box-sizing:border-box;margin-top:8px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--text);font:inherit;font-size:16px}
+
+.fb{margin:12px 0;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;text-align:left}
+.fbq{font-weight:700;font-size:14px;margin-bottom:8px}
+.fbr{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.fbr.sub{margin-top:8px}.fbr.sub span{font-size:12.5px;color:var(--mut);margin-right:2px}
+.fbb{flex:1;min-width:0;padding:9px 6px;border-radius:11px;background:var(--card2);border:1px solid var(--line);font-weight:700;font-size:13px;color:var(--text)}
+.fbb.on{border-color:var(--ac);color:var(--ac)}
+.fbc{padding:8px 11px;border-radius:999px;background:var(--bg2);border:1px solid var(--ac);font-weight:700;font-size:13px;color:var(--text)}
+.fbn{margin-top:8px;font-size:13px;color:var(--ok);font-weight:600}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}.seg button{padding:8px 12px;background:var(--card2);color:var(--mut);font-weight:700;font-size:13px}.seg button.on{background:var(--ac);color:#fff}
 </style></head><body>
 <div id="app"><header class="top"><b>Ground<i>work</i></b><button id="pchip" data-act="profiles">Me</button></header><main id="view"></main></div>
 <nav>
@@ -836,7 +846,7 @@ function srank(ex){const s=S.style,q=ex.eq,w=q.includes('dumbbell'),b=q.includes
  if(s==='weights')return w?0:b?2:1;if(s==='bands')return b?0:w?2:1;if(s==='wb')return(w||b)?0:1;return 0;}
 /* ---------- state ---------- */
 const todayKey=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
-const DEF=()=>({gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,style:'mix',lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
+const DEF=()=>({gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,style:'mix',ask:1,wstep:2.5,lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
   weights:{},reps:{},hold:{},logs:[],plan:null,tab:'today'});
 let S=load();
 function load(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r){const d=DEF();return Object.assign(d,r,{gear:Object.assign(d.gear,r.gear||{}),tracks:Object.assign(d.tracks,r.tracks||{})});}}catch(e){}return DEF();}
@@ -1030,6 +1040,7 @@ function viewGear(){
   h+=`<section class="card"><div class="sec-h">Your equipment<span>turn off what you do not use</span></div>`;
   GEAR.forEach(g=>{h+=`<div class="gear"><div><b>${g.name}</b><span>${g.sub}</span></div><button class="tog ${S.gear[g.id]?'on':''}" data-act="gear" data-id="${g.id}" aria-label="toggle ${g.name}"><i></i></button></div>`;});
   h+=`<p class="hint">Bodyweight, wall and floor moves are always on. Treadmill and elliptical are left out on purpose, this app is strength only.</p></section>`;
+  h+=`<section class="card"><div class="sec-h">Feedback</div><div class="gear"><div><b>Ask after each exercise</b><span>Too easy, just right or too hard, right on the rest screen</span></div><button class="tog ${S.ask?'on':''}" data-act="asktog" aria-label="toggle feedback"><i></i></button></div><div class="gear"><div><b>Dumbbell step</b><span>Default change when you say too easy or hard</span></div><div class="seg"><button class="${S.wstep===2.5?'on':''}" data-act="wstepset" data-v="2.5">2.5 lb</button><button class="${S.wstep===5?'on':''}" data-act="wstepset" data-v="5">5 lb</button></div></div></section>`;
   const loaded=Object.values(EX).filter(e=>e.w0&&avail(e));
   h+=`<section class="card"><div class="sec-h">Starting weights<span>per dumbbell</span></div><p class="hint" style="margin-top:0">These are cautious beginner starts. Change them to match what feels challenging but clean. The app raises them for you when you earn it.</p>`;
   loaded.forEach(e=>{h+=`<div class="gear"><div><b>${e.name}</b><span>${e.one?'one dumbbell':'each hand'}</span></div><div class="step"><button data-act="wt" data-id="${e.id}" data-d="-1">-</button><b>${curW(e)} lb</b><button data-act="wt" data-id="${e.id}" data-d="1">+</button></div></div>`;});
@@ -1119,7 +1130,7 @@ let P=null,tick=null;
 const curItem=()=>P.items[P.i];
 function initCur(){
   const it=curItem(),e=EX[it.id];P.w=curW(e);
-  P.r=e.kind==='t'?clamp(S.hold[e.id]||e.rng[0],e.rng[0],e.rng[1]):clamp(S.reps[e.id]||Math.round(mid(e.rng)),1,60);
+  P.r=e.kind==='t'?clamp(S.hold[e.id]||e.rng[0],e.rng[0],Math.max(e.rng[1],S.hold[e.id]||0)):clamp(S.reps[e.id]||Math.round(mid(e.rng)),1,60);
 }
 function startSession(i){
   const p=buildDay()[i];if(!p||p.done)return;
@@ -1127,6 +1138,25 @@ function startSession(i){
   initCur();$('#player').classList.add('show');document.body.classList.add('lock');lockWake();renderPlayer();
 }
 function stopTick(){if(tick){clearInterval(tick);tick=null;}}
+/* ---------- too easy / too hard feedback ---------- */
+function calcAdj(it,a){const e=EX[it.id],last=it.log[it.log.length-1];if(!last)return null;
+  if(e.w0){const w=last.w;let n=snap(w+a.dir*a.v);if(n===w)n=stepW(w,a.dir);return {kind:'w',val:n,text:n+' lb'+(n===w?' (limit)':'')};}
+  if(e.kind==='t'){const best=Math.max(...it.log.map(l=>l.t||0));const n=clamp(Math.round(best*(1+a.dir*a.v/100)),5,300);return {kind:'t',val:n,text:n+' sec'};}
+  const r=Math.max(...it.log.map(l=>l.r||0));const n=clamp(Math.round(r*(1+a.dir*a.v/100)),1,60);return {kind:'r',val:n,text:n+' reps'+(e.per?' each side':'')};}
+function applyAdj(it){const a=it.adj;if(!a)return;const e=EX[it.id],c=calcAdj(it,a);if(!c)return;
+  if(c.kind==='w'){S.weights[e.id]=c.val;S.reps[e.id]=a.dir>0?e.rng[0]:Math.max(e.rng[0],Math.min(e.rng[1],S.reps[e.id]||e.rng[0]));}
+  else if(c.kind==='t')S.hold[e.id]=c.val;else S.reps[e.id]=c.val;}
+function fbHTML(idx){
+  const it=P.items[idx];if(!it||!S.ask||!it.log.length)return '';const e=EX[it.id];if(e.warm||e.cool)return '';
+  const d=P.fbOpen||0,a=it.adj;
+  let h=`<div class="fb"><div class="fbq">How was ${e.name}?</div><div class="fbr">
+   <button class="fbb ${(d>0||(a&&a.dir>0))?'on':''}" data-act="fb" data-d="1">Too easy</button>
+   <button class="fbb ${(!d&&!a)?'on':''}" data-act="fb" data-d="0">Just right</button>
+   <button class="fbb ${(d<0||(a&&a.dir<0))?'on':''}" data-act="fb" data-d="-1">Too hard</button></div>`;
+  if(d){const vals=e.w0?[1,2,4].map(m=>m*S.wstep):[10,20,50,100];
+    h+=`<div class="fbr sub"><span>${d>0?'Increase':'Decrease'} by</span>${vals.map(v=>`<button class="fbc" data-act="fbv" data-v="${v}">${e.w0?v+' lb':v+'%'}</button>`).join('')}</div>`;}
+  else if(a){const c=calcAdj(it,a);if(c)h+=`<div class="fbn">Next time: ${c.text}</div>`;}
+  return h+'</div>';}
 function plTop(){
   const n=P.items.length;
   return `<div class="pl-top"><button class="x" data-act="plx" aria-label="close">x</button><div class="pl-prog">${P.items.map((_,k)=>`<i class="${k<P.i?'d':k===P.i?'c':''}"></i>`).join('')}</div><span>${Math.min(P.i+1,n)}/${n}</span></div>`;
@@ -1139,6 +1169,7 @@ function renderPlayer(){
     const nextSame=P.set>0,ne=EX[curItem().id];
     el.innerHTML=plTop()+`<div class="restwrap"><div class="eyebrow">Rest</div>
       <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="bg"/><circle cx="60" cy="60" r="52" class="fg" id="rg"/></svg><span id="tm">${P.restTotal}</span></div>
+      ${P.fbIdx!=null&&P.fbIdx===P.i-1&&P.set===0?fbHTML(P.fbIdx):''}
       <div class="up-next"><div class="th">${figEl(ne.id)}</div><div><span>Up next</span><b>${ne.name}</b><span>${nextSame?`Set ${P.set+1} of ${it.sets}`:'New exercise'}</span></div></div>
       <div class="row"><button class="ghost" data-act="restplus">+15 s</button><button class="primary" data-act="skiprest">Skip rest</button></div></div>`;
     hook();runRest();return;
@@ -1184,7 +1215,7 @@ function logSet(r,secs){
   it.log.push({r:r,w:e.w0?P.w:0,t:secs||0});
   if(e.kind!=='t')S.reps[e.id]=r;
   if(P.set+1<it.sets){P.set++;startRest(it.rest);}
-  else{P.i++;P.set=0;if(P.i>=P.items.length){P.phase='done';renderPlayer();return;}
+  else{P.fbIdx=P.i;P.fbOpen=0;P.i++;P.set=0;if(P.i>=P.items.length){P.phase='done';renderPlayer();return;}
     const prevRest=it.rest;initCur();startRest(prevRest?Math.max(prevRest,20):0);}
 }
 function summaryData(){
@@ -1195,7 +1226,7 @@ function summaryData(){
     const e=EX[it.id],full=it.log.length>=it.sets;
     const top=e.kind==='t'?it.log.every(l=>l.t>=e.rng[1]):it.log.every(l=>l.r>=e.rng[1]);
     if(e.w0){const w=it.log[it.log.length-1].w;
-      if(full&&top&&stepW(w,1)!==w)bumps.push({id:it.id,from:w,to:stepW(w,1)});}
+      if(full&&top&&!it.adj&&stepW(w,1)!==w)bumps.push({id:it.id,from:w,to:stepW(w,1)});}
     const tr=trackOf(it.id);
     if(tr&&tr.i===S.tracks[tr.k]&&tr.i<TRACKS[tr.k].steps.length-1&&full&&top)ups.push({k:tr.k,to:EX[TRACKS[tr.k].steps[tr.i+1]].name});
   });
@@ -1207,6 +1238,7 @@ function summaryHTML(){
   const none=!d.logged.length;
   let h=`<div class="sum"><div class="ok">&#10003;</div><h1>${none?'Nothing logged':'Session complete'}</h1><p class="hint">${none?'You skipped everything this time. That is fine, come back when you can.':'Every session counts. Here is what you did.'}</p>
    <div class="stats"><div><b>${d.mins}</b><span>Minutes</span></div><div><b>${d.logged.length}</b><span>Moves</span></div><div><b>${d.sets}</b><span>Sets</span></div></div>`;
+  if(!none&&P.fbIdx===P.items.length-1&&P.items[P.fbIdx].log.length)h+=fbHTML(P.fbIdx);
   if(!none)h+=`<div class="card"><div class="sec-h">Muscles worked</div>${mmEl(d.mu.p,d.mu.s,{labels:1})}</div>`;
   if(d.bumps.length)h+=`<div class="card"><div class="sec-h">Level up next time</div>${d.bumps.map(b=>`<div class="pb"><span>${EX[b.id].name}</span><b>${b.from} to ${b.to} lb</b></div>`).join('')}</div>`;
   if(d.ups.length)h+=`<div class="card"><div class="sec-h">Ready for a harder step?</div>${d.ups.map(u=>`<div class="pb"><span>${TRACKS[u.k].name}: <b>${u.to}</b></span><button class="mini" data-act="plup" data-k="${u.k}">Move up</button></div>`).join('')}</div>`;
@@ -1219,9 +1251,10 @@ function saveSession(){
     // persist progress
     d.logged.forEach(it=>{const e=EX[it.id];
       if(e.w0){S.weights[e.id]=it.log[it.log.length-1].w;}
-      if(e.kind==='t'){const best=Math.max(...it.log.map(l=>l.t));S.hold[e.id]=clamp(best>=e.rng[1]?e.rng[1]:best+(it.log.every(l=>l.t>=P.r)?5:0),e.rng[0],e.rng[1]);}
+      if(e.kind==='t'){const best=Math.max(...it.log.map(l=>l.t)),cap=Math.max(e.rng[1],S.hold[e.id]||0);S.hold[e.id]=clamp(best>=e.rng[1]?Math.max(e.rng[1],Math.min(best,cap)):best+(it.log.every(l=>l.t>=P.r)?5:0),e.rng[0],cap);}
     });
     d.bumps.forEach(b=>{S.weights[b.id]=b.to;S.reps[b.id]=EX[b.id].rng[0];});
+    d.logged.forEach(applyAdj);
     const t=Date.now();
     S.logs.push({ts:t,date:todayKey(),focus:fid,mins:d.mins,ex:d.logged.map(it=>({id:it.id,sets:it.log}))});
     const s=S.plan.sessions[P.idx];s.done=true;s.ids=d.logged.map(it=>it.id);s.m=d.mins;
@@ -1271,7 +1304,11 @@ const ACT={
  hold(){if(P.holdOn){const secs=(Date.now()-P.holdStart)/1000;finishHold(secs);}else{P.holdOn=true;P.holdStart=Date.now();renderPlayer();}},
  skiprest(){stopTick();endRest();},
  restplus(){P.restEnd+=15000;P.restTotal+=15;runRest();},
- skipex(){const it=curItem();P.i++;P.set=0;P.holdOn=false;if(P.i>=P.items.length){P.phase='done';renderPlayer();return;}initCur();P.phase='work';renderPlayer();},
+ fb(t){const it=P.items[P.fbIdx];if(!it)return;const d=+t.dataset.d;if(d===0){it.adj=null;P.fbOpen=0;}else{it.adj=null;P.fbOpen=d;}renderPlayer();},
+ fbv(t){const it=P.items[P.fbIdx];if(!it)return;it.adj={dir:P.fbOpen||1,v:+t.dataset.v};P.fbOpen=0;renderPlayer();},
+ asktog(){S.ask=S.ask?0:1;save();render();},
+ wstepset(t){S.wstep=+t.dataset.v;save();render();},
+ skipex(){P.fbIdx=null;const it=curItem();P.i++;P.set=0;P.holdOn=false;if(P.i>=P.items.length){P.phase='done';renderPlayer();return;}initCur();P.phase='work';renderPlayer();},
  pswapsheet(){const e=EX[curItem().id],list=alts(e);
    let h=`<h2>Swap ${e.name}</h2>`;if(!list.length)h+='<p class="hint">No other options with your gear.</p>';
    list.forEach(a=>{h+=`<div class="ex alt" data-act="pdoswap" data-to="${a.id}"><div class="th">${figEl(a.id)}</div><div class="tx"><b>${a.name}</b><span>${targetText(a,curItem().sets)}</span></div></div>`;});openSheet(h);},
