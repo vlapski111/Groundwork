@@ -578,6 +578,18 @@ X('farmer_carry','Farmer Carry',{m:M(['forearms','core'],['back','shoulders','qu
   b:{hx:118,hy:99,tor:180,th:-20,sh:-28,ft:70,fth:20,fsh:5,fft:90,ua:0,fa:0},
   cues:['Heavy dumbbells at your sides, stand tall','Walk with short, steady steps','Do not let your shoulders slump']});
 
+
+/* ---------- TOTAL FLEX L (seat settings from the user guide) ---------- */
+X('tf_chest_press','Total Flex Chest Press',{m:M(['chest'],['triceps','shoulders']),eq:['bench','pods'],rng:[10,15],p:P_.bench(56,106,134),
+  a:{hx:84,hy:124,tor:176,ank:[114,155],ft:90,ua:-5,fa:88},b:{hx:84,hy:124,tor:176,ank:[114,155],ft:90,ua:85,fa:90},band:{from:'W',to:[40,100]},
+  cues:['Seat setting C and 4','Same band level on both handles','Press forward to straight arms, return slowly']});
+X('tf_front_raise','Total Flex Front Raise',{m:M(['shoulders'],['chest','core']),eq:['bench','pods'],rng:[10,15],p:P_.bench(56,106,134),
+  a:{hx:84,hy:124,tor:182,ank:[114,155],ft:90,ua:5,fa:5},b:{hx:84,hy:124,tor:182,ank:[114,155],ft:90,ua:88,fa:88},band:{from:'W',to:[86,152]},
+  cues:['Seat setting E and 2','Same band level on both handles','Raise to shoulder height, no swinging']});
+X('tf_leg_extension','Total Flex Leg Extension',{m:M(['quads']),eq:['bench','legext'],rng:[10,15],knee:1,p:P_.bench(56,106,134),
+  a:{hx:84,hy:124,tor:194,ank:[113,152],ft:90,ua:30,fa:60},b:{hx:84,hy:124,tor:194,ank:[140,120],ft:90,ua:30,fa:60},
+  cues:['Seat setting 3 only','Sit sideways, hook legs over the top rollers, feet under the bottom rollers','Lean back, extend both legs, lower slowly']});
+
 /* ---------- LEGS ---------- */
 X('bench_sit_stand','Bench Sit-to-Stand',{m:M(['quads','glutes'],['core']),eq:['bench'],rng:[8,15],knee:1,
   p:P_.bench(56,106,134),
@@ -689,15 +701,18 @@ const GEAR=[
  {id:'bench',name:'Adjustable bench',sub:'Total Flex L, flat or incline'},
  {id:'tower',name:'Power tower',sub:'Pull-up bar, dip bars, knee raise'},
  {id:'band',name:'Resistance bands',sub:'WataFit set'},
- {id:'ball',name:'Medicine ball',sub:'For core work'}];
+ {id:'ball',name:'Medicine ball',sub:'For core work'},
+ {id:'pods',name:'Total Flex Power Pods',sub:'Handles and band sets on the bench'},
+ {id:'legext',name:'Total Flex leg extender',sub:'Seat setting 3 only'},
+ {id:'headrest',name:'Total Flex headrest',sub:'Head and neck support when lying face up'}];
 const ROT=['push','pull','legs','core','full'];
 const FOCUS={
  push:{name:'Push',sub:'Chest, shoulders, triceps',muscles:['chest','shoulders','triceps'],warm:['arm_circles','wall_angel'],cool:['chest_stretch'],
-  slots:['trk:push',['db_shoulder_press','band_overhead_press'],['db_bench_press','db_floor_press','band_chest_press'],'trk:dip',['db_lateral_raise'],['db_tricep_ext','band_pushdown'],['db_incline_press'],['band_chest_press'],['band_pushdown']]},
+  slots:['trk:push',['db_shoulder_press','band_overhead_press'],['db_bench_press','db_floor_press','band_chest_press','tf_chest_press'],'trk:dip',['db_lateral_raise','tf_front_raise'],['db_tricep_ext','band_pushdown'],['db_incline_press'],['band_chest_press'],['band_pushdown']]},
  pull:{name:'Pull',sub:'Back, biceps, grip',muscles:['back','biceps','forearms'],warm:['wall_angel','arm_circles'],cool:['childs_pose'],
   slots:['trk:pull',['db_one_arm_row','band_row'],['band_pull_apart'],['db_curl','band_row'],['band_face_pull'],['db_hammer_curl'],['superman'],['farmer_carry'],['band_lat_pulldown']]},
  legs:{name:'Legs & Glutes',sub:'Quads, glutes, hamstrings, calves',muscles:['quads','glutes','hamstrings','calves'],warm:['march','glute_bridge'],cool:['childs_pose'],
-  slots:['trk:squat',['db_rdl','good_morning_band'],['db_hip_thrust','glute_bridge'],['calf_raise'],['banded_lateral_walk'],['single_leg_bridge'],['wall_sit'],['donkey_kick'],['good_morning_band']]},
+  slots:['trk:squat',['db_rdl','good_morning_band'],['db_hip_thrust','glute_bridge'],['tf_leg_extension','calf_raise'],['banded_lateral_walk'],['single_leg_bridge'],['wall_sit'],['donkey_kick'],['good_morning_band']]},
  core:{name:'Core & Posture',sub:'Abs, lower back, upper back',muscles:['core','back','glutes'],warm:['wall_angel','march'],cool:['childs_pose'],
   slots:['trk:core',['bird_dog'],['vkr_knee_raise','reverse_crunch'],['reverse_crunch'],['superman'],['med_ball_crunch','crunch'],['glute_bridge'],['band_pull_apart'],['plank']]},
  full:{name:'Full Body',sub:'A bit of everything',muscles:['chest','back','quads','glutes','core','shoulders'],warm:['march','arm_circles'],cool:['childs_pose'],
@@ -719,7 +734,7 @@ const TRACKS={
 /* ---------- state ---------- */
 const KEY='groundwork_v2';
 const todayKey=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
-const DEF=()=>({gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1},cycle:0,lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
+const DEF=()=>({gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
   weights:{},reps:{},hold:{},logs:[],plan:null,tab:'today'});
 let S=load();
 function load(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r){const d=DEF();return Object.assign(d,r,{gear:Object.assign(d.gear,r.gear||{}),tracks:Object.assign(d.tracks,r.tracks||{})});}}catch(e){}return DEF();}
