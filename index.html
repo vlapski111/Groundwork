@@ -231,6 +231,8 @@ nav button{min-width:0}
 .wgoal{font-size:16px;color:#dbe1ee;margin:2px 6px 10px;line-height:1.45}.wset{font-size:15px;color:var(--mut);margin:0 6px;line-height:1.45}
 .wbar{position:relative}.wbar u{position:absolute;top:0;bottom:0;width:2px;background:var(--bg);transform:translateX(-1px)}
 .dim .wline{color:#8d97ad}.dim .wgoal{color:#9aa4b8}
+
+.filebtn{display:block;text-align:center;margin-top:12px;cursor:pointer}
 </style></head><body>
 <div id="app"><header class="top"><b>Ground<i>work</i></b><button id="pchip" data-act="profiles">Me</button></header><main id="view"></main></div>
 <nav>
@@ -1295,7 +1297,7 @@ function srank(ex){const s=S.style,q=ex.eq,w=q.includes('dumbbell'),b=q.includes
  if(s==='weights')return w?0:b?2:1;if(s==='bands')return b?0:w?2:1;if(s==='wb')return(w||b)?0:1;return 0;}
 /* ---------- state ---------- */
 const todayKey=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
-const DEF=()=>({gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,style:'mix',ask:1,wstep:2.5,lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
+const DEF=()=>({gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,style:'mix',ask:1,bkask:1,wstep:2.5,lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
   weights:{},reps:{},hold:{},logs:[],plan:null,tab:'today'});
 let S=load();
 function load(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r){const d=DEF();return Object.assign(d,r,{gear:Object.assign(d.gear,r.gear||{}),tracks:Object.assign(d.tracks,r.tracks||{})});}}catch(e){}return DEF();}
@@ -1389,6 +1391,19 @@ function restoreText(txt){let o;try{o=JSON.parse(txt);}catch(e){return 'That doe
  try{if(o&&o.reg&&o.data){Object.keys(o.data).forEach(id=>{if(o.data[id])localStorage.setItem(keyFor(id),o.data[id]);});REGI=o.reg;saveReg();KEY=keyFor(REGI.active);S=load();ensurePlan();return '';}
  if(o&&o.gear&&o.logs){const d=DEF();S=Object.assign(d,o,{gear:Object.assign(d.gear,o.gear),tracks:Object.assign(d.tracks,o.tracks||{})});save();ensurePlan();return '';}}catch(e){return 'Could not save the backup.';}
  return 'That does not look like a backup.';}
+
+/* ---------- backup to a file outside the browser ---------- */
+const BKKEY='groundwork_lastbk';
+function lastBk(){try{return +localStorage.getItem(BKKEY)||0;}catch(e){return 0;}}
+function markBk(){try{localStorage.setItem(BKKEY,String(Date.now()));}catch(e){}}
+function bkName(){const d=new Date(),p=n=>String(n).padStart(2,'0');return 'groundwork-backup-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'.json';}
+function bkAgo(){const t=lastBk();if(!t)return 'never';const d=Math.floor((Date.now()-t)/864e5);return d<1?'today':d===1?'yesterday':d+' days ago';}
+function bkSave(){const blob=new Blob([allBackup()],{type:'application/json'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=bkName();document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(u);},1500);markBk();}
+async function bkShare(){
+  const f=new File([allBackup()],bkName(),{type:'application/json'});
+  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Groundwork backup'});markBk();return 'shared';}}catch(e){if(e&&e.name==='AbortError')return 'cancel';}
+  bkSave();return 'saved';
+}
 
 /* ================= APP: views ================= */
 const $=s=>document.querySelector(s);
@@ -1493,7 +1508,7 @@ function viewGear(){
   const loaded=Object.values(EX).filter(e=>e.w0&&avail(e));
   h+=`<section class="card"><div class="sec-h">Starting weights<span>per dumbbell</span></div><p class="hint" style="margin-top:0">These are cautious beginner starts. Change them to match what feels challenging but clean. The app raises them for you when you earn it.</p>`;
   loaded.forEach(e=>{h+=`<div class="gear"><div><b>${e.name}</b><span>${e.one?'one dumbbell':'each hand'}</span></div><div class="step"><button data-act="wt" data-id="${e.id}" data-d="-1">-</button><b>${curW(e)} lb</b><button data-act="wt" data-id="${e.id}" data-d="1">+</button></div></div>`;});
-  h+=`</section>`+wGearCard()+`<section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Everything is saved on this phone only. Copy a backup now and then, in case browser data is cleared.</p><div class="row"><button class="ghost" data-act="export">Copy backup</button><button class="ghost" data-act="exportall">Backup all</button><button class="ghost" data-act="restore">Restore</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
+  h+=`</section>`+wGearCard()+`<section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Progress is saved in Chrome on this phone. Keep a copy outside Chrome in case browser data is cleared. Last copy: <b>${bkAgo()}</b>.</p><div class="gear"><div><b>Offer a backup after each workout</b><span>One tap to share or save a file</span></div><button class="tog ${S.bkask?'on':''}" data-act="bktog" aria-label="toggle backup prompt"><i></i></button></div><div class="row"><button class="ghost" data-act="bksheet">Back up now</button><button class="ghost" data-act="export">Copy backup</button><button class="ghost" data-act="exportall">Copy all</button><button class="ghost" data-act="restore">Restore</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
   return h;
 }
 function render(){
@@ -1511,7 +1526,7 @@ function profileSheet(){
   h+=`<div class="sec-h" style="margin-top:16px">This profile</div><input id="rname" class="field" value="${pname()}" maxlength="20"><div class="row"><button class="ghost" data-act="renp">Rename</button>${REGI.list.length>1?'<button class="ghost danger" data-act="delp">Delete</button>':''}</div>`;
   openSheet(h);
 }
-function restoreSheet(){openSheet(`<h2>Restore a backup</h2><p class="hint" style="margin-top:4px">Paste a backup you copied earlier. A single-profile backup replaces the current profile. An all-profiles backup replaces everyone.</p><textarea id="rtext" class="field" rows="6" placeholder="Paste backup here"></textarea><div class="col"><button class="primary" data-act="restoredo">Restore</button><button class="ghost" data-act="closesheet">Cancel</button></div>`);}
+function restoreSheet(){openSheet(`<h2>Restore a backup</h2><p class="hint" style="margin-top:4px">Paste a backup you copied earlier. A single-profile backup replaces the current profile. An all-profiles backup replaces everyone.</p><label class="ghost filebtn">Choose a backup file<input type="file" id="restfile" accept=".json,application/json,text/plain,*/*" hidden></label><div class="hint">Or paste it here</div><textarea id="rtext" class="field" rows="4" placeholder="Paste backup here"></textarea><div class="col"><button class="primary" data-act="restoredo">Restore</button><button class="ghost" data-act="closesheet">Cancel</button></div>`);}
 function openSheet(html){const s=$('#sheet');s.querySelector('.panel').innerHTML=html+'<div style="height:14px"></div>';s.classList.add('show');s.querySelector('.panel').scrollTop=0;hook();}
 function closeSheet(){$('#sheet').classList.remove('show');}
 function ask(title,msg,btns){
@@ -1714,6 +1729,7 @@ function saveSession(){
   save();
 }
 function closePlayer(){stopTick();unlockWake();$('#player').classList.remove('show');document.body.classList.remove('lock');P=null;render();}
+function bkSheet(){openSheet(`<h2>Keep a copy of your progress</h2><p class="hint" style="margin-top:6px">Your progress is saved in Chrome. A copy outside Chrome protects it if browser data is ever cleared. Last copy: <b>${bkAgo()}</b>.</p><div class="col"><button class="primary" data-act="bkshare">Share to Drive, OneDrive or email</button><button class="ghost" data-act="bksave">Save a file on this phone</button><button class="ghost" data-act="closesheet">Not now</button></div>`);}
 /* ---------- actions ---------- */
 function copyText(j,msg){if(navigator.clipboard)navigator.clipboard.writeText(j).then(()=>toast(msg),()=>window.prompt('Copy your backup',j));else window.prompt('Copy your backup',j);}
 const ACT={
@@ -1768,8 +1784,14 @@ const ACT={
     ...(any?[{t:'Save and finish',fn(){closeSheet();P.phase='done';renderPlayer();}}]:[]),
     {t:'Discard',cls:'danger',fn(){closeSheet();closePlayer();}}]);},
  plup(t){const k=t.dataset.k;S.tracks[k]=clamp(S.tracks[k]+1,0,TRACKS[k].steps.length-1);save();t.textContent='Done';t.disabled=true;toast('Level up!');},
- plsave(){saveSession();closePlayer();toast('Saved');}
+ plsave(){const had=P&&P.sum&&P.sum.logged&&P.sum.logged.length;saveSession();closePlayer();toast('Saved');if(had&&S.bkask)setTimeout(bkSheet,1500);},
+ bksheet(){bkSheet();},
+ bkshare(){bkShare().then(r=>{if(r==='shared'){closeSheet();toast('Backup shared');render();}else if(r==='saved'){closeSheet();toast('Saved to Downloads');render();}});},
+ bksave(){bkSave();closeSheet();toast('Saved to Downloads');render();},
+ bktog(){S.bkask=S.bkask?0:1;save();render();},
+ restorefile(t){const f=t.files&&t.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const m=restoreText(String(r.result||''));if(m){toast(m);return;}closeSheet();render();toast('Restored');};r.readAsText(f);}
 };
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='restfile')ACT.restorefile(e.target);});
 document.addEventListener('click',e=>{
   const a=e.target.closest('[data-ask]');if(a){const b=window._ask[+a.dataset.ask];if(b)b.fn();return;}
   const t=e.target.closest('[data-act]');
