@@ -257,6 +257,14 @@ svg.mach{background:#101520;border-radius:10px}
 .gimgw.play{transform:scale(1.03);box-shadow:0 0 0 2px #ff6a2b}
 .gimgw.big{aspect-ratio:1/1;max-height:300px;margin:0 auto;border-radius:14px}
 .bigfig:has(.gimgw){aspect-ratio:auto;background:none;overflow:visible;margin-bottom:10px}
+
+.grph{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);padding:10px 4px 2px;font-weight:700}
+.fav{background:none;border:1px solid var(--line);color:#ffb54a;border-radius:999px;padding:6px 10px;font-size:15px;cursor:pointer}
+.fav.on{background:rgba(255,181,74,.14);border-color:#ffb54a}
+.pill.fav{font-size:13px;padding:6px 12px}
+.favrow{display:flex;flex-wrap:wrap;gap:8px}
+.favchip{background:var(--card2);border:1px solid var(--line);color:inherit;border-radius:12px;padding:8px 12px;font-size:13px;text-align:left;cursor:pointer}
+.favchip small{display:block;opacity:.6;font-size:11px}
 </style></head><body>
 <div id="app"><header class="top"><b>Ground<i>work</i></b><button id="pchip" data-act="profiles">Me</button></header><main id="view"></main></div>
 <nav>
@@ -1533,6 +1541,73 @@ const WACT={
  wdelmine(t){W().mine=W().mine.filter(m=>m.id!==t.dataset.id);save();closeSheet();render();}
 };
 
+/* ---------- programs: fixed multi-day plans (Oliver's workout plan) ---------- */
+function PX(id,name,base,o){
+  const b=EX[base];if(!b)return;
+  EX[id]=Object.assign({},b,{id,name,prog:1,sets:null},o||{});
+}
+function PN(id,name,o){X(id,name,Object.assign({prog:1,eq:['dumbbell'],db:'end',w0:10},o));}
+/* chest */
+PX('p_press_out','Flat Press, Elbows Out','db_bench_press',{eq:['dumbbell'],rng:[8,10],cues:['Elbows out to about 70 degrees from your sides','Lower until your upper arms are level, press straight up','Feet flat, shoulder blades pinched']});
+PX('p_press_in','Flat Press, Elbows Tucked','db_bench_press',{eq:['dumbbell'],rng:[8,10],cues:['Elbows tucked close, about 30 degrees from your sides','Lower slowly to the sides of your chest','Press up and slightly in']});
+PX('p_hex','Dumbbell Hex Press','db_bench_press',{eq:['dumbbell'],rng:[8,10],cues:['Press the two dumbbells together the whole time','Lower to your chest with the weights touching','Press up and keep squeezing them together']});
+PX('p_hfly','Dumbbell Hammer Fly','db_floor_press',{eq:['dumbbell'],rng:[8,10],a:{...SUP,hy:148,ua:100,fa:110},b:{...SUP,hy:148,ua:180,fa:180},cues:['Palms face each other, elbows slightly bent','Open your arms wide in an arc, stop at chest level','Bring them back together over your chest']});
+PX('p_pushfail','Push-Up to Failure','pushup',{eq:[],rng:[8,15],cues:['One set, as many clean reps as you can','Body in a straight line the whole time','Stop when your form breaks, not before']});
+/* biceps and forearms */
+PX('p_hammer','Hammer Curl','db_hammer_curl',{rng:[8,10]});
+PX('p_upcurl','Dumbbell Upward Curl','db_curl',{rng:[8,10],cues:['Palms face up, elbows pinned to your sides','Curl up and squeeze at the top','Lower slowly over about 3 seconds']});
+PX('p_waiter','Dumbbell Waiter Curl','db_curl',{rng:[8,10],db:'vert',one:1,cues:['Hold one dumbbell upright by the top plate with both hands, like a tray','Curl it up to your chest','Lower slowly, elbows stay at your sides']});
+PX('p_revcurl','Dumbbell Reverse Curl','db_curl',{rng:[10,10],w0:8,m:M(['forearms'],['biceps']),cues:['Palms face down','Curl up with your wrists straight','Lower slowly']});
+PN('p_wrist','Standing Dumbbell Wrist Curl',{m:M(['forearms']),rng:[10,10],w0:8,a:{...ST,ua:0,fa:90},b:{...ST,ua:0,fa:60},cues:['Elbows at your sides, forearms level, palms up','Curl only your wrists up and squeeze','Lower slowly until your hands are open']});
+PN('p_revwrist','Dumbbell Reverse Wrist Curl',{m:M(['forearms']),rng:[10,10],w0:5,a:{...ST,ua:0,fa:90},b:{...ST,ua:0,fa:112},cues:['Elbows at your sides, forearms level, palms down','Lift the back of your hands up','Lower slowly']});
+/* shoulders and back */
+PN('p_front','Neutral-Grip Front Raise',{m:M(['shoulders'],['chest']),rng:[8,10],w0:8,a:{...ST,ua:3,fa:3},b:{...ST,ua:88,fa:88},cues:['Palms face each other','Raise both arms to shoulder height with no swinging','Lower slowly']});
+PX('p_lateral','Dumbbell Lateral Raise','db_lateral_raise',{rng:[8,10]});
+PN('p_underrow','Underhand Dumbbell Row',{m:M(['back'],['biceps']),dbBoth:1,rng:[8,10],w0:15,a:{hx:92,hy:104,tor:105,ank:[112,155],ft:90,ua:0,fa:0,neck:100},b:{hx:92,hy:104,tor:105,ank:[112,155],ft:90,ua:-100,fa:5,neck:100},cues:['Hinge forward with a flat back, palms face forward','Pull both elbows back toward your hips','Squeeze your shoulder blades, lower slowly']});
+PN('p_upright','Upright Row',{m:M(['shoulders'],['back']),dbBoth:1,rng:[8,10],w0:10,a:{...ST,ua:3,fa:3},b:{...ST,hand:[127,68],eb:1},cues:['Hold the dumbbells in front of your thighs','Lift them along your body, elbows leading, to chest height','Lower slowly. Stop if your shoulders pinch']});
+PX('p_meadows','Meadows Row','db_one_arm_row',{eq:['dumbbell'],rng:[8,10],cues:['Stand sideways, hand on a support, hinge forward','Row the dumbbell up toward your hip, elbow out','Slow on the way down, then switch sides']});
+PN('p_reardelt','Rear Delt Fly',{m:M(['shoulders'],['back']),dbBoth:1,rng:[8,10],w0:5,a:{hx:96,hy:106,tor:112,ank:[118,155],ft:90,ua:0,fa:0,neck:108},b:{hx:96,hy:106,tor:112,ank:[118,155],ft:90,ua:-32,fa:-32,neck:108},cues:['Hinge forward with a flat back, arms hanging','Raise your arms out to the sides with a slight elbow bend','Squeeze your shoulder blades, lower slowly']});
+PN('p_shrug','Dumbbell Shrug',{m:M(['back'],['forearms']),dbBoth:1,rng:[8,10],w0:20,a:{hx:118,hy:98,tor:180,ank:[118,155],ft:90,ua:2,fa:2},b:{hx:118,hy:94,tor:180,ank:[118,155],ft:90,ua:2,fa:2},cues:['Dumbbells at your sides, arms straight','Lift your shoulders straight up toward your ears','Pause, then lower slowly. Do not roll them']});
+/* triceps */
+PN('p_skull','Dumbbell Skull Crusher',{m:M(['triceps']),rng:[8,10],floorMat:1,w0:10,a:{...SUP,hy:148,ua:180,fa:235},b:{...SUP,hy:148,ua:180,fa:180},cues:['Lie back, dumbbells straight above your chest','Bend only your elbows to lower the weights toward your forehead','Extend back up, elbows stay still']});
+PX('p_closepress','Close-Grip Dumbbell Press','db_floor_press',{rng:[8,10],m:M(['triceps'],['chest','shoulders']),cues:['Dumbbells together, elbows tucked in','Press straight up over your chest','Lower slowly with elbows close to your body']});
+PX('p_ohext','Dumbbell Overhead Extension','db_tricep_ext',{rng:[8,10]});
+/* legs */
+PX('p_squat','Weighted Squat','bw_squat',{eq:['dumbbell'],db:'end',w0:20,rng:[8,12],one:1,cues:['Hold a dumbbell at your chest with both hands','Sit back and down, chest tall','Drive up through your whole foot']});
+PX('p_lunge','Stationary Lunge','split_squat',{eq:['dumbbell'],db:'end',w0:10,rng:[8,12],per:1,cues:['Dumbbells at your sides, long stance','Lower your back knee straight down','Drive up through the front foot. Finish all reps on one leg, then switch']});
+PX('p_calf','Calf Raise','calf_raise',{rng:[8,12]});
+/* abs */
+PX('p_legraise','Leg Raise','leg_raise',{rng:[15,15]});
+PX('p_mtn','Mountain Climber','mountain_climber',{kind:'r',rng:[20,20],cues:['Hands under shoulders, body in a straight line','Drive your knees toward your chest, alternating','Keep your hips low and steady. Count every knee as one']});
+PN('p_russian','Russian Twist',{m:M(['core'],['shoulders']),rng:[20,20],floorMat:1,w0:8,one:1,a:{hx:108,hy:146,tor:-135,th:125,sh:125,ft:125,hand:[98,128],neck:-140},b:{hx:108,hy:146,tor:-135,th:125,sh:125,ft:125,hand:[104,134],neck:-140},cues:['Sit leaning back, feet raised or on the floor','Hold the weight at your chest and turn your whole torso side to side','Count each side as one rep']});
+PX('p_plank','Plank','plank',{kind:'t',rng:[40,45]});
+PX('p_dragon','Dragon Raise','leg_raise',{rng:[15,15],cues:['Lie back and grip something solid behind your head','Lift straight legs and hips up in one line','Lower slowly. Bend your knees to make it easier']});
+PX('p_bicycle','Bicycle Crunch','crunch',{rng:[20,20],cues:['Hands behind your head, shoulders off the floor','Bring one elbow toward the opposite knee','Alternate sides slowly. Count each side as one']});
+/* ---- the program ---- */
+const PROGS={
+ oliver:{id:'oliver',name:"Oliver's workout plan",sub:'Dumbbell split, 6 training days',goal:'Focus: dumbbell curls',days:[
+  {n:'Day 1',t:'Chest, biceps, shoulders',wd:0,rest:120,groups:[['Chest',[['p_press_out',3],['p_press_in',3],['p_hex',3]]],['Biceps',[['p_hammer',3],['p_upcurl',3],['p_waiter',3]]],['Shoulders',[['p_front',3],['p_lateral',3]]]]},
+  {n:'Day 2',t:'Legs and abs',wd:1,rest:120,groups:[['Legs',[['p_squat',3],['p_lunge',3],['p_calf',3]]],['Abs',[['p_legraise',3],['p_mtn',3],['p_russian',3],['p_plank',3]],60]]},
+  {n:'Day 3',t:'Back and triceps',wd:2,rest:120,groups:[['Back',[['p_underrow',3],['p_upright',3],['p_meadows',3],['p_reardelt',3]]],['Traps',[['p_shrug',3]]],['Triceps',[['p_skull',3],['p_closepress',3]]]]},
+  {n:'Day 4',t:'Rest and abs',wd:3,rest:60,groups:[['Abs',[['p_dragon',3],['p_russian',3],['p_bicycle',3],['p_plank',3]]]]},
+  {n:'Day 5',t:'Shoulders and arms',wd:4,rest:120,groups:[['Shoulders',[['p_front',3],['p_lateral',3]]],['Biceps',[['p_hammer',3],['p_upcurl',3],['p_waiter',3]]],['Triceps',[['p_ohext',3],['p_closepress',3]]],['Forearms',[['p_revcurl',2],['p_wrist',2],['p_revwrist',2]]]]},
+  {n:'Day 6',t:'Chest, back and abs',wd:5,rest:120,groups:[['Chest',[['p_press_out',3],['p_press_in',3],['p_hfly',3],['p_pushfail',1]]],['Back',[['p_underrow',3],['p_upright',3],['p_meadows',3],['p_reardelt',3]]],['Abs',[['p_dragon',3],['p_russian',3],['p_bicycle',3],['p_plank',3]],60]]},
+  {n:'Day 7',t:'Rest day',wd:6,rest:0,off:1,groups:[]}]}
+};
+const WDN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function progFid(pid,i){return 'pg_'+pid+'_'+i;}
+function registerProgs(){
+  for(const pid in PROGS){const P=PROGS[pid];
+    P.days.forEach((d,i)=>{
+      const fixed=[];d.groups.forEach(g=>g[1].forEach(it=>{if(EX[it[0]])fixed.push({id:it[0],sets:it[1],rest:g[2]||d.rest,grp:g[0]});}));
+      const mus=new Set();fixed.forEach(f=>EX[f.id].m.p.forEach(x=>mus.add(x)));
+      FOCUS[progFid(pid,i)]={name:d.t,sub:P.name+' · '+d.n+' · '+WDN[d.wd],muscles:[...mus],fixed,restDay:!!d.off,prog:pid,day:i,slots:[]};
+    });
+  }
+}
+/* which program day is today */
+function progToday(pid){const P=PROGS[pid];if(!P)return null;const wd=new Date().getDay();const i=P.days.findIndex(d=>d.wd===wd);return progFid(pid,i<0?0:i);}
+
 /* ================= APP: constants, state, planner ================= */
 const LAD=[5,7.5,10,12.5,15,17.5,20,22.5,25,30,35,40,45,50,52.5];
 const MLAD=[];for(let v=5;v<=100;v+=5)MLAD.push(v);for(let v=110;v<=300;v+=10)MLAD.push(v);
@@ -1597,7 +1672,7 @@ function srank(ex){const s=S.style,q=ex.eq,w=q.includes('dumbbell'),b=q.includes
  if(s==='weights')return w?0:b?2:1;if(s==='bands')return b?0:w?2:1;if(s==='wb')return(w||b)?0:1;return 0;}
 /* ---------- state ---------- */
 const todayKey=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
-const DEF=()=>({gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,style:'mix',mode:'home',agear:{},warm:'auto',ask:1,bkask:1,wstep:2.5,lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
+const DEF=()=>({prog:null,favs:[],gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,style:'mix',mode:'home',agear:{},warm:'auto',ask:1,bkask:1,wstep:2.5,lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
   weights:{},reps:{},hold:{},logs:[],plan:null,tab:'today'});
 let S=load();
 function load(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r){const d=DEF();return Object.assign(d,r,{gear:Object.assign(d.gear,r.gear||{}),tracks:Object.assign(d.tracks,r.tracks||{})});}}catch(e){}return DEF();}
@@ -1606,7 +1681,7 @@ function ensurePlan(){
   const t=todayKey();
   if(!S.plan||S.plan.date!==t){S.plan={date:t,focus:null,swaps:{},sessions:[{m:S.lastMins||20,f:null,done:false}],open:0};save();}
 }
-const activeFocus=()=>S.plan.focus||ROT[S.cycle%ROT.length];
+const activeFocus=()=>S.plan.focus||(S.prog&&!S.plan.progOff&&PROGS[S.prog]&&progToday(S.prog))||ROT[S.cycle%ROT.length];
 /* ---------- planner ---------- */
 const G=()=>S.mode==='away'?(S.agear||(S.agear={})):S.gear;
 const hasEq=e=>{const g=G();return g[e]||(IMPL[e]||[]).some(x=>g[x]);};
@@ -1632,7 +1707,9 @@ function resolveSlot(slot,used){
 function curW(ex){return ex.w0?snap(S.weights[ex.id]??ex.w0,ex):null;}
 const warmWanted=m=>S.warm==='off'?false:S.warm==='on'?true:m>=15;
 function planSession(fid,mins,ctx){
-  const F=FOCUS[fid],rest=restFor(mins,F),budget=mins*60,seen=new Set(ctx.used);
+  const F=FOCUS[fid];
+  if(F.fixed){let tot=0;const items=F.fixed.map(f=>{tot+=exSec(EX[f.id],f.sets,f.rest);return {id:f.id,sets:f.sets,rest:f.rest,grp:f.grp};});return {focus:fid,m:Math.max(5,Math.round(tot/60)),est:tot,items};}
+  const rest=restFor(mins,F),budget=mins*60,seen=new Set(ctx.used);
   const warm=[],cool=[];
   if(ctx.first&&F.warm&&warmWanted(mins)){const n=mins<=25?1:2;for(const id of F.warm){const e=EX[id];if(e&&e.cardio&&(mins<20||warm.some(w=>w.ex.cardio)))continue;if(e&&avail(e)&&warm.length<n&&!seen.has(id)){warm.push({ex:e,sets:1,rest:0});seen.add(id);}}}
   if(ctx.last&&F.cool&&mins>=20){const n=mins>=40?2:1;for(const id of F.cool){const e=EX[id];if(e&&avail(e)&&cool.length<n&&!seen.has(id)){cool.push({ex:e,sets:1,rest:0});seen.add(id);}}}
@@ -1654,13 +1731,13 @@ function buildDay(){
     if(s.f==='primer'){out.push(planSession('primer',s.m,{used:new Set(),first:false,last:false}));return;}
     const primerBefore=S.plan.sessions.slice(0,i).some(x=>x.f==='primer');
     const p=planSession(s.f||fid,s.m,{used,first:!mainSeen&&!primerBefore,last:i===lastPend});
-    p.items.forEach(it=>used.add(it.id));mainSeen=true;out.push(p);
+    p.items.forEach(it=>used.add(it.id));mainSeen=true;if(p.items.length&&FOCUS[s.f||fid].fixed)s.m=p.m;out.push(p);
   });
   return out;
 }
 function alts(ex){
   const inPlan=new Set(buildDay().flatMap(p=>p.items?p.items.map(i=>i.id):[]));
-  return Object.values(EX).filter(e=>e.id!==ex.id&&!e.warm&&!e.cool&&avail(e)&&!inPlan.has(e.id)&&e.m.p.some(g=>ex.m.p.includes(g)));
+  return Object.values(EX).filter(e=>e.id!==ex.id&&!e.prog&&!e.warm&&!e.cool&&avail(e)&&!inPlan.has(e.id)&&e.m.p.some(g=>ex.m.p.includes(g)));
 }
 function muscleUnion(items){
   const p=new Set(),s=new Set();
@@ -1708,6 +1785,8 @@ async function bkShare(){
   bkSave();return 'saved';
 }
 
+registerProgs();
+
 /* ================= APP: views ================= */
 const $=s=>document.querySelector(s);
 const figEl=(id,cls='')=>EX[id]&&EX[id].mach?machEl(id,cls):`<svg class="fig ${cls}" data-ex="${id}" data-ph="${Math.random().toFixed(2)}" viewBox="0 0 240 180" preserveAspectRatio="xMidYMax meet">${sceneInner(EX[id],.5)}</svg>`;
@@ -1726,9 +1805,15 @@ function viewToday(){
   const nextIdx=sess.findIndex(s=>!s.done);
   const totalMin=sess.filter(s=>!s.done).reduce((a,s)=>a+s.m,0);
   const done=sess.filter(s=>s.done).length;
-  let h=`<section class="card hero"><div class="hero-l"><div class="eyebrow">${fmtDay()}</div><h1>${F.name}</h1><p>${F.sub}</p>
-    <div class="row"><button class="pill" data-act="focus">Change focus</button>${streak()?`<span class="streak">${streak()} day streak</span>`:''}</div></div>
+  const faved=S.favs.includes(fid);
+  let h=favRow();
+  h+=`<section class="card hero"><div class="hero-l"><div class="eyebrow">${fmtDay()}</div><h1>${F.name}</h1><p>${F.sub}</p>
+    <div class="row"><button class="pill" data-act="focus">Change focus</button><button class="pill fav ${faved?'on':''}" data-act="fav" data-id="${fid}" aria-label="favourite">${faved?'★ Saved':'☆ Save'}</button>${streak()?`<span class="streak">${streak()} day streak</span>`:''}</div></div>
     <div class="hero-r">${mmEl(mu.p,mu.s)}</div></section>`;
+  if(F.restDay){return h+`<section class="card donecard"><h2>Rest day</h2><p>Nothing planned today. A walk or easy stretch is great.</p><div class="col"><button class="ghost" data-act="progoff">Train anyway with my usual plan</button></div></section>`;}
+  if(F.fixed){const nm=PROGS[F.prog].name;
+    h+=`<section class="card"><div class="sec-h">${nm}<span>about ${sess.filter(s=>!s.done).reduce((a,s)=>a+s.m,0)} min</span></div><p class="hint" style="margin-top:0">${PROGS[F.prog].goal}. Rest 2 minutes between sets unless noted. Times are set by the plan.</p><div class="row"><button class="ghost" data-act="progoff">Use my usual plan today</button><button class="ghost" data-act="useprog" data-id="">Stop this program</button></div></section>`;
+  }else{
   h+=`<section class="card"><div class="sec-h">How much time do you have?<span>${done?done+' done, ':''}${totalMin} min to go</span></div>
     <div class="presets">
       <button data-act="preset" data-v="10">10</button><button data-act="preset" data-v="20">20</button><button data-act="preset" data-v="30">30</button><button data-act="preset" data-v="45">45</button>
@@ -1743,14 +1828,16 @@ function viewToday(){
   });
   if(sess.length<4)h+=`<button class="addline" data-act="add">+ Add a session</button>`;
   h+=`<p class="hint">Time is split smartly: an AM and PM session cover the same focus without repeating moves.</p></section>`;
+  }
   if(nextIdx<0){
-    h+=`<section class="card donecard"><h2>Day complete</h2><p>Nice work. Next up: <b>${FOCUS[ROT[S.cycle%ROT.length]].name}</b>. You can add a bonus session above if you still have energy.</p></section>`;
+    h+=`<section class="card donecard"><h2>Day complete</h2><p>Nice work. ${F.fixed?'See you for the next day of the plan.':'Next up: <b>'+FOCUS[ROT[S.cycle%ROT.length]].name+'</b>.'} You can add a bonus session above if you still have energy.</p></section>`;
   }
   day.forEach((p,i)=>{
     if(p.done)return;
     const s=sess[i],nm=names[i]||'Session '+(i+1),open=(S.plan.open===i)||(S.plan.open==null&&i===nextIdx);
     h+=`<section class="card sess ${open?'open':''}"><header data-act="open" data-i="${i}"><div><b>${nm}</b> <span>${s.f==='primer'?'Primer':FOCUS[s.f||fid].name} · about ${fmtMin(p.est)} min · ${p.items.length} moves</span></div><i class="chev"></i></header><div class="list">`;
-    p.items.forEach(it=>{
+    let lastG='';p.items.forEach(it=>{
+      if(it.grp&&it.grp!==lastG){h+=`<div class="grph">${it.grp}</div>`;lastG=it.grp;}
       const e=EX[it.id],w=curW(e),tag=e.warm?'<em>Warm-up</em>':e.cool?'<em>Cool-down</em>':'';
       h+=`<div class="ex" data-act="detail" data-id="${e.id}"><div class="th">${figEl(e.id)}</div><div class="tx"><b>${e.name} ${tag}</b><span>${targetText(e,it.sets)}</span>${w?`<span class="w">${w} lb${e.one?'':' each'}</span>`:''}<div class="chips">${e.m.p.slice(0,2).map(g=>chip(g,'p')).join('')}</div></div>${e.warm||e.cool?'':`<button class="swap" data-act="swap" data-id="${e.id}" aria-label="swap exercise">&#8644;</button>`}</div>`;
     });
@@ -1762,7 +1849,9 @@ function viewToday(){
 function viewPlan(){
   ensurePlan();
   const next=ROT[S.cycle%ROT.length];
-  let h=`<section class="card"><div class="sec-h">Your rotation<span>one focus per day</span></div><p class="hint" style="margin-top:0">Do the next one whenever you train. Miss a day and nothing breaks, the rotation just waits for you.</p>`;
+  const pre=progCard();
+  if(S.prog&&PROGS[S.prog]){const P=PROGS[S.prog],tf=progToday(S.prog);let w=pre+`<section class="card"><div class="sec-h">${P.name}<span>this week</span></div><p class="hint" style="margin-top:0">Tap a day to do it today. Days follow the weekday by default.</p>`;P.days.forEach((d,i)=>{const k=progFid(P.id,i),F=FOCUS[k],last=S.logs.filter(l=>l.focus===k).slice(-1)[0];w+=`<div class="rot ${k===tf?'next':''}" data-act="pickfocus" data-k="${k}"><div class="rn">${i+1}</div><div class="rt"><b>${d.t}</b><span>${WDN[d.wd]}${F.fixed.length?' · '+F.fixed.length+' moves':''}</span><span class="lastdone">${last?'Last done '+ago(last.ts):'Not done yet'}</span></div><button class="fav ${S.favs.includes(k)?'on':''}" data-act="fav" data-id="${k}" aria-label="favourite">${S.favs.includes(k)?'★':'☆'}</button>${k===tf?'<em class="badge">Today</em>':''}</div>`;});return w+'</section>';}
+  let h=pre+`<section class="card"><div class="sec-h">Your rotation<span>one focus per day</span></div><p class="hint" style="margin-top:0">Do the next one whenever you train. Miss a day and nothing breaks, the rotation just waits for you.</p>`;
   ROT.forEach((k,i)=>{
     const F=FOCUS[k],last=S.logs.filter(l=>l.focus===k).slice(-1)[0];
     h+=`<div class="rot ${k===next?'next':''}" data-act="pickfocus" data-k="${k}"><div class="rn">${i+1}</div><div class="rt"><b>${F.name}</b><span>${F.sub}</span><span class="lastdone">${last?'Last done '+ago(last.ts):'Not done yet'}</span></div><div class="rm">${mmEl(F.muscles,[])}</div>${k===next?'<em class="badge">Up next</em>':''}</div>`;
@@ -1832,7 +1921,7 @@ function viewGear(){
   h+=`<section class="card"><div class="sec-h">${away?'Gym equipment':'Gym machines'}<span>${away?'tick what is here':'only if you have any'}</span></div><input id="gq" class="field" placeholder="Search machines, for example lat pulldown" value="${gq}"><div id="glist">${gearList()}</div></section>`;
   h+=`<section class="card"><div class="sec-h">Feedback</div><div class="gear"><div><b>Ask after each exercise</b><span>Too easy, just right or too hard, right on the rest screen</span></div><button class="tog ${S.ask?'on':''}" data-act="asktog" aria-label="toggle feedback"><i></i></button></div><div class="gear"><div><b>Dumbbell step</b><span>Default change when you say too easy or hard</span></div><div class="seg"><button class="${S.wstep===2.5?'on':''}" data-act="wstepset" data-v="2.5">2.5 lb</button><button class="${S.wstep===5?'on':''}" data-act="wstepset" data-v="5">5 lb</button></div></div></section>`;
   h+=`<section class="card"><div class="sec-h">Warm-up</div><div class="seg wseg">${[['auto','Auto'],['on','Always'],['off','Off']].map(x=>`<button class="${S.warm===x[0]?'on':''}" data-act="warmset" data-v="${x[0]}">${x[1]}</button>`).join('')}</div><p class="hint">Auto skips the general warm-up on sessions under 15 minutes and adds a few easy practice reps before your first weighted move instead. Cool-downs only appear on sessions of 20 minutes or more.</p></section>`;
-  const loaded=Object.values(EX).filter(e=>e.w0&&!e.mach&&avail(e));
+  const loaded=Object.values(EX).filter(e=>e.w0&&!e.mach&&!e.prog&&avail(e));
   h+=`<section class="card"><div class="sec-h">Starting weights<span>per dumbbell</span></div><p class="hint" style="margin-top:0">These are cautious beginner starts. Change them to match what feels challenging but clean. The app raises them for you when you earn it.</p>`;
   loaded.forEach(e=>{h+=`<div class="gear"><div><b>${e.name}</b><span>${e.one?'one dumbbell':'each hand'}</span></div><div class="step"><button data-act="wt" data-id="${e.id}" data-d="-1">-</button><b>${curW(e)} lb</b><button data-act="wt" data-id="${e.id}" data-d="1">+</button></div></div>`;});
   h+=`</section>`+wGearCard()+`<section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Progress is saved in Chrome on this phone. Keep a copy outside Chrome in case browser data is cleared. Last copy: <b>${bkAgo()}</b>.</p><div class="gear"><div><b>Offer a backup after each workout</b><span>One tap to share or save a file</span></div><button class="tog ${S.bkask?'on':''}" data-act="bktog" aria-label="toggle backup prompt"><i></i></button></div><div class="row"><button class="ghost" data-act="bksheet">Back up now</button><button class="ghost" data-act="export">Copy backup</button><button class="ghost" data-act="exportall">Copy all</button><button class="ghost" data-act="restore">Restore</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
@@ -1896,6 +1985,18 @@ function loop(ts){requestAnimationFrame(loop);if(ts-lastT<34)return;lastT=ts;
   vis.forEach(n=>{if(!n.isConnected){vis.delete(n);return;}
     const ex=EX[n.dataset.ex];if(!ex)return;const per=ex.per||(ex.slow?6:ex.hold?4.4:3.6);
     const ph=((ts/1000/per)+(+n.dataset.ph))%1;n.innerHTML=sceneInner(ex,reduce?.5:phaseT(ex,ph));});}
+
+function favName(id){if(id.startsWith('prog:')){const p=PROGS[id.slice(5)];return p?p.name:id;}const F=FOCUS[id];return F?F.name:id;}
+function favRow(){
+  const f=(S.favs||[]).filter(id=>id.startsWith('prog:')?PROGS[id.slice(5)]:FOCUS[id]);
+  if(!f.length)return '';
+  return `<section class="card favs"><div class="sec-h">Favourites<span>tap to do today</span></div><div class="favrow">${f.map(id=>id.startsWith('prog:')?`<button class="favchip" data-act="useprog" data-id="${id.slice(5)}">★ ${favName(id)}</button>`:`<button class="favchip" data-act="setfocus" data-k="${id}">★ ${favName(id)}${FOCUS[id].prog?'<small>'+FOCUS[id].sub.split(' · ').slice(1,2)+'</small>':''}</button>`).join('')}</div></section>`;
+}
+function progCard(){
+  let h=`<section class="card"><div class="sec-h">Programs<span>optional</span></div><div class="gear" data-act="useprog" data-id="" style="cursor:pointer"><div><b>My rotation</b><span>Push, pull, legs, core and full body, sized to your time</span></div><i class="radio ${S.prog?'':'on'}"></i></div>`;
+  Object.values(PROGS).forEach(P=>{const k='prog:'+P.id,fv=S.favs.includes(k);h+=`<div class="gear" data-act="useprog" data-id="${P.id}" style="cursor:pointer"><div><b>${P.name}</b><span>${P.sub}. ${P.goal}</span></div><button class="fav ${fv?'on':''}" data-act="fav" data-id="${k}" aria-label="favourite">${fv?'★':'☆'}</button><i class="radio ${S.prog===P.id?'on':''}"></i></div>`;});
+  return h+`<p class="hint">Star anything to keep it in a Favourites row at the top of Today. This is saved per person.</p></section>`;
+}
 
 /* ================= APP: player + actions ================= */
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -2065,6 +2166,9 @@ const ACT={
  focus(){focusSheet();},
  setfocus(t){S.plan.focus=t.dataset.k;S.plan.swaps={};S.plan.open=null;save();closeSheet();S.tab='today';render();},
  pickfocus(t){ACT.setfocus(t);},
+ fav(t){const id=t.dataset.id,i=S.favs.indexOf(id);if(i>=0)S.favs.splice(i,1);else S.favs.push(id);save();render();},
+ useprog(t){S.prog=t.dataset.id||null;S.plan.focus=null;S.plan.progOff=0;S.plan.swaps={};S.plan.open=null;save();closeSheet();S.tab=S.prog?'today':S.tab;render();window.scrollTo(0,0);},
+ progoff(){S.plan.progOff=1;S.plan.focus=null;S.plan.swaps={};S.plan.open=null;save();render();},
  preset(t){setSessions(parsePreset(t.dataset.v));S.tab='today';render();window.scrollTo(0,0);},
  mm(t){const s=S.plan.sessions[+t.dataset.i];s.m=clamp(s.m+(+t.dataset.d),10,60);S.lastMins=s.m;S.plan.open=+t.dataset.i;save();render();},
  sf(t){const s=S.plan.sessions[+t.dataset.i];s.f=s.f==='primer'?null:'primer';save();render();},
