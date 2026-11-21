@@ -250,6 +250,13 @@ svg.mach{background:#101520;border-radius:10px}
 .gck{position:absolute;top:8px;left:8px;width:22px;height:22px;border-radius:50%;background:rgba(13,17,24,.7);border:2px solid var(--mut)}
 .gt.on .gck{background:var(--teal);border-color:var(--teal)}
 .gt.on .gck::after{content:'';position:absolute;left:6px;top:2px;width:5px;height:10px;border-right:2.5px solid #04211d;border-bottom:2.5px solid #04211d;transform:rotate(40deg)}
+
+.gimgw{display:block;width:100%;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:#101520;transition:transform .15s,box-shadow .15s;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.gimgw img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.gimgw svg.inl{width:100%;height:100%;display:block}
+.gimgw.play{transform:scale(1.03);box-shadow:0 0 0 2px #ff6a2b}
+.gimgw.big{aspect-ratio:1/1;max-height:300px;margin:0 auto;border-radius:14px}
+.bigfig:has(.gimgw){aspect-ratio:auto;background:none;overflow:visible;margin-bottom:10px}
 </style></head><body>
 <div id="app"><header class="top"><b>Ground<i>work</i></b><button id="pchip" data-act="profiles">Me</button></header><main id="view"></main></div>
 <nav>
@@ -890,6 +897,14 @@ add('w_lie_belly','Hand on belly',{floorMat:1,a:{...LIE,hand:[96,136]},b:{...LIE
 add('w_knees','Knees to chest',{floorMat:1,a:{hx:108,hy:148,tor:-90,th:-155,sh:40,ft:90,ua:100,fa:70,neck:-92},b:{hx:108,hy:148,tor:-90,th:-150,sh:35,ft:90,ua:100,fa:70,neck:-92}});
 })();
 
+/* generated from equipment_manifest.json */
+const EQ_BASE='assets/equipment/';
+const MGROUPS=[{"g": "Free weights and racks", "items": [["dumbbell", "Dumbbells", "", "dumbbells", 1], ["bench", "Adjustable bench", "", "adjustable_bench", 1], ["barbell", "Barbell and squat rack", "", "barbell_squat_rack", 1], ["smith", "Smith machine", "", "smith_machine", 1], ["tower", "Pull-up bar and dip station", "", "pullup_dip_station", 1], ["band", "Resistance bands", "", "resistance_bands", 1], ["ball", "Medicine ball", "", "medicine_ball", 1], ["kettlebells", "Kettlebells", "", "kettlebells", 0], ["ez_curl_bar", "EZ curl bar", "", "ez_curl_bar", 0], ["flat_bench", "Flat bench", "", "flat_bench", 0], ["plyo_box", "Plyo box", "", "plyo_box", 0], ["trx_suspension", "TRX suspension trainer", "", "trx_suspension", 0], ["exercise_mat", "Exercise mat", "", "exercise_mat", 0]]}, {"g": "Legs & Glutes", "items": [["legpress", "Leg press", "", "leg_press", 0], ["legextm", "Leg extension machine", "", "leg_extension", 0], ["legcurlm", "Leg curl machine", "", "lying_leg_curl", 0], ["calfm", "Calf raise machine", "", "standing_calf_raise", 0], ["hipm", "Hip abduction and adduction machine", "", "hip_abduction_adduction", 0], ["hack_squat", "Hack squat machine", "", "hack_squat", 0], ["seated_calf_raise", "Seated calf raise", "", "seated_calf_raise", 0], ["glute_kickback", "Glute kickback machine", "", "glute_kickback", 0], ["hip_thrust", "Hip thrust machine", "", "hip_thrust", 0], ["seated_leg_curl", "Seated leg curl machine", "", "seated_leg_curl", 0]]}, {"g": "Chest & Back", "items": [["chestm", "Chest press machine", "", "chest_press", 0], ["pecdeck", "Pec deck", "", "pec_deck", 0], ["pulldown", "Lat pulldown", "", "lat_pulldown", 0], ["rowm", "Seated row machine", "", "seated_row", 0], ["roman", "Back extension bench", "", "back_extension_bench", 0], ["incline_chest_press", "Incline chest press machine", "", "incline_chest_press", 0], ["t_bar_row", "T-bar row machine", "", "t_bar_row", 0], ["assisted_pullup_dip", "Assisted pull-up and dip machine", "", "assisted_pullup_dip", 0], ["rear_delt_fly", "Rear delt fly machine", "", "rear_delt_fly", 0], ["cable", "Functional trainer", "", "functional_trainer", 0], ["chest_supported_row", "Chest-supported row", "", "chest_supported_row", 0]]}, {"g": "Shoulders & Arms", "items": [["shpm", "Shoulder press machine", "", "shoulder_press", 0], ["curlm", "Biceps curl machine", "", "biceps_curl_machine", 0], ["tricepm", "Triceps extension machine", "", "triceps_extension_machine", 0], ["lateral_raise_machine", "Lateral raise machine", "", "lateral_raise_machine", 0], ["preacher_curl_bench", "Preacher curl bench", "", "preacher_curl_bench", 0], ["cable_crossover", "Cable crossover machine", "", "cable_crossover", 0]]}, {"g": "Abs & Core", "items": [["abm", "Ab crunch machine", "", "ab_crunch_machine", 0], ["captains_chair", "Captain's chair", "", "captains_chair", 0], ["ab_wheel", "Ab wheel", "", "ab_wheel", 0]]}, {"g": "Cardio", "items": [["bike", "Stationary bike", "", "stationary_bike", 0], ["tread", "Treadmill", "", "treadmill", 0], ["ellip", "Elliptical", "", "elliptical", 0], ["rower", "Rowing machine", "", "rowing_machine", 0], ["stair", "Stair climber", "", "stair_climber", 0], ["assault_air_bike", "Assault air bike", "", "assault_air_bike", 0], ["skierg", "SkiErg", "", "skierg", 0], ["recumbent_bike", "Recumbent bike", "", "recumbent_bike", 0], ["spin_bike", "Spin bike", "", "spin_bike", 0]]}];
+const MID={"dumbbell": "dumbbells", "bench": "adjustable_bench", "barbell": "barbell_squat_rack", "smith": "smith_machine", "tower": "pullup_dip_station", "band": "resistance_bands", "ball": "medicine_ball", "kettlebells": "kettlebells", "ez_curl_bar": "ez_curl_bar", "flat_bench": "flat_bench", "plyo_box": "plyo_box", "trx_suspension": "trx_suspension", "exercise_mat": "exercise_mat", "legpress": "leg_press", "legextm": "leg_extension", "legcurlm": "lying_leg_curl", "calfm": "standing_calf_raise", "hipm": "hip_abduction_adduction", "hack_squat": "hack_squat", "seated_calf_raise": "seated_calf_raise", "glute_kickback": "glute_kickback", "hip_thrust": "hip_thrust", "seated_leg_curl": "seated_leg_curl", "chestm": "chest_press", "pecdeck": "pec_deck", "pulldown": "lat_pulldown", "rowm": "seated_row", "roman": "back_extension_bench", "incline_chest_press": "incline_chest_press", "t_bar_row": "t_bar_row", "assisted_pullup_dip": "assisted_pullup_dip", "rear_delt_fly": "rear_delt_fly", "cable": "functional_trainer", "chest_supported_row": "chest_supported_row", "shpm": "shoulder_press", "curlm": "biceps_curl_machine", "tricepm": "triceps_extension_machine", "lateral_raise_machine": "lateral_raise_machine", "preacher_curl_bench": "preacher_curl_bench", "cable_crossover": "cable_crossover", "abm": "ab_crunch_machine", "captains_chair": "captains_chair", "ab_wheel": "ab_wheel", "bike": "stationary_bike", "tread": "treadmill", "ellip": "elliptical", "rower": "rowing_machine", "stair": "stair_climber", "assault_air_bike": "assault_air_bike", "skierg": "skierg", "recumbent_bike": "recumbent_bike", "spin_bike": "spin_bike"};
+const MACH_EQ=["barbell", "smith", "legpress", "legextm", "legcurlm", "calfm", "hipm", "hack_squat", "seated_calf_raise", "glute_kickback", "hip_thrust", "seated_leg_curl", "chestm", "pecdeck", "pulldown", "rowm", "roman", "incline_chest_press", "t_bar_row", "assisted_pullup_dip", "rear_delt_fly", "cable", "chest_supported_row", "shpm", "curlm", "tricepm", "lateral_raise_machine", "cable_crossover", "abm"];
+const GINFO_NEW={"kettlebells": ["A cast-iron weight with a handle. Used for swings, goblet squats and carries.", "Legs, glutes, back, shoulders"], "ez_curl_bar": ["A short bar with a zig-zag grip that is easier on your wrists. Used for curls and triceps work.", "Biceps, triceps"], "flat_bench": ["A fixed flat padded bench for lying or sitting. Used for presses and rows.", "Used with dumbbells or a barbell"], "plyo_box": ["A sturdy box you step or jump onto. Used for step-ups and box jumps.", "Legs, glutes"], "trx_suspension": ["Two straps that hang from an anchor. You lean back or lower yourself using your own weight.", "Back, chest, core, legs"], "exercise_mat": ["A cushioned mat for floor work such as bridges, planks and stretching.", "Core, glutes, flexibility"], "hack_squat": ["You stand on an angled platform with your back on a pad and squat down along fixed rails.", "Quads, glutes"], "seated_calf_raise": ["Seated with weighted pads on your knees. You raise your heels against the weight.", "Calves"], "glute_kickback": ["You push one foot back or down against a pad or pedal to work the glutes.", "Glutes"], "hip_thrust": ["Upper back on a pad. You drive a padded bar or belt up with your hips.", "Glutes, hamstrings"], "seated_leg_curl": ["Seated with a pad above your ankles. You curl your heels down and back.", "Hamstrings (back of thigh)"], "incline_chest_press": ["Seated machine with an angled press path. Pushes up and forward at chest height.", "Upper chest, shoulders, triceps"], "t_bar_row": ["You hinge forward over a chest pad and pull a weighted bar toward your chest.", "Upper back, biceps"], "assisted_pullup_dip": ["A machine with a counterweight that helps lift you, so pull-ups and dips are easier to learn.", "Back, chest, arms"], "rear_delt_fly": ["Seated facing the pad. You pull two handles back and apart.", "Rear shoulders, upper back"], "chest_supported_row": ["You lean your chest on a pad and pull handles toward you. Easy on your lower back.", "Upper back, biceps"], "lateral_raise_machine": ["Seated with pads on your upper arms. You lift your arms out to the sides.", "Side shoulders"], "preacher_curl_bench": ["An angled pad supports your upper arms while you curl a bar or dumbbell.", "Biceps"], "cable_crossover": ["Two tall pulleys with handles. You pull them together in front of you.", "Chest, shoulders"], "captains_chair": ["A frame with forearm pads and a back pad. You raise your knees while hanging.", "Abs, hip flexors"], "ab_wheel": ["A small wheel with handles. You roll out from your knees and pull back in.", "Abs, shoulders"], "assault_air_bike": ["A fan bike with moving handles. Harder the faster you go.", "Full body, heart and lungs"], "skierg": ["Two handles on a tall frame. You pull down like a ski pole while hinging.", "Back, arms, core, heart and lungs"], "recumbent_bike": ["A bike with a reclined seat and back support. Gentle on the back and knees.", "Legs, heart and lungs"], "spin_bike": ["A heavy-flywheel bike for upright cycling. Adjustable resistance knob.", "Legs, heart and lungs"]};
+const IMPL={bench:['flat_bench'],legcurlm:['seated_leg_curl'],calfm:['seated_calf_raise'],chestm:['incline_chest_press'],pecdeck:['rear_delt_fly'],rowm:['chest_supported_row'],cable:['cable_crossover'],bike:['recumbent_bike','spin_bike','assault_air_bike']};
+
 /* ---------- gym machines: exercises, gear groups, drawings ---------- */
 (function(){
 const NOF={a:{},b:{}};
@@ -939,16 +954,6 @@ CX('c_rower','Rowing Machine Warm-Up',['rower'],'rower',['Legs, then back, then 
 CX('c_stair','Stair Climber Warm-Up',['stair'],'tread',['Stand tall, do not lean on the rails','Easy steady steps','Build the pace gradually']);
 })();
 const CARDIO_IDS=['c_bike','c_tread','c_ellip','c_rower','c_stair'];
-const MGROUPS=[
- {g:'Free weights and racks',away:1,items:[['dumbbell','Dumbbells','Fixed or adjustable'],['bench','Adjustable bench','Flat or incline'],['barbell','Barbell and squat rack','With safeties'],['smith','Smith machine',''],['tower','Pull-up bar and dip station',''],['band','Resistance bands',''],['ball','Medicine ball','']]},
- {g:'Legs',items:[['legpress','Leg press','Seated or angled sled'],['legextm','Leg extension machine',''],['legcurlm','Leg curl machine','Seated or lying'],['calfm','Calf raise machine',''],['hipm','Hip abduction and adduction machine','Inner and outer thigh']]},
- {g:'Chest',items:[['chestm','Chest press machine',''],['pecdeck','Pec deck','Chest fly and rear delt fly']]},
- {g:'Back',items:[['pulldown','Lat pulldown',''],['rowm','Seated row machine',''],['cable','Cable station','Adjustable pulley, rope and bar'],['roman','Back extension bench','']]},
- {g:'Shoulders and arms',items:[['shpm','Shoulder press machine',''],['curlm','Biceps curl machine',''],['tricepm','Triceps extension machine','']]},
- {g:'Abs',items:[['abm','Ab crunch machine','']]},
- {g:'Cardio',items:[['bike','Stationary bike',''],['tread','Treadmill',''],['ellip','Elliptical',''],['rower','Rowing machine',''],['stair','Stair climber','']]}
-];
-const MACH_EQ=MGROUPS.flatMap(g=>g.items.map(i=>i[0])).filter(id=>!['dumbbell','bench','tower','band','ball','bike','tread','ellip','rower','stair'].includes(id));
 const GEAR_ALIAS={legpress:'sled hack squat',legextm:'quad extension',legcurlm:'hamstring curl',hipm:'inner outer thigh abductor adductor',pecdeck:'fly butterfly chest fly rear delt',pulldown:'lat pull down',rowm:'row machine back',cable:'cables pulley crossover functional trainer',smith:'smith bar',barbell:'squat rack power rack olympic bar',shpm:'overhead press',curlm:'bicep curl preacher',tricepm:'tricep dip',abm:'crunch abdominal',roman:'hyperextension',tread:'run running',bike:'cycle spin',ellip:'cross trainer',rower:'row erg',stair:'stairmaster step mill'};
 /* ---- drawings ---- */
 const MCYC_KEYS=['bike','tread','ellip','rower','stair'];
@@ -986,6 +991,19 @@ const EXSC={ml_legpress:'legpress',ml_legext:'legext',ml_legcurl:'legcurl',ml_ca
 for(const id in EXSC){if(EX[id]){EX[id].scn=EXSC[id];if(MCYC_KEYS.includes(EXSC[id])){EX[id].cyc=1;EX[id].per={bike:1.7,tread:1.3,ellip:1.8,rower:3.6,stair:1.6}[EXSC[id]];}}}
 const machEl=(id,cls)=>`<svg class="fig mach ${cls||''}" data-ex="${id}" data-ph="${Math.random().toFixed(2)}" viewBox="0 0 240 180" preserveAspectRatio="xMidYMax meet">${machScene(EX[id].scn,EX[id].cyc?.15:.62,EX[id].m)}</svg>`;
 const gearArt=(id,anim,cls)=>{const k=GSC[id]||'press';return `<svg class="gart ${cls||''}" data-k="${k}"${anim?' data-an="1"':''} viewBox="0 0 240 180" preserveAspectRatio="xMidYMid meet">${machScene(k,MTILE(k))}</svg>`;};
+Object.assign(GINFO,GINFO_NEW);
+const gearImg=(id,cls)=>`<span class="gimgw ${cls||''}" data-id="${id}"><img src="${EQ_BASE}icons/${MID[id]||id}_icon.png" alt="" loading="lazy" draggable="false"></span>`;
+const ANIMC={};
+function gProbe(mid,cb){if(ANIMC[mid]!==undefined)return cb(ANIMC[mid]);const im=new Image(),u=EQ_BASE+'animations/'+mid+'.gif';im.onload=()=>{ANIMC[mid]=u;cb(u)};im.onerror=()=>{ANIMC[mid]=0;cb(0)};im.src=u;}
+function gPlay(w,on){
+  if(!w)return;
+  if(!on){if(w._st!==undefined){w.innerHTML=w._st;w._st=undefined;}w.classList.remove('play');return;}
+  if(w._st!==undefined)return;
+  w._st=w.innerHTML;w.classList.add('play');const id=w.dataset.id,mid=MID[id]||id;
+  gProbe(mid,u=>{if(w._st===undefined)return;
+    if(u){const im=w.querySelector('img');if(im)im.src=u;}
+    else if(GSC[id]){w.innerHTML=gearArt(id,true,'inl');}});
+}
 const gearName=id=>{for(const g of MGROUPS){const i=g.items.find(x=>x[0]===id);if(i)return i[1];}return id;};
 
 /* ---------- machine art: person on shaded machines, animated ---------- */
@@ -1591,7 +1609,8 @@ function ensurePlan(){
 const activeFocus=()=>S.plan.focus||ROT[S.cycle%ROT.length];
 /* ---------- planner ---------- */
 const G=()=>S.mode==='away'?(S.agear||(S.agear={})):S.gear;
-const avail=ex=>ex.eq.every(e=>G()[e])&&styleOK(ex);
+const hasEq=e=>{const g=G();return g[e]||(IMPL[e]||[]).some(x=>g[x]);};
+const avail=ex=>ex.eq.every(hasEq)&&styleOK(ex);
 const mid=a=>(a[0]+a[1])/2;
 const workSec=ex=>ex.kind==='t'?mid(ex.rng):mid(ex.rng)*3.4*(ex.per?2:1);
 const exSec=(ex,sets,rest)=>12+sets*workSec(ex)+Math.max(0,sets-1)*rest+8;
@@ -1784,12 +1803,12 @@ function viewProgress(){
 let gq='',gopen={};
 function gearList(){
   const away=S.mode==='away',g=G(),q=gq;let h='';
-  MGROUPS.filter(x=>away||!x.away).forEach(grp=>{
-    const items=grp.items.filter(i=>!q||(i[1]+' '+i[2]+' '+(GEAR_ALIAS[i[0]]||'')).toLowerCase().split(/[^a-z0-9]+/).some(w=>q.split(/\s+/).every(t=>w.startsWith(t)))||q.split(/\s+/).every(t=>(i[1]+' '+i[2]+' '+(GEAR_ALIAS[i[0]]||'')).toLowerCase().split(/[^a-z0-9]+/).some(w=>w.startsWith(t))));
+  MGROUPS.forEach(grp=>{
+    const items=grp.items.filter(i=>(away||!i[4])&&(!q||(i[1]+' '+i[2]+' '+(GEAR_ALIAS[i[0]]||'')).toLowerCase().split(/[^a-z0-9]+/).some(w=>q.split(/\s+/).every(t=>w.startsWith(t)))||q.split(/\s+/).every(t=>(i[1]+' '+i[2]+' '+(GEAR_ALIAS[i[0]]||'')).toLowerCase().split(/[^a-z0-9]+/).some(w=>w.startsWith(t)))));
     if(!items.length)return;
-    const on=grp.items.filter(i=>g[i[0]]).length,open=q||gopen[grp.g];
-    h+=`<button class="ggrp" data-act="ggrp" data-g="${grp.g}"><b>${grp.g}</b><span>${on?on+' of '+grp.items.length+' selected':grp.items.length+' items'}</span><i class="chev ${open?'o':''}"></i></button>`;
-    if(open)h+=`<div class="gtiles">${items.map(i=>`<div class="gt ${g[i[0]]?'on':''}" data-act="gear" data-id="${i[0]}" role="button" aria-label="${i[1]}">${gearArt(i[0],false)}<b>${i[1]}</b><button class="gi" data-act="ginfo" data-id="${i[0]}" aria-label="About ${i[1]}">i</button><u class="gck"></u></div>`).join('')}</div>`;
+    const vis=grp.items.filter(i=>away||!i[4]),on=vis.filter(i=>g[i[0]]).length,open=q||gopen[grp.g];
+    h+=`<button class="ggrp" data-act="ggrp" data-g="${grp.g}"><b>${grp.g}</b><span>${on?on+' of '+vis.length+' selected':vis.length+' items'}</span><i class="chev ${open?'o':''}"></i></button>`;
+    if(open)h+=`<div class="gtiles">${items.map(i=>`<div class="gt ${g[i[0]]?'on':''}" data-act="gear" data-id="${i[0]}" role="button" aria-label="${i[1]}">${gearImg(i[0])}<b>${i[1]}</b><button class="gi" data-act="ginfo" data-id="${i[0]}" aria-label="About ${i[1]}">i</button><u class="gck"></u></div>`).join('')}</div>`;
   });
   return h||'<p class="hint">No match. Try another word.</p>';
 }
@@ -1797,7 +1816,7 @@ function gearSheet(id){
   const info=GINFO[id]||['',''],on=!!G()[id];
   const mv=Object.values(EX).filter(e=>e.eq.includes(id)&&!e.cardio).map(e=>e.name);
   const cardio=Object.values(EX).some(e=>e.cardio&&e.eq.includes(id));
-  openSheet(`<div class="bigfig">${gearArt(id,true,'big')}</div><h2>${gearName(id)}</h2><p class="hint" style="margin-top:6px">${info[0]}</p><div class="wlab">Works</div><p class="hint" style="margin-top:2px">${info[1]}</p>${mv.length?`<div class="wlab">Moves in this app</div><p class="hint" style="margin-top:2px">${mv.slice(0,10).join(', ')}${mv.length>10?'...':''}</p>`:''}${cardio?`<div class="wlab">Used as</div><p class="hint" style="margin-top:2px">A 2 to 3 minute easy warm-up.</p>`:''}<div class="col"><button class="${on?'ghost':'primary'}" data-act="ginfotog" data-id="${id}">${on?'Remove from my list':'This gym has it'}</button><button class="ghost" data-act="closesheet">Close</button></div>`);
+  openSheet(`<div class="bigfig">${gearImg(id,'big')}</div><p class="hint" style="margin:-4px 0 10px;text-align:center">Tap the picture to see it move</p><h2>${gearName(id)}</h2><p class="hint" style="margin-top:6px">${info[0]}</p><div class="wlab">Works</div><p class="hint" style="margin-top:2px">${info[1]}</p>${(!mv.length&&!cardio)?`<div class="wlab">Moves in this app</div><p class="hint" style="margin-top:2px">None yet. Tick it anyway and it will be used when matching moves are added.</p>`:''}${mv.length?`<div class="wlab">Moves in this app</div><p class="hint" style="margin-top:2px">${mv.slice(0,10).join(', ')}${mv.length>10?'...':''}</p>`:''}${cardio?`<div class="wlab">Used as</div><p class="hint" style="margin-top:2px">A 2 to 3 minute easy warm-up.</p>`:''}<div class="col"><button class="${on?'ghost':'primary'}" data-act="ginfotog" data-id="${id}">${on?'Remove from my list':'This gym has it'}</button><button class="ghost" data-act="closesheet">Close</button></div>`);
 }
 function viewGear(){
   let h=`<section class="card"><div class="sec-h">Training style<span>${pname()}</span></div>`;
@@ -2117,6 +2136,16 @@ document.addEventListener('click',e=>{
 });
 Object.assign(ACT,WACT);
 /* ---------- init ---------- */
+
+/* equipment cards: press plays the animation (gif, else drawn scene), release stops */
+(function(){let tm=null;
+ document.addEventListener('pointerdown',e=>{const w=e.target.closest('.gimgw');if(!w)return;
+   if(w.classList.contains('big')){gPlay(w,!w.classList.contains('play'));return;}
+   clearTimeout(tm);gPlay(w,true);w._hold=1;});
+ const rel=e=>{document.querySelectorAll('.gimgw.play:not(.big)').forEach(w=>{clearTimeout(tm);tm=setTimeout(()=>gPlay(w,false),900);});};
+ document.addEventListener('pointerup',rel);document.addEventListener('pointercancel',rel);
+ document.addEventListener('scroll',rel,true);
+})();
 ensurePlan();render();requestAnimationFrame(loop);
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){try{navigator.serviceWorker.register('sw.js').catch(()=>{});}catch(e){}}

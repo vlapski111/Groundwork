@@ -1,0 +1,540 @@
+{
+  "app": "Groundwork Strength",
+  "version": "1.0.0",
+  "totalEquipment": 52,
+  "designTokens": {
+    "backgroundPrimary": "#131B28",
+    "cardSurface": "#1E293B",
+    "cardBorder": "#334155",
+    "figureGrey": "#94A3B8",
+    "muscleHighlightOrange": "#F97316",
+    "textPrimary": "#F8FAFC"
+  },
+  "interactionSpec": {
+    "defaultState": "Render staticIconAsset (or staticCardAsset) paused at frame 0",
+    "onPressBehavior": "Swap to animatedAsset (GIF/WebP) or trigger Lottie play() while active/pressed",
+    "fallbackBehavior": "If animatedAsset does not exist yet for an item, gracefully fall back to staticIconAsset with a subtle scale/border highlight"
+  },
+  "equipment": [
+    {
+      "id": "dumbbells",
+      "name": "Dumbbells",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/dumbbells.png",
+      "staticIconAsset": "icons/dumbbells_icon.png",
+      "animatedAsset": "animations/dumbbells.gif",
+      "lottieAsset": "animations/dumbbells.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "adjustable_bench",
+      "name": "Adjustable bench",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/adjustable_bench.png",
+      "staticIconAsset": "icons/adjustable_bench_icon.png",
+      "animatedAsset": "animations/adjustable_bench.gif",
+      "lottieAsset": "animations/adjustable_bench.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "barbell_squat_rack",
+      "name": "Barbell and squat rack",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/barbell_squat_rack.png",
+      "staticIconAsset": "icons/barbell_squat_rack_icon.png",
+      "animatedAsset": "animations/barbell_squat_rack.gif",
+      "lottieAsset": "animations/barbell_squat_rack.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "smith_machine",
+      "name": "Smith machine",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/smith_machine.png",
+      "staticIconAsset": "icons/smith_machine_icon.png",
+      "animatedAsset": "animations/smith_machine.gif",
+      "lottieAsset": "animations/smith_machine.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "pullup_dip_station",
+      "name": "Pull-up bar and dip station",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/pullup_dip_station.png",
+      "staticIconAsset": "icons/pullup_dip_station_icon.png",
+      "animatedAsset": "animations/pullup_dip_station.gif",
+      "lottieAsset": "animations/pullup_dip_station.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "resistance_bands",
+      "name": "Resistance bands",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/resistance_bands.png",
+      "staticIconAsset": "icons/resistance_bands_icon.png",
+      "animatedAsset": "animations/resistance_bands.gif",
+      "lottieAsset": "animations/resistance_bands.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "medicine_ball",
+      "name": "Medicine ball",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/medicine_ball.png",
+      "staticIconAsset": "icons/medicine_ball_icon.png",
+      "animatedAsset": "animations/medicine_ball.gif",
+      "lottieAsset": "animations/medicine_ball.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "leg_press",
+      "name": "Leg press",
+      "category": "Legs & Glutes",
+      "staticCardAsset": "cards/leg_press.png",
+      "staticIconAsset": "icons/leg_press_icon.png",
+      "animatedAsset": "animations/leg_press.gif",
+      "lottieAsset": "animations/leg_press.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "leg_extension",
+      "name": "Leg extension machine",
+      "category": "Legs & Glutes",
+      "staticCardAsset": "cards/leg_extension.png",
+      "staticIconAsset": "icons/leg_extension_icon.png",
+      "animatedAsset": "animations/leg_extension.gif",
+      "lottieAsset": "animations/leg_extension.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "lying_leg_curl",
+      "name": "Leg curl machine",
+      "category": "Legs & Glutes",
+      "staticCardAsset": "cards/lying_leg_curl.png",
+      "staticIconAsset": "icons/lying_leg_curl_icon.png",
+      "animatedAsset": "animations/lying_leg_curl.gif",
+      "lottieAsset": "animations/lying_leg_curl.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "standing_calf_raise",
+      "name": "Calf raise machine",
+      "category": "Legs & Glutes",
+      "staticCardAsset": "cards/standing_calf_raise.png",
+      "staticIconAsset": "icons/standing_calf_raise_icon.png",
+      "animatedAsset": "animations/standing_calf_raise.gif",
+      "lottieAsset": "animations/standing_calf_raise.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "hip_abduction_adduction",
+      "name": "Hip abduction and adduction machine",
+      "category": "Legs & Glutes",
+      "staticCardAsset": "cards/hip_abduction_adduction.png",
+      "staticIconAsset": "icons/hip_abduction_adduction_icon.png",
+      "animatedAsset": "animations/hip_abduction_adduction.gif",
+      "lottieAsset": "animations/hip_abduction_adduction.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "chest_press",
+      "name": "Chest press machine",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/chest_press.png",
+      "staticIconAsset": "icons/chest_press_icon.png",
+      "animatedAsset": "animations/chest_press.gif",
+      "lottieAsset": "animations/chest_press.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "pec_deck",
+      "name": "Pec deck",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/pec_deck.png",
+      "staticIconAsset": "icons/pec_deck_icon.png",
+      "animatedAsset": "animations/pec_deck.gif",
+      "lottieAsset": "animations/pec_deck.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "lat_pulldown",
+      "name": "Lat pulldown",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/lat_pulldown.png",
+      "staticIconAsset": "icons/lat_pulldown_icon.png",
+      "animatedAsset": "animations/lat_pulldown.gif",
+      "lottieAsset": "animations/lat_pulldown.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "seated_row",
+      "name": "Seated row machine",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/seated_row.png",
+      "staticIconAsset": "icons/seated_row_icon.png",
+      "animatedAsset": "animations/seated_row.gif",
+      "lottieAsset": "animations/seated_row.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "back_extension_bench",
+      "name": "Back extension bench",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/back_extension_bench.png",
+      "staticIconAsset": "icons/back_extension_bench_icon.png",
+      "animatedAsset": "animations/back_extension_bench.gif",
+      "lottieAsset": "animations/back_extension_bench.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "shoulder_press",
+      "name": "Shoulder press machine",
+      "category": "Shoulders & Arms",
+      "staticCardAsset": "cards/shoulder_press.png",
+      "staticIconAsset": "icons/shoulder_press_icon.png",
+      "animatedAsset": "animations/shoulder_press.gif",
+      "lottieAsset": "animations/shoulder_press.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "biceps_curl_machine",
+      "name": "Biceps curl machine",
+      "category": "Shoulders & Arms",
+      "staticCardAsset": "cards/biceps_curl_machine.png",
+      "staticIconAsset": "icons/biceps_curl_machine_icon.png",
+      "animatedAsset": "animations/biceps_curl_machine.gif",
+      "lottieAsset": "animations/biceps_curl_machine.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "triceps_extension_machine",
+      "name": "Triceps extension machine",
+      "category": "Shoulders & Arms",
+      "staticCardAsset": "cards/triceps_extension_machine.png",
+      "staticIconAsset": "icons/triceps_extension_machine_icon.png",
+      "animatedAsset": "animations/triceps_extension_machine.gif",
+      "lottieAsset": "animations/triceps_extension_machine.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "ab_crunch_machine",
+      "name": "Ab crunch machine",
+      "category": "Abs & Core",
+      "staticCardAsset": "cards/ab_crunch_machine.png",
+      "staticIconAsset": "icons/ab_crunch_machine_icon.png",
+      "animatedAsset": "animations/ab_crunch_machine.gif",
+      "lottieAsset": "animations/ab_crunch_machine.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "stationary_bike",
+      "name": "Stationary bike",
+      "category": "Cardio",
+      "staticCardAsset": "cards/stationary_bike.png",
+      "staticIconAsset": "icons/stationary_bike_icon.png",
+      "animatedAsset": "animations/stationary_bike.gif",
+      "lottieAsset": "animations/stationary_bike.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "treadmill",
+      "name": "Treadmill",
+      "category": "Cardio",
+      "staticCardAsset": "cards/treadmill.png",
+      "staticIconAsset": "icons/treadmill_icon.png",
+      "animatedAsset": "animations/treadmill.gif",
+      "lottieAsset": "animations/treadmill.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "elliptical",
+      "name": "Elliptical",
+      "category": "Cardio",
+      "staticCardAsset": "cards/elliptical.png",
+      "staticIconAsset": "icons/elliptical_icon.png",
+      "animatedAsset": "animations/elliptical.gif",
+      "lottieAsset": "animations/elliptical.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "rowing_machine",
+      "name": "Rowing machine",
+      "category": "Cardio",
+      "staticCardAsset": "cards/rowing_machine.png",
+      "staticIconAsset": "icons/rowing_machine_icon.png",
+      "animatedAsset": "animations/rowing_machine.gif",
+      "lottieAsset": "animations/rowing_machine.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "stair_climber",
+      "name": "Stair climber",
+      "category": "Cardio",
+      "staticCardAsset": "cards/stair_climber.png",
+      "staticIconAsset": "icons/stair_climber_icon.png",
+      "animatedAsset": "animations/stair_climber.gif",
+      "lottieAsset": "animations/stair_climber.json",
+      "sourceSheet": "sheets/01-core-equipment.png"
+    },
+    {
+      "id": "hack_squat",
+      "name": "Hack squat machine",
+      "category": "Legs & Glutes",
+      "staticCardAsset": "cards/hack_squat.png",
+      "staticIconAsset": "icons/hack_squat_icon.png",
+      "animatedAsset": "animations/hack_squat.gif",
+      "lottieAsset": "animations/hack_squat.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "seated_calf_raise",
+      "name": "Seated calf raise",
+      "category": "Legs & Glutes",
+      "staticCardAsset": "cards/seated_calf_raise.png",
+      "staticIconAsset": "icons/seated_calf_raise_icon.png",
+      "animatedAsset": "animations/seated_calf_raise.gif",
+      "lottieAsset": "animations/seated_calf_raise.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "glute_kickback",
+      "name": "Glute kickback machine",
+      "category": "Legs & Glutes",
+      "staticCardAsset": "cards/glute_kickback.png",
+      "staticIconAsset": "icons/glute_kickback_icon.png",
+      "animatedAsset": "animations/glute_kickback.gif",
+      "lottieAsset": "animations/glute_kickback.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "hip_thrust",
+      "name": "Hip thrust machine",
+      "category": "Legs & Glutes",
+      "staticCardAsset": "cards/hip_thrust.png",
+      "staticIconAsset": "icons/hip_thrust_icon.png",
+      "animatedAsset": "animations/hip_thrust.gif",
+      "lottieAsset": "animations/hip_thrust.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "incline_chest_press",
+      "name": "Incline chest press machine",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/incline_chest_press.png",
+      "staticIconAsset": "icons/incline_chest_press_icon.png",
+      "animatedAsset": "animations/incline_chest_press.gif",
+      "lottieAsset": "animations/incline_chest_press.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "t_bar_row",
+      "name": "T-bar row machine",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/t_bar_row.png",
+      "staticIconAsset": "icons/t_bar_row_icon.png",
+      "animatedAsset": "animations/t_bar_row.gif",
+      "lottieAsset": "animations/t_bar_row.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "assisted_pullup_dip",
+      "name": "Assisted pull-up and dip machine",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/assisted_pullup_dip.png",
+      "staticIconAsset": "icons/assisted_pullup_dip_icon.png",
+      "animatedAsset": "animations/assisted_pullup_dip.gif",
+      "lottieAsset": "animations/assisted_pullup_dip.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "rear_delt_fly",
+      "name": "Rear delt fly machine",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/rear_delt_fly.png",
+      "staticIconAsset": "icons/rear_delt_fly_icon.png",
+      "animatedAsset": "animations/rear_delt_fly.gif",
+      "lottieAsset": "animations/rear_delt_fly.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "lateral_raise_machine",
+      "name": "Lateral raise machine",
+      "category": "Shoulders & Arms",
+      "staticCardAsset": "cards/lateral_raise_machine.png",
+      "staticIconAsset": "icons/lateral_raise_machine_icon.png",
+      "animatedAsset": "animations/lateral_raise_machine.gif",
+      "lottieAsset": "animations/lateral_raise_machine.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "preacher_curl_bench",
+      "name": "Preacher curl bench",
+      "category": "Shoulders & Arms",
+      "staticCardAsset": "cards/preacher_curl_bench.png",
+      "staticIconAsset": "icons/preacher_curl_bench_icon.png",
+      "animatedAsset": "animations/preacher_curl_bench.gif",
+      "lottieAsset": "animations/preacher_curl_bench.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "cable_crossover",
+      "name": "Cable crossover machine",
+      "category": "Shoulders & Arms",
+      "staticCardAsset": "cards/cable_crossover.png",
+      "staticIconAsset": "icons/cable_crossover_icon.png",
+      "animatedAsset": "animations/cable_crossover.gif",
+      "lottieAsset": "animations/cable_crossover.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "captains_chair",
+      "name": "Captain's chair",
+      "category": "Abs & Core",
+      "staticCardAsset": "cards/captains_chair.png",
+      "staticIconAsset": "icons/captains_chair_icon.png",
+      "animatedAsset": "animations/captains_chair.gif",
+      "lottieAsset": "animations/captains_chair.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "assault_air_bike",
+      "name": "Assault air bike",
+      "category": "Cardio",
+      "staticCardAsset": "cards/assault_air_bike.png",
+      "staticIconAsset": "icons/assault_air_bike_icon.png",
+      "animatedAsset": "animations/assault_air_bike.gif",
+      "lottieAsset": "animations/assault_air_bike.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "skierg",
+      "name": "SkiErg",
+      "category": "Cardio",
+      "staticCardAsset": "cards/skierg.png",
+      "staticIconAsset": "icons/skierg_icon.png",
+      "animatedAsset": "animations/skierg.gif",
+      "lottieAsset": "animations/skierg.json",
+      "sourceSheet": "sheets/02-expanded-machines.png"
+    },
+    {
+      "id": "kettlebells",
+      "name": "Kettlebells",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/kettlebells.png",
+      "staticIconAsset": "icons/kettlebells_icon.png",
+      "animatedAsset": "animations/kettlebells.gif",
+      "lottieAsset": "animations/kettlebells.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "ez_curl_bar",
+      "name": "EZ curl bar",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/ez_curl_bar.png",
+      "staticIconAsset": "icons/ez_curl_bar_icon.png",
+      "animatedAsset": "animations/ez_curl_bar.gif",
+      "lottieAsset": "animations/ez_curl_bar.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "flat_bench",
+      "name": "Flat bench",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/flat_bench.png",
+      "staticIconAsset": "icons/flat_bench_icon.png",
+      "animatedAsset": "animations/flat_bench.gif",
+      "lottieAsset": "animations/flat_bench.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "plyo_box",
+      "name": "Plyo box",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/plyo_box.png",
+      "staticIconAsset": "icons/plyo_box_icon.png",
+      "animatedAsset": "animations/plyo_box.gif",
+      "lottieAsset": "animations/plyo_box.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "trx_suspension",
+      "name": "TRX suspension trainer",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/trx_suspension.png",
+      "staticIconAsset": "icons/trx_suspension_icon.png",
+      "animatedAsset": "animations/trx_suspension.gif",
+      "lottieAsset": "animations/trx_suspension.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "exercise_mat",
+      "name": "Exercise mat",
+      "category": "Free weights and racks",
+      "staticCardAsset": "cards/exercise_mat.png",
+      "staticIconAsset": "icons/exercise_mat_icon.png",
+      "animatedAsset": "animations/exercise_mat.gif",
+      "lottieAsset": "animations/exercise_mat.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "ab_wheel",
+      "name": "Ab wheel",
+      "category": "Abs & Core",
+      "staticCardAsset": "cards/ab_wheel.png",
+      "staticIconAsset": "icons/ab_wheel_icon.png",
+      "animatedAsset": "animations/ab_wheel.gif",
+      "lottieAsset": "animations/ab_wheel.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "seated_leg_curl",
+      "name": "Seated leg curl machine",
+      "category": "Legs & Glutes",
+      "staticCardAsset": "cards/seated_leg_curl.png",
+      "staticIconAsset": "icons/seated_leg_curl_icon.png",
+      "animatedAsset": "animations/seated_leg_curl.gif",
+      "lottieAsset": "animations/seated_leg_curl.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "functional_trainer",
+      "name": "Functional trainer",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/functional_trainer.png",
+      "staticIconAsset": "icons/functional_trainer_icon.png",
+      "animatedAsset": "animations/functional_trainer.gif",
+      "lottieAsset": "animations/functional_trainer.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "chest_supported_row",
+      "name": "Chest-supported row",
+      "category": "Chest & Back",
+      "staticCardAsset": "cards/chest_supported_row.png",
+      "staticIconAsset": "icons/chest_supported_row_icon.png",
+      "animatedAsset": "animations/chest_supported_row.gif",
+      "lottieAsset": "animations/chest_supported_row.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "recumbent_bike",
+      "name": "Recumbent bike",
+      "category": "Cardio",
+      "staticCardAsset": "cards/recumbent_bike.png",
+      "staticIconAsset": "icons/recumbent_bike_icon.png",
+      "animatedAsset": "animations/recumbent_bike.gif",
+      "lottieAsset": "animations/recumbent_bike.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    },
+    {
+      "id": "spin_bike",
+      "name": "Spin bike",
+      "category": "Cardio",
+      "staticCardAsset": "cards/spin_bike.png",
+      "staticIconAsset": "icons/spin_bike_icon.png",
+      "animatedAsset": "animations/spin_bike.gif",
+      "lottieAsset": "animations/spin_bike.json",
+      "sourceSheet": "sheets/03-additional-staples.png"
+    }
+  ]
+}
