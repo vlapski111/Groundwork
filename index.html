@@ -265,6 +265,19 @@ svg.mach{background:#101520;border-radius:10px}
 .favrow{display:flex;flex-wrap:wrap;gap:8px}
 .favchip{background:var(--card2);border:1px solid var(--line);color:inherit;border-radius:12px;padding:8px 12px;font-size:13px;text-align:left;cursor:pointer}
 .favchip small{display:block;opacity:.6;font-size:11px}
+
+#welcome{position:fixed;inset:0;z-index:75;background:var(--bg);overflow:auto;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(18px + var(--sb,0px))}
+.weli{max-width:560px;margin:0 auto;display:flex;flex-direction:column;min-height:100%}
+.weli h1{font-size:26px;margin:14px 0 8px;line-height:1.15}
+.weli .big{font-size:15px;line-height:1.45;margin:0 0 14px}
+.wbody{flex:1}
+.wdots{display:flex;gap:6px;justify-content:center;margin-bottom:6px}
+.wdots i{width:22px;height:4px;border-radius:2px;background:var(--line)}
+.wdots i.dn{background:#2fd3be66}.wdots i.on{background:var(--teal)}
+.wnav{display:flex;justify-content:space-between;gap:12px;margin-top:18px}
+.wnav .primary{flex:1;max-width:260px;margin-left:auto}
+.wskip{background:none;border:0;color:#8794ad;font-size:13px;margin:12px auto 0;padding:8px;cursor:pointer}
+.card.warn{border:1px solid #ffb54a88;background:rgba(255,181,74,.08);margin-bottom:12px}
 </style></head><body>
 <div id="app"><header class="top"><b>Ground<i>work</i></b><button id="pchip" data-act="profiles">Me</button></header><main id="view"></main></div>
 <nav>
@@ -1924,7 +1937,7 @@ function viewGear(){
   const loaded=Object.values(EX).filter(e=>e.w0&&!e.mach&&!e.prog&&avail(e));
   h+=`<section class="card"><div class="sec-h">Starting weights<span>per dumbbell</span></div><p class="hint" style="margin-top:0">These are cautious beginner starts. Change them to match what feels challenging but clean. The app raises them for you when you earn it.</p>`;
   loaded.forEach(e=>{h+=`<div class="gear"><div><b>${e.name}</b><span>${e.one?'one dumbbell':'each hand'}</span></div><div class="step"><button data-act="wt" data-id="${e.id}" data-d="-1">-</button><b>${curW(e)} lb</b><button data-act="wt" data-id="${e.id}" data-d="1">+</button></div></div>`;});
-  h+=`</section>`+wGearCard()+`<section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Progress is saved in Chrome on this phone. Keep a copy outside Chrome in case browser data is cleared. Last copy: <b>${bkAgo()}</b>.</p><div class="gear"><div><b>Offer a backup after each workout</b><span>One tap to share or save a file</span></div><button class="tog ${S.bkask?'on':''}" data-act="bktog" aria-label="toggle backup prompt"><i></i></button></div><div class="row"><button class="ghost" data-act="bksheet">Back up now</button><button class="ghost" data-act="export">Copy backup</button><button class="ghost" data-act="exportall">Copy all</button><button class="ghost" data-act="restore">Restore</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
+  h+=`</section>`+wGearCard()+`<section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Progress is saved in Chrome on this phone. Keep a copy outside Chrome in case browser data is cleared. Last copy: <b>${bkAgo()}</b>.</p><div class="gear"><div><b>Offer a backup after each workout</b><span>One tap to share or save a file</span></div><button class="tog ${S.bkask?'on':''}" data-act="bktog" aria-label="toggle backup prompt"><i></i></button></div><div class="row"><button class="ghost" data-act="bksheet">Back up now</button><button class="ghost" data-act="welagain">Show the intro again</button><button class="ghost" data-act="export">Copy backup</button><button class="ghost" data-act="exportall">Copy all</button><button class="ghost" data-act="restore">Restore</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
   return h;
 }
 function render(){
@@ -2254,5 +2267,42 @@ ensurePlan();render();requestAnimationFrame(loop);
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){try{navigator.serviceWorker.register('sw.js').catch(()=>{});}catch(e){}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){ensurePlan();if(!P)render();else if(P&&!wake)lockWake();}});
+
+/* ---------- first-launch walkthrough ---------- */
+const WELKEY='groundwork_welcomed';
+let WS={i:0};
+const welDone=()=>{try{return !!localStorage.getItem(WELKEY);}catch(e){return true;}};
+const welMark=()=>{try{localStorage.setItem(WELKEY,'1');}catch(e){}};
+const isInstalled=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone;}catch(e){return false;}};
+const WSTEPS=['hello','name','style','gear','prog','safe','install'];
+function welHTML(){
+  const k=WSTEPS[WS.i],n=WSTEPS.length;let b='';
+  if(k==='hello')b=`<h1>Welcome to Groundwork</h1><p class="hint big">Short strength sessions you can fit into any day, at home or at a gym. It plans each session for the time you have, tracks your weights and tells you when to go heavier.</p><div class="card"><p class="hint" style="margin:0">This takes about a minute. You can change everything later in the Gear and Plan tabs.</p></div><div class="col"><button class="ghost" data-act="welrestore">I already have a backup file</button></div>`;
+  if(k==='name')b=`<h1>Who is training?</h1><p class="hint big">Your name keeps your progress, plan and equipment separate from anyone else who uses this phone.</p><input id="wname" class="field" placeholder="Your name" maxlength="20" value="${pname()==='Me'?'':pname()}"><p class="hint">Sharing this phone? Tap the name at the top right any time to add or switch people.</p>`;
+  if(k==='style')b=`<h1>How do you like to train?</h1><p class="hint big">This decides which kinds of moves lead each session.</p>${STYLES.map(s=>`<div class="gear" data-act="welstyle" data-id="${s.id}" style="cursor:pointer"><div><b>${s.name}</b><span>${s.sub}</span></div><i class="radio ${S.style===s.id?'on':''}"></i></div>`).join('')}`;
+  if(k==='gear'){const ids=['dumbbell','bench','tower','band','ball'];b=`<h1>What do you have at home?</h1><p class="hint big">Turn off anything you do not own. Bodyweight moves are always included.</p>${GEAR.filter(g=>ids.includes(g.id)).map(g=>`<div class="gear"><div><b>${g.name}</b><span>${g.sub}</span></div><button class="tog ${S.gear[g.id]?'on':''}" data-act="welgear" data-id="${g.id}" aria-label="toggle ${g.name}"><i></i></button></div>`).join('')}<p class="hint">Going to a gym? Open Gear later and switch to Away to tick machines. Home and Away are kept separate.</p>`;}
+  if(k==='prog')b=`<h1>Pick a plan</h1><p class="hint big">Start with the flexible rotation, or follow a fixed weekly program. You can switch whenever you like.</p><div class="gear" data-act="welprog" data-id="" style="cursor:pointer"><div><b>My rotation</b><span>Push, pull, legs, core and full body, sized to the time you have</span></div><i class="radio ${S.prog?'':'on'}"></i></div>${Object.values(PROGS).map(P=>`<div class="gear" data-act="welprog" data-id="${P.id}" style="cursor:pointer"><div><b>${P.name}</b><span>${P.sub}. ${P.goal}</span></div><i class="radio ${S.prog===P.id?'on':''}"></i></div>`).join('')}`;
+  if(k==='safe')b=`<h1>Keep your progress safe</h1><div class="card warn"><b>Your progress lives only on this phone</b><p class="hint" style="margin:6px 0 0">It is saved inside the browser, not in the cloud. It will be erased if you clear Chrome's browsing or site data, uninstall or reset Chrome, clear this app's storage, or move to a new phone. The home-screen version of the app on Android shares the same storage as Chrome, so it is not safer.</p></div><p class="hint big">Protect it with a backup file saved outside the browser, for example to Google Drive, OneDrive, email or your Downloads folder.</p><div class="gear"><div><b>Offer a backup after each workout</b><span>One tap to share or save a file. Takes a few seconds.</span></div><button class="tog ${S.bkask?'on':''}" data-act="bktog" data-w="1" aria-label="toggle backup prompt"><i></i></button></div><p class="hint">You can also back up or restore any time: Gear tab, Your data. If data is ever lost, restoring the latest file brings everything back.</p>`;
+  if(k==='install')b=`<h1>${isInstalled()?'You are all set':'Add it to your home screen'}</h1>${isInstalled()?`<p class="hint big">You are using the installed app. Open it any time from your home screen.</p>`:`<p class="hint big">For one-tap access: in Chrome tap the three-dot menu, then <b>Add to Home screen</b> (or <b>Install app</b>).</p><div class="card"><p class="hint" style="margin:0">It works offline once it has loaded, so you can train without a signal.</p></div>`}<p class="hint">Tap Start to begin. Your first session is waiting on the Today tab.</p>`;
+  const last=WS.i===n-1;
+  return `<div class="weli"><div class="wdots">${WSTEPS.map((_,i)=>`<i class="${i===WS.i?'on':i<WS.i?'dn':''}"></i>`).join('')}</div><div class="wbody">${b}</div><div class="wnav">${WS.i>0?'<button class="ghost" data-act="welback">Back</button>':'<span></span>'}<button class="primary" data-act="welnext">${last?'Start':'Next'}</button></div>${last?'':'<button class="wskip" data-act="welskip">Skip for now</button>'}</div>`;
+}
+function welRender(){let w=document.getElementById('welcome');if(!w){w=document.createElement('div');w.id='welcome';document.body.appendChild(w);document.body.classList.add('lock');}w.innerHTML=welHTML();w.scrollTop=0;}
+function welClose(){const w=document.getElementById('welcome');if(w)w.remove();document.body.classList.remove('lock');welMark();render();window.scrollTo(0,0);}
+function welOpen(){WS={i:0};welRender();}
+Object.assign(ACT,{
+ welnext(){if(WSTEPS[WS.i]==='name'){const v=(($('#wname')||{}).value||'').trim();if(v){REGI.list.find(p=>p.id===REGI.active).name=v;saveReg();}}
+   if(WS.i>=WSTEPS.length-1){welClose();return;}WS.i++;welRender();},
+ welback(){if(WS.i>0){WS.i--;welRender();}},
+ welskip(){welClose();},
+ welstyle(t){S.style=t.dataset.id;save();welRender();},
+ welgear(t){S.gear[t.dataset.id]=S.gear[t.dataset.id]?0:1;S.plan.swaps={};save();welRender();},
+ welprog(t){S.prog=t.dataset.id||null;S.plan.focus=null;S.plan.progOff=0;save();welRender();},
+ welrestore(){welClose();restoreSheet();},
+ welagain(){closeSheet();welOpen();}
+});
+const _bktog=ACT.bktog;ACT.bktog=function(t){_bktog(t);if(t&&t.dataset&&t.dataset.w)welRender();};
+/* first launch: show unless this device has been through it or already has workout history */
+(function(){if(welDone())return;if(S.logs&&S.logs.length){welMark();return;}welOpen();})();
 
 </script></body></html>
