@@ -1,0 +1,125 @@
+id (use as file name .gif),name,main muscles,equipment
+incline_pushup,Incline Push-Up,chest,bench
+knee_pushup,Knee Push-Up,chest,
+negative_pushup,Slow-Lower Push-Up,chest,
+pushup,Push-Up,chest,
+db_floor_press,Dumbbell Floor Press,chest,dumbbell
+db_bench_press,Dumbbell Bench Press,chest,dumbbell+bench
+db_incline_press,Incline Dumbbell Press,chest+shoulders,dumbbell+bench
+db_shoulder_press,Dumbbell Shoulder Press,shoulders,dumbbell
+db_lateral_raise,Dumbbell Lateral Raise,shoulders,dumbbell
+db_tricep_ext,Overhead Triceps Extension,triceps,dumbbell
+bench_dip,Bench Dip (bent knees),triceps,bench
+dip_support_hold,Dip Bar Support Hold,triceps,
+dip_assisted,Foot-Assisted Dip,triceps+chest,
+dip,Parallel Bar Dip,triceps+chest,
+band_chest_press,Band Chest Press,chest,band
+band_overhead_press,Band Overhead Press,shoulders,band
+band_pushdown,Band Triceps Pushdown,triceps,band+tower
+dead_hang,Dead Hang,back+forearms,tower
+scap_pull,Scapular Pull,back,tower
+negative_pullup,Slow-Lower Pull-Up,back+biceps,tower
+band_assisted_pullup,Band-Assisted Pull-Up,back+biceps,tower+band
+pullup,Pull-Up,back+biceps,tower
+db_one_arm_row,One-Arm Dumbbell Row,back,dumbbell+bench
+band_row,Band Row,back,band
+band_pull_apart,Band Pull-Apart,back,band
+band_face_pull,Band Face Pull,shoulders,band
+band_lat_pulldown,Kneeling Band Pulldown,back,band+tower
+superman,Superman,back,
+db_curl,Dumbbell Curl,biceps,dumbbell
+db_hammer_curl,Hammer Curl,biceps,dumbbell
+farmer_carry,Farmer Carry,forearms+core,dumbbell
+tf_chest_press,Total Flex Chest Press,chest,bench+pods
+tf_front_raise,Total Flex Front Raise,shoulders,bench+pods
+tf_leg_extension,Total Flex Leg Extension,quads,bench+legext
+wall_pushup,Wall Push-Up,chest,
+close_incline_pushup,Close-Grip Incline Push-Up,triceps+chest,bench
+pike_pushup,Pike Push-Up,shoulders,
+scap_pushup,Scapular Push-Up,shoulders+back,
+flexed_arm_hang,Flexed-Arm Hang,back+biceps,tower
+chin_negative,Slow-Lower Chin-Up,biceps+back,tower
+prone_y_raise,Prone Y Raise,back+shoulders,
+reverse_snow_angel,Reverse Snow Angel,back,
+bench_sit_stand,Bench Sit-to-Stand,quads+glutes,bench
+goblet_box_squat,Goblet Squat to Bench,quads+glutes,dumbbell+bench
+db_rdl,Dumbbell Romanian Deadlift,hamstrings+glutes,dumbbell
+good_morning_band,Banded Good Morning,hamstrings,band
+glute_bridge,Glute Bridge,glutes,
+db_hip_thrust,Dumbbell Hip Thrust,glutes,dumbbell+bench
+single_leg_bridge,Single-Leg Bridge,glutes,
+calf_raise,Standing Calf Raise,calves,
+banded_lateral_walk,Banded Lateral Walk,glutes,band
+donkey_kick,Donkey Kick,glutes,
+wall_sit,Wall Sit,quads,
+dead_bug,Dead Bug,core,
+plank_knees,Knee Plank,core,
+plank,Forearm Plank,core,
+hollow_hold,Hollow Hold,core,
+bird_dog,Bird-Dog,core,
+vkr_knee_raise,Vertical Knee Raise,core,tower
+reverse_crunch,Reverse Crunch,core,
+crunch,Crunch,core,
+med_ball_crunch,Med-Ball Crunch Reach,core,ball
+arm_circles,Arm Circles,shoulders,
+wall_angel,Wall Angel,back,
+march,March in Place,core,
+childs_pose,Child's Pose,back,
+chest_stretch,Chest Opener,chest,
+bw_squat,Bodyweight Squat,quads+glutes,
+reverse_lunge,Reverse Lunge,quads+glutes,
+split_squat,Split Squat,quads+glutes,
+step_up,Bench Step-Up,quads+glutes,bench
+single_leg_rdl,Single-Leg Hinge,hamstrings+glutes,
+glute_march,Glute Bridge March,glutes,
+mountain_climber,Mountain Climber,core,
+flutter_kick,Flutter Kick,core,
+leg_raise,Lying Leg Raise,core,
+bear_hold,Bear Hold,core,
+w_sit,Sit tall,,
+w_sit_belly,Hand on belly,,
+w_sit_chest,Hand on chest,,
+w_stand,Stand tall,,
+w_stand_chest,Hand on heart,,
+w_press,Palms together,,
+w_reach,Reach up,,
+w_shake,Shake it out,,
+w_cross,Cross crawl,,
+w_balance,Balance on one leg,,
+w_fold,Forward fold,,
+w_lie,Lie on your back,,
+w_lie_belly,Hand on belly,,
+w_knees,Knees to chest,,
+ml_legpress,Leg Press,quads+glutes,legpress
+ml_legext,Leg Extension Machine,quads,legextm
+ml_legcurl,Leg Curl Machine,hamstrings,legcurlm
+ml_calf,Calf Raise Machine,calves,calfm
+ml_hip_abduct,Hip Abduction Machine,glutes,hipm
+ml_hip_adduct,Hip Adduction Machine,quads,hipm
+ml_smith_squat,Smith Machine Squat,quads+glutes,smith
+ml_smith_bench,Smith Machine Bench Press,chest,smith+bench
+ml_bb_squat,Barbell Back Squat,quads+glutes,barbell
+ml_bb_deadlift,Barbell Deadlift,hamstrings+glutes,barbell
+ml_bb_bench,Barbell Bench Press,chest,barbell+bench
+ml_bb_row,Barbell Row,back,barbell
+ml_bb_ohp,Barbell Overhead Press,shoulders,barbell
+ml_chestpress,Chest Press Machine,chest,chestm
+ml_pecdeck,Pec Deck Fly,chest,pecdeck
+ml_reardelt,Rear Delt Fly (Pec Deck),shoulders,pecdeck
+ml_pulldown,Lat Pulldown,back,pulldown
+ml_seatedrow,Seated Row Machine,back,rowm
+ml_backext,Back Extension Bench,back,roman
+ml_cable_row,Cable Row,back,cable
+ml_face_pull,Cable Face Pull,shoulders,cable
+ml_tri_pushdown,Cable Triceps Pushdown,triceps,cable
+ml_cable_curl,Cable Biceps Curl,biceps,cable
+ml_cable_chop,Cable Wood Chop,core,cable
+ml_shpress,Shoulder Press Machine,shoulders,shpm
+ml_bicepcurl,Biceps Curl Machine,biceps,curlm
+ml_tri_ext,Triceps Extension Machine,triceps,tricepm
+ml_abcrunch,Ab Crunch Machine,core,abm
+c_bike,Stationary Bike Warm-Up,,bike
+c_tread,Treadmill Warm-Up,,tread
+c_ellip,Elliptical Warm-Up,,ellip
+c_rower,Rowing Machine Warm-Up,,rower
+c_stair,Stair Climber Warm-Up,,stair

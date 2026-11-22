@@ -278,6 +278,8 @@ svg.mach{background:#101520;border-radius:10px}
 .wnav .primary{flex:1;max-width:260px;margin-left:auto}
 .wskip{background:none;border:0;color:#8794ad;font-size:13px;margin:12px auto 0;padding:8px;cursor:pointer}
 .card.warn{border:1px solid #ffb54a88;background:rgba(255,181,74,.08);margin-bottom:12px}
+.pl-fig img.exgif{width:100%;height:100%;object-fit:contain;display:block}
+img.exgif{max-width:100%}
 </style></head><body>
 <div id="app"><header class="top"><b>Ground<i>work</i></b><button id="pchip" data-act="profiles">Me</button></header><main id="view"></main></div>
 <nav>
@@ -1685,7 +1687,7 @@ function srank(ex){const s=S.style,q=ex.eq,w=q.includes('dumbbell'),b=q.includes
  if(s==='weights')return w?0:b?2:1;if(s==='bands')return b?0:w?2:1;if(s==='wb')return(w||b)?0:1;return 0;}
 /* ---------- state ---------- */
 const todayKey=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
-const DEF=()=>({prog:null,favs:[],gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,style:'mix',mode:'home',agear:{},warm:'auto',ask:1,bkask:1,wstep:2.5,lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
+const DEF=()=>({snd:1,ready:5,prog:null,favs:[],gear:{dumbbell:1,bench:1,tower:1,band:1,ball:1,pods:1,legext:0,headrest:0},cycle:0,style:'mix',mode:'home',agear:{},warm:'auto',ask:1,bkask:1,wstep:2.5,lastMins:20,tracks:{push:0,pull:0,dip:0,squat:0,core:0},
   weights:{},reps:{},hold:{},logs:[],plan:null,tab:'today'});
 let S=load();
 function load(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r){const d=DEF();return Object.assign(d,r,{gear:Object.assign(d.gear,r.gear||{}),tracks:Object.assign(d.tracks,r.tracks||{})});}}catch(e){}return DEF();}
@@ -1936,7 +1938,7 @@ function viewGear(){
   const loaded=Object.values(EX).filter(e=>e.w0&&!e.mach&&!e.prog&&avail(e));
   h+=`<section class="card"><div class="sec-h">Starting weights<span>per dumbbell</span></div><p class="hint" style="margin-top:0">These are cautious beginner starts. Change them to match what feels challenging but clean. The app raises them for you when you earn it.</p>`;
   loaded.forEach(e=>{h+=`<div class="gear"><div><b>${e.name}</b><span>${e.one?'one dumbbell':'each hand'}</span></div><div class="step"><button data-act="wt" data-id="${e.id}" data-d="-1">-</button><b>${curW(e)} lb</b><button data-act="wt" data-id="${e.id}" data-d="1">+</button></div></div>`;});
-  h+=`</section>`+wGearCard()+`<section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Progress is saved in Chrome on this phone. Keep a copy outside Chrome in case browser data is cleared. Last copy: <b>${bkAgo()}</b>.</p>${fsBlock()}<div class="gear"><div><b>Offer a backup after each workout</b><span>One tap to share or save a file</span></div><button class="tog ${S.bkask?'on':''}" data-act="bktog" aria-label="toggle backup prompt"><i></i></button></div><div class="row"><button class="ghost" data-act="bksheet">Back up now</button><button class="ghost" data-act="welagain">Show the intro again</button><button class="ghost" data-act="export">Copy backup</button><button class="ghost" data-act="exportall">Copy all</button><button class="ghost" data-act="restore">Restore</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
+  h+=`</section>`+wGearCard()+`<section class="card"><div class="sec-h">Timers and sound</div><div class="gear"><div><b>Sound</b><span>Beeps for timers and rest</span></div><button class="tog ${S.snd!==0?'on':''}" data-act="sndtog" aria-label="toggle sound"><i></i></button></div><div class="gear"><div><b>Get-ready countdown</b><span>Seconds before a timed hold starts</span></div><div class="ctl slim" style="margin:0"><button data-act="readyd" data-d="-1">-</button><div><b>${S.ready==null?5:S.ready}</b><span>sec</span></div><button data-act="readyd" data-d="1">+</button></div></div></section><section class="card"><div class="sec-h">Your data</div><p class="hint" style="margin-top:0">Progress is saved in Chrome on this phone. Keep a copy outside Chrome in case browser data is cleared. Last copy: <b>${bkAgo()}</b>.</p>${fsBlock()}<div class="gear"><div><b>Offer a backup after each workout</b><span>One tap to share or save a file</span></div><button class="tog ${S.bkask?'on':''}" data-act="bktog" aria-label="toggle backup prompt"><i></i></button></div><div class="row"><button class="ghost" data-act="bksheet">Back up now</button><button class="ghost" data-act="welagain">Show the intro again</button><button class="ghost" data-act="export">Copy backup</button><button class="ghost" data-act="exportall">Copy all</button><button class="ghost" data-act="restore">Restore</button><button class="ghost danger" data-act="reset">Reset everything</button></div></section>`;
   return h;
 }
 function render(){
@@ -1992,7 +1994,10 @@ function focusSheet(){
 const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 const vis=new Set();
 const io=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target))):null;
-function hook(){document.querySelectorAll('svg.fig').forEach(n=>{if(!n._h){n._h=1;io?io.observe(n):vis.add(n);}});}
+const EXG='assets/exercises/',EXGC={};
+function exGif(n){const id=n.dataset.ex;if(!id)return;const put=u=>{if(!u||!n.isConnected)return;const im=document.createElement('img');im.className='fig exgif '+(n.getAttribute('class')||'').replace(/\bfig\b/,'').trim();im.src=u;im.alt='';im.draggable=false;n.replaceWith(im);};
+  if(EXGC[id]!==undefined)return put(EXGC[id]);const im=new Image(),u=EXG+id+'.gif';im.onload=()=>{EXGC[id]=u;put(u)};im.onerror=()=>{EXGC[id]=0};im.src=u;}
+function hook(){document.querySelectorAll('svg.fig').forEach(n=>{if(!n._h){n._h=1;io?io.observe(n):vis.add(n);if(n.dataset.ex&&!n.closest('.th'))exGif(n);}});}
 let lastT=0;
 function loop(ts){requestAnimationFrame(loop);if(ts-lastT<34)return;lastT=ts;
   vis.forEach(n=>{if(!n.isConnected){vis.delete(n);return;}
@@ -2018,10 +2023,11 @@ let wake=null;
 async function lockWake(){try{if(navigator.wakeLock)wake=await navigator.wakeLock.request('screen');}catch(e){}}
 function unlockWake(){try{wake&&wake.release();}catch(e){}wake=null;}
 let actx=null;
-function beep(n=1){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+function beep(n=1){if(S.snd!==0)try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();
   for(let i=0;i<n;i++){const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=880;o.connect(g);g.connect(actx.destination);
     const t=actx.currentTime+i*.22;g.gain.setValueAtTime(.15,t);g.gain.exponentialRampToValueAtTime(.001,t+.16);o.start(t);o.stop(t+.17);}}catch(e){}
   try{navigator.vibrate&&navigator.vibrate(n>1?[120,80,120]:150);}catch(e){}}
+function tickBeep(hi){if(S.snd===0)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=hi?1175:660;o.connect(g);g.connect(actx.destination);const t=actx.currentTime;g.gain.setValueAtTime(.1,t);g.gain.exponentialRampToValueAtTime(.001,t+.1);o.start(t);o.stop(t+.11);}catch(e){}}
 /* ---------- session set ---------- */
 function setSessions(list){
   ensurePlan();
@@ -2043,7 +2049,8 @@ function startSession(i){
   P={idx:i,ramp:(_items.some(x=>EX[x.id].warm)?-1:_items.findIndex(x=>EX[x.id].w0)),focus:S.plan.sessions[i].f||activeFocus(),items:p.items.map(it=>({id:it.id,sets:it.sets,rest:it.rest,log:[]})),i:0,set:0,phase:'work',t0:Date.now(),holdOn:false};
   initCur();$('#player').classList.add('show');document.body.classList.add('lock');lockWake();renderPlayer();
 }
-function stopTick(){if(tick){clearInterval(tick);tick=null;}}
+let tickGen=0;
+function stopTick(){tickGen++;if(tick){clearInterval(tick);tick=null;}}
 /* ---------- too easy / too hard feedback ---------- */
 function calcAdj(it,a){const e=EX[it.id],last=it.log[it.log.length-1];if(!last)return null;
   if(e.w0){const w=last.w;let n=snap(w+a.dir*a.v,e);if(n===w)n=stepW(w,a.dir,e);return {kind:'w',val:n,text:n+' lb'+(n===w?' (limit)':'')};}
@@ -2077,7 +2084,7 @@ function renderPlayer(){
       <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="bg"/><circle cx="60" cy="60" r="52" class="fg" id="rg"/></svg><span id="tm">${P.restTotal}</span></div>
       ${P.fbIdx!=null&&P.fbIdx===P.i-1&&P.set===0?fbHTML(P.fbIdx):''}
       <div class="up-next"><div class="th">${figEl(ne.id)}</div><div><span>Up next</span><b>${ne.name}</b><span>${nextSame?`Set ${P.set+1} of ${it.sets}`:'New exercise'}</span></div></div>
-      <div class="row"><button class="ghost" data-act="restplus">+15 s</button><button class="primary" data-act="skiprest">Skip rest</button></div></div>`;
+      <div class="row"><button class="ghost" data-act="prevex">Back</button><button class="ghost" data-act="restplus">+15 s</button><button class="primary" data-act="skiprest">Skip rest</button></div></div>`;
     hook();runRest();return;
   }
   const w=e.w0?`<div class="ctl"><button data-act="wd" data-d="-1">-</button><div><b>${P.w}</b><span>lb ${e.mach?(e.id.startsWith('ml_bb')?'(total with bar)':'(stack or plates)'):e.one?'(one dumbbell)':'each hand'}</span></div><button data-act="wd" data-d="1">+</button></div>`:'';
@@ -2086,22 +2093,24 @@ function renderPlayer(){
   if(e.kind==='t'){
     body=`<div class="ring sm"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="bg"/><circle cx="60" cy="60" r="52" class="fg" id="rg"/></svg><span id="tm">${P.r}</span><small>sec</small></div>
      <div class="ctl slim"><button data-act="rd" data-d="-5">-5</button><div><b>${P.r}</b><span>target seconds</span></div><button data-act="rd" data-d="5">+5</button></div>
-     <button class="btn big" data-act="hold">${P.holdOn?'Stop':'Start timer'}</button>`;
+     <button class="btn big" data-act="hold">${P.holdOn?(Date.now()<P.holdStart?'Cancel':'Stop'):'Start timer'}</button>`;
   }else body=`<div class="ctls">${w}${r}</div><button class="btn big" data-act="done">Done set ${P.set+1}</button>`;
   el.innerHTML=plTop()+`<div class="pl-body"><div class="pl-fig">${figEl(e.id,'big')}</div>
     <h2>${e.name}</h2><div class="chips c">${e.m.p.map(g=>chip(g,'p')).join('')}${e.m.s.map(g=>chip(g,'s')).join('')}</div>
     <div class="pl-set"><b>Set ${P.set+1} of ${it.sets}</b><span>${e.kind==='t'?e.rng[0]+' to '+e.rng[1]+' sec':e.rng[0]+' to '+e.rng[1]+' reps'}${e.per?' each side':''}</span></div>
     <ul class="cues short">${e.cues.slice(0,3).map(c=>`<li>${c}</li>`).join('')}</ul>${P.i===P.ramp&&P.set===0?'<p class="ramp">No warm-up today, so before your first set do 5 easy reps with about half this weight.</p>':''}${body}
-    <div class="row sm"><button class="link" data-act="skipex">Skip exercise</button>${e.warm||e.cool?'':'<button class="link" data-act="pswapsheet">Swap</button>'}</div></div>`;
+    <div class="row sm">${P.i>0||P.set>0?'<button class="link" data-act="prevex">Back</button>':''}<button class="link" data-act="skipex">Skip exercise</button>${e.warm||e.cool?'':'<button class="link" data-act="pswapsheet">Swap</button>'}</div></div>`;
   hook();
   if(e.kind==='t'&&P.holdOn)runHold();
 }
 function setRing(frac){const c=$('#rg');if(c){const L=326.7;c.style.strokeDasharray=L;c.style.strokeDashoffset=L*(1-clamp(frac,0,1));}}
 function runRest(){
-  const upd=()=>{const rem=Math.ceil((P.restEnd-Date.now())/1000);const tm=$('#tm');
+  stopTick();const g=tickGen;
+  const upd=()=>{if(g!==tickGen||!P||P.phase!=='rest'){clearInterval(iv);return;}
+    const rem=Math.ceil((P.restEnd-Date.now())/1000);const tm=$('#tm');
     if(rem<=0){stopTick();beep(2);endRest();return;}
     if(tm)tm.textContent=rem;setRing(rem/P.restTotal);};
-  upd();tick=setInterval(upd,250);
+  const iv=tick=setInterval(upd,250);upd();
 }
 function endRest(){P.phase='work';renderPlayer();}
 function startRest(sec){
@@ -2109,11 +2118,18 @@ function startRest(sec){
   P.phase='rest';P.restTotal=sec;P.restEnd=Date.now()+sec*1000;renderPlayer();
 }
 function runHold(){
-  const total=P.r;P.holdStart=P.holdStart||Date.now();
-  const upd=()=>{const el=(Date.now()-P.holdStart)/1000,rem=Math.ceil(total-el);const tm=$('#tm');
+  stopTick();const g=tickGen;let lastN=-1;
+  const upd=()=>{if(g!==tickGen||!P||!P.holdOn){clearInterval(iv);return;}
+    const total=P.r,now=Date.now(),tm=$('#tm'),sm=document.querySelector('.ring.sm small');
+    if(now<P.holdStart){const n=Math.ceil((P.holdStart-now)/1000);
+      if(tm)tm.textContent=n;if(sm)sm.textContent='get ready';setRing(0);
+      if(n!==lastN){lastN=n;if(n<=3)tickBeep(false);}return;}
+    if(sm&&sm.textContent!=='sec')sm.textContent='sec';
+    if(lastN!==-2){lastN=-2;if(P.ready)tickBeep(true);}
+    const el=(now-P.holdStart)/1000,rem=Math.ceil(total-el);
     if(tm)tm.textContent=Math.max(0,rem);setRing(1-el/total);
     if(el>=total){stopTick();beep(2);finishHold(total);}};
-  upd();tick=setInterval(upd,200);
+  const iv=tick=setInterval(upd,200);upd();
 }
 function finishHold(secs){stopTick();P.holdOn=false;P.holdStart=null;logSet(0,Math.round(secs));}
 function logSet(r,secs){
@@ -2219,7 +2235,11 @@ const ACT={
  wd(t){P.w=stepW(P.w,+t.dataset.d,EX[curItem().id]);renderPlayer();},
  rd(t){const e=EX[curItem().id];P.r=clamp(P.r+(+t.dataset.d),1,e.kind==='t'?300:99);renderPlayer();},
  done(){logSet(P.r);},
- hold(){if(P.holdOn){const secs=(Date.now()-P.holdStart)/1000;finishHold(secs);}else{P.holdOn=true;P.holdStart=Date.now();renderPlayer();}},
+ hold(){if(P.holdOn){if(Date.now()<P.holdStart){stopTick();P.holdOn=false;P.holdStart=null;renderPlayer();return;}const secs=(Date.now()-P.holdStart)/1000;finishHold(secs);}else{const d=Math.max(0,Math.min(10,S.ready==null?5:S.ready));P.ready=d;P.holdOn=true;P.holdStart=Date.now()+d*1000;renderPlayer();}},
+ prevex(){stopTick();P.holdOn=false;P.holdStart=null;P.fbIdx=null;let it=curItem();
+  if(P.set>0){P.set--;}else if(P.i>0){P.i--;it=curItem();P.set=Math.max(0,Math.min(it.log.length,it.sets)-1);}else return;
+  it=curItem();const last=it.log.pop();initCur();if(last){if(EX[it.id].w0&&last.w)P.w=last.w;if(EX[it.id].kind==='t')P.r=Math.max(1,Math.round(last.t)||P.r);else if(last.r)P.r=last.r;}
+  P.phase='work';renderPlayer();toast('Back one step');},
  skiprest(){stopTick();endRest();},
  restplus(){P.restEnd+=15000;P.restTotal+=15;runRest();},
  fb(t){const it=P.items[P.fbIdx];if(!it)return;const d=+t.dataset.d;if(d===0){it.adj=null;P.fbOpen=0;}else{it.adj=null;P.fbOpen=d;}renderPlayer();},
@@ -2241,6 +2261,8 @@ const ACT={
  bksheet(){bkSheet();},
  bkshare(){bkShare().then(r=>{if(r==='shared'){closeSheet();toast('Backup shared');render();}else if(r==='saved'){closeSheet();toast('Saved to Downloads');render();}});},
  bksave(){bkSave();closeSheet();toast('Saved to Downloads');render();},
+ sndtog(){S.snd=S.snd===0?1:0;save();render();if(S.snd!==0)tickBeep(true);},
+ readyd(t){S.ready=Math.max(0,Math.min(10,(S.ready==null?5:S.ready)+(+t.dataset.d)));save();render();},
  bktog(){S.bkask=S.bkask?0:1;save();render();},
  restorefile(t){const f=t.files&&t.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const m=restoreText(String(r.result||''));if(m){toast(m);return;}closeSheet();render();toast('Restored');};r.readAsText(f);}
 };
